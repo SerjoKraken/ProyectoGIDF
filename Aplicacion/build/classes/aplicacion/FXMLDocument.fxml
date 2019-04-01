@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane id="AnchorPane" fx:id="ap" prefHeight="600.0" prefWidth="800.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/10.0.1" fx:controller="aplicacion.FXMLDocumentController">
+    <children>
+        <Button fx:id="b1" layoutX="31.0" layoutY="66.0" onAction="#dibujar1" text="Proceso" />
+      <Button fx:id="b2" layoutX="34.0" layoutY="119.0" mnemonicParsing="false" onAction="#dibujar2" text="Flujo" />
+      <Button fx:id="b3" layoutX="34.0" layoutY="173.0" mnemonicParsing="false" onAction="#dibujar3" text="Entrada" />
+      <Button fx:id="b4" layoutX="34.0" layoutY="231.0" mnemonicParsing="false" onAction="#dibujar4" text="Limpiar" />
+      <Canvas fx:id="canvas" height="500.0" layoutX="246.0" layoutY="34.0" width="500.0" />
+    </children>
+</AnchorPane>
