@@ -71,7 +71,7 @@ public class FXMLDocumentController implements Initializable {
     }
     @FXML
     private void dibujar2(ActionEvent event) {
-        System.out.println("datito");   
+        System.out.println("datitox");   
         b=true;
         canvas.setOnMouseClicked((MouseEvent event1) -> {
             double x1 = event1.getX();
