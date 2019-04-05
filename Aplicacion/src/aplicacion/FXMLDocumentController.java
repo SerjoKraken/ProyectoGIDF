@@ -35,7 +35,7 @@ public class FXMLDocumentController implements Initializable {
     
     @FXML
     private Button b3;
-    
+
     @FXML
     private Button b4;
     
@@ -71,6 +71,7 @@ public class FXMLDocumentController implements Initializable {
     }
     @FXML
     private void dibujar2(ActionEvent event) {
+        System.out.println("datito");   
         b=true;
         canvas.setOnMouseClicked((MouseEvent event1) -> {
             double x1 = event1.getX();
