@@ -19,6 +19,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.ArcType;
 
 
 
@@ -29,6 +30,9 @@ public class FXMLDocumentController implements Initializable {
     
     @FXML
     private Button b1;
+    
+    @FXML
+    private Button b5;
     
     @FXML
     private Button b2;
@@ -47,10 +51,12 @@ public class FXMLDocumentController implements Initializable {
     
     
     private GraphicsContext gc;
+  
     
     boolean b = true;
     @FXML
     private void dibujar1(ActionEvent event) {
+        gc.setStroke(Color.RED);
         b=true;
         canvas.setOnMouseClicked((MouseEvent event2) -> {
             if(b){
@@ -71,6 +77,7 @@ public class FXMLDocumentController implements Initializable {
     }
     @FXML
     private void dibujar2(ActionEvent event) {
+        gc.setStroke(Color.PINK);
         System.out.println("datitox");   
         b=true;
         canvas.setOnMouseClicked((MouseEvent event1) -> {
@@ -90,6 +97,7 @@ public class FXMLDocumentController implements Initializable {
     }
     @FXML
     private void dibujar3(ActionEvent event) {
+        gc.setStroke(Color.YELLOW);
         b= true;
         canvas.setOnMouseClicked((MouseEvent event2) -> {
             if(b){
@@ -109,18 +117,45 @@ public class FXMLDocumentController implements Initializable {
     }
     @FXML
     private void dibujar4(ActionEvent event) {
+     
         gc.fillRect(0, 0, 500, 500);
         System.out.println("Dibujar 4");   
     }
     
     
+    @FXML
+    private void dibujar5(ActionEvent event) {
+        b= true;
+        gc.setStroke(Color.AQUAMARINE);
+        canvas.setOnMouseClicked((MouseEvent event2) -> {
+            if(b){
+                for (double i = 0; i < 50; i+=0.5) {
+                  double x1 = event2.getX() - 50;
+                  double y1 = event2.getY() -25;
+                  double x2 = event2.getX() + 50;
+                  double y2 = event2.getY() +25;
+
+                 gc.strokeLine(x1, y1+i, x1+100, y1+i);
+                 gc.strokeArc(x1-19+i, y1, 37, 50, 90, 180, ArcType.OPEN);
+                 gc.strokeLine(x1, y1+50, x2, y2);
+                 gc.strokeArc(x1+82-i, y1, 37, 50, -90, 180, ArcType.OPEN);
+                 b=false;  
+                }
+                
+            }      
+        });
+        
+        System.out.println("Dibujar 3");   
+    }
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         
         gc = canvas.getGraphicsContext2D();
-        
         gc.setFill(Color.WHITE);
         gc.fillRect(0, 0, 500, 500);
+        
+        
         
         ap.setBackground(Background.EMPTY);
         
