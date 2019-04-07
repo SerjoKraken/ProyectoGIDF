@@ -158,7 +158,7 @@ public class FXMLDocumentController implements Initializable {
         canvas.setOnMouseClicked((MouseEvent event2) -> {
             if(b){
                 double x1 = event2.getX()+33;
-                double y1 = event2.getX()+25;
+                double y1 = event2.getY()+25;
 
                 gc.strokeLine(x1, y1, x1+100, y1);
                 gc.strokeLine(x1, y1, x1, y1+50);
@@ -175,7 +175,7 @@ public class FXMLDocumentController implements Initializable {
                 gc.strokeArc(x1+50, y1+36, 50, 30, 360, 180, ArcType.OPEN);
 
         
-                
+                b=false;
             }      
         });
         
