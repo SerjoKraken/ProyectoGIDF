@@ -64,12 +64,14 @@ public class FXMLDocumentController implements Initializable {
                 double y1 = event2.getY() -25;
                 double x2 = event2.getX() + 50;
                 double y2 = event2.getY() +25;
-
-                gc.strokeLine(x1, y1, x1+100, y1);
-                gc.strokeLine(x1+100, y1, x2, y2);
-                gc.strokeLine(x1, y1+50, x2, y2);
-                gc.strokeLine(x1, y1, x1, y1+50);
-                b=false;
+                for (int i = 0; i < 50; i++) {
+                    gc.strokeLine(x1, y1+i, x1+100, y1+i);
+                    gc.strokeLine(x1+100, y1, x2, y2);
+                    gc.strokeLine(x1, y1+50, x2, y2);
+                    gc.strokeLine(x1, y1, x1, y1+50);
+                    b=false;
+                }
+                
             }  
         });
        
@@ -77,7 +79,7 @@ public class FXMLDocumentController implements Initializable {
     }
     @FXML
     private void dibujar2(ActionEvent event) {
-        gc.setStroke(Color.PINK);
+        gc.setStroke(Color.BLACK);
         System.out.println("datitox");   
         b=true;
         canvas.setOnMouseClicked((MouseEvent event1) -> {
@@ -105,11 +107,14 @@ public class FXMLDocumentController implements Initializable {
                 double y1 = event2.getY() -25;
                 double x2 = event2.getX() + 33;
                 double y2 = event2.getY() +25;
-                gc.strokeLine(x1, y1, x1+100, y1);
-                gc.strokeLine(x1+100, y1, x2, y2);
-                gc.strokeLine(x1, y1, x1-33, y2);
-                gc.strokeLine(x1-33, y2, x2, y2);
-                b=false;
+                for (int i = 0; i < 50; i++) {
+                    gc.strokeLine(x1+i, y1+i, x1+100, y1);
+                    gc.strokeLine(x1+100-i, y1, x2-i, y2);
+                    gc.strokeLine(x1+i, y1, x1-33+i, y2);
+                    gc.strokeLine(x1-33, y2, x2, y2-i);
+                    b=false;
+                }
+                
             }       
         });
         
@@ -117,7 +122,7 @@ public class FXMLDocumentController implements Initializable {
     }
     @FXML
     private void dibujar4(ActionEvent event) {
-     
+        gc.setStroke(Color.BLACK);
         gc.fillRect(0, 0, 500, 500);
         System.out.println("Dibujar 4");   
     }
@@ -128,12 +133,15 @@ public class FXMLDocumentController implements Initializable {
         b= true;
         gc.setStroke(Color.AQUAMARINE);
         canvas.setOnMouseClicked((MouseEvent event2) -> {
+            
+            
             if(b){
+                double x1 = event2.getX() - 50;
+                double y1 = event2.getY() -25;
+                double x2 = event2.getX() + 50;
+                double y2 = event2.getY() +25;
                 for (double i = 0; i < 50; i+=0.5) {
-                  double x1 = event2.getX() - 50;
-                  double y1 = event2.getY() -25;
-                  double x2 = event2.getX() + 50;
-                  double y2 = event2.getY() +25;
+                  
 
                  gc.strokeLine(x1, y1+i, x1+100, y1+i);
                  gc.strokeArc(x1-19+i, y1, 37, 50, 90, 180, ArcType.OPEN);
