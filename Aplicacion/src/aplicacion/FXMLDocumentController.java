@@ -128,7 +128,7 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private void dibujar4(ActionEvent event) {
      
-        gc.fillRect(0, 0, 500, 500);
+        gc.fillRect(0, 0, 642, 515);
         System.out.println("Dibujar 4");   
     }
     
