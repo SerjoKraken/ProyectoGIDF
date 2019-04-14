@@ -11,5 +11,9 @@ package aplicacion;
  */
 public class Proceso extends Figura{
     
+    public Proceso(Vertice verticeCentro, TipoF tipo) {
+        super(verticeCentro, tipo);
+    }
+    
     
 }

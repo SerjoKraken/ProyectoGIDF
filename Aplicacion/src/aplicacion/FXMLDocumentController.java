@@ -5,6 +5,7 @@ package aplicacion;
 
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -58,10 +59,14 @@ public class FXMLDocumentController implements Initializable {
     
     boolean b = true;
     @FXML
+    /**
+     * Proceso
+     */
     private void dibujar1(ActionEvent event) {
         
         b=true;
         canvas.setOnMouseClicked((MouseEvent event2) -> {
+            
             if(b){
                 double x1 = event2.getX() - 50;
                 double y1 = event2.getY() -25;
@@ -84,7 +89,7 @@ public class FXMLDocumentController implements Initializable {
                 b=false;
             }  
         });
-       
+
         System.out.println("Dibujar 1");   
     }
     @FXML
@@ -211,10 +216,11 @@ public class FXMLDocumentController implements Initializable {
                 gc.strokeArc(x1, y1+36, 50, 30, 180, 180, ArcType.OPEN);
                 gc.strokeArc(x1+50, y1+36, 50, 30, 360, 180, ArcType.OPEN);
                 b=false;
+
             }      
         });
         
-        System.out.println("Dibujar 3");   
+        System.out.println("Dibujar 6");   
     }
     
     @Override
