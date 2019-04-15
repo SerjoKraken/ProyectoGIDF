@@ -46,15 +46,6 @@ public class Figura {
         this.conexiones = conexiones;
     }
 
-    public Vertice getVertice() {
-        return verticeCentro;
-    }
-
-    public void setVertice(Vertice vertice) {
-        this.verticeCentro = vertice;
-    }
-    
-    
     
     public ArrayList<Vertice> getVertices() {
         return vertices;

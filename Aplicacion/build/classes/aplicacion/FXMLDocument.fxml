@@ -7,15 +7,15 @@
 
 <AnchorPane id="AnchorPane" fx:id="ap" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="aplicacion.FXMLDocumentController">
     <children>
-        <Button fx:id="b1" layoutX="36.0" layoutY="198.0" onAction="#dibujar1" text="Proceso" />
-      <Button fx:id="b2" layoutX="42.0" layoutY="266.0" mnemonicParsing="false" onAction="#dibujar2" text="Flujo" />
-      <Button fx:id="b3" layoutX="34.0" layoutY="330.0" mnemonicParsing="false" onAction="#dibujar3" text="Entrada" />
-      <Button fx:id="b4" layoutX="35.0" layoutY="460.0" mnemonicParsing="false" onAction="#dibujar4" text="Limpiar" />
+        <Button fx:id="b1" layoutX="36.0" layoutY="198.0" onAction="#dibujarProceso" text="Proceso" />
+      <Button fx:id="b2" layoutX="42.0" layoutY="266.0" mnemonicParsing="false" onAction="#dibujarFlujo" text="Flujo" />
+      <Button fx:id="b3" layoutX="34.0" layoutY="330.0" mnemonicParsing="false" onAction="#dibujarEntrada" text="Entrada" />
+      <Button fx:id="b4" layoutX="35.0" layoutY="460.0" mnemonicParsing="false" onAction="#limpiar" text="Limpiar" />
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="529.0" layoutX="141.0" layoutY="66.0" stroke="BLACK" strokeType="INSIDE" width="654.0" />
       <Canvas fx:id="canvas" height="515.0" layoutX="147.0" layoutY="72.0" width="642.0" />
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ebe9e9" height="58.0" layoutX="3.0" layoutY="7.0" stroke="#1b0d0d" strokeType="INSIDE" width="793.0" />
-      <Button fx:id="b5" layoutX="40.0" layoutY="110.0" mnemonicParsing="false" onAction="#dibujar5" text="Inicio" />
-      <Button fx:id="b6" layoutX="34.0" layoutY="397.0" mnemonicParsing="false" onAction="#dibujar6" text="Documento" />
+      <Button fx:id="b5" layoutX="40.0" layoutY="110.0" mnemonicParsing="false" onAction="#dibujarInicio" text="Inicio" />
+      <Button fx:id="b6" layoutX="34.0" layoutY="397.0" mnemonicParsing="false" onAction="#dibujarDocumento" text="Documento" />
       
     </children>
 </AnchorPane>

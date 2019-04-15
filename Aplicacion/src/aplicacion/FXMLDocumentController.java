@@ -146,33 +146,58 @@ public class FXMLDocumentController implements Initializable {
         b= true;
         canvas.setOnMouseClicked((MouseEvent event2) -> {
             if(b){
-                double x1 = event2.getX() - 33;
-                double y1 = event2.getY() -25;
-                double x2 = event2.getX() + 33;
-                double y2 = event2.getY() +25;
-                for (int i = 0; i < 50; i++) {
-                    gc.setStroke(Color.YELLOW);
-                    gc.strokeLine(x1+i, y1+i, x1+100, y1);
-                    gc.strokeLine(x1+100-i, y1, x2-i, y2);
-                    gc.strokeLine(x1+i, y1, x1-33+i, y2);
-                    gc.strokeLine(x1-33, y2, x2, y2-i);
+                double x = event2.getX();
+                double y = event2.getY();
+                double x1 = x - 33;
+                double y1 = y - 25;
+                double x2 = x + 67;
+                double y2 = y - 25;
+                double x3 = x + 33;
+                double y3 = y + 25;
+                double x4 = x - 67;
+                double y4 = y + 25;
+                
+                gc.setStroke(Color.YELLOW);
+                for (double i = 0; i < 100; i+=0.5) {
+                    
+                    //gc.strokeLine(x1, y1, x2, y2);
+                    gc.strokeLine(x2-i, y2, x3-i, y3);
+                    //gc.strokeLine(x3, y3, x4, y4);
+                    //gc.strokeLine(x4, y4, x1, y1);
                     
                 }
                 gc.setStroke(Color.BLACK);
-                gc.strokeLine(x1, y1, x1+100, y1);
-                gc.strokeLine(x1+100, y1, x2, y2);
-                gc.strokeLine(x1, y1, x1-33, y2);
-                gc.strokeLine(x1-33, y2, x2, y2);
+                gc.strokeLine(x1, y1, x2, y2);
+                gc.strokeLine(x2, y2, x3, y3);
+                gc.strokeLine(x3, y3, x4, y4);
+                gc.strokeLine(x4, y4, x1, y1);
+                
+                Entrada entrada = new Entrada(new Vertice(x,y), TipoF.ENTRADA);
+                entrada.getVertices().add(new Vertice(x1,y1));
+                entrada.getVertices().add(new Vertice(x2,y2));
+                entrada.getVertices().add(new Vertice(x3,y3));
+                entrada.getVertices().add(new Vertice(x4,y4));
+                
+                sistema.getEntradas().add(entrada);
                 b=false;
             }       
         });
         
         System.out.println("Dibujar 3");   
     }
+    
     @FXML
     private void limpiar(ActionEvent event) {
      
         gc.fillRect(0, 0, 642, 515);
+        
+        sistema.getDocumentos().clear();
+        sistema.getEntradas().clear();
+        sistema.setFin(null);
+        sistema.setInicio(null);
+        sistema.getFlujos().clear();
+        sistema.getProcesos().clear();
+        
         System.out.println("Limpieza");   
     }
     
@@ -182,47 +207,70 @@ public class FXMLDocumentController implements Initializable {
         b= true;
         
         canvas.setOnMouseClicked((MouseEvent event2) -> {
-            if(b){
-                double x1 = event2.getX() - 50;
-                double y1 = event2.getY() -25;
-                double x2 = event2.getX() + 50;
-                double y2 = event2.getY() +25;
+            if(b && (sistema.getInicio()==null || sistema.getFin()==null)){
+                double x = event2.getX();
+                double y = event2.getY();
+                double x1 = x - 50;
+                double y1 = y - 25;
+                double x2 = x + 50;
+                double y2 = y - 25;
+                double x3 = x + 50;
+                double y3 = y + 25;
+                double x4 = x - 50;
+                double y4 = y + 25;
+                
+                gc.setStroke(Color.AQUAMARINE);
                 for (double i = 0; i < 50; i+=0.5) {
-                    gc.setStroke(Color.AQUAMARINE);
-                    gc.strokeLine(x1, y1+i, x1+100, y1+i);
+                    
+                    gc.strokeLine(x1, y1+i, x2, y2+i);
                     gc.strokeArc(x1-19+i, y1, 37, 50, 90, 180, ArcType.OPEN);
-                    gc.strokeLine(x1, y1+50, x2, y2);
+                    //gc.strokeLine(x3, y3, x4, y4);
                     gc.strokeArc(x1+82-i, y1, 37, 50, -90, 180, ArcType.OPEN);
                    
                 }
                 b=false;
                 gc.setStroke(Color.BLACK);
-                gc.strokeLine(x1, y1, x1+100, y1);
+                gc.strokeLine(x1, y1, x2, y2);
                 gc.strokeArc(x1-19, y1, 37, 50, 90, 180, ArcType.OPEN);
-                gc.strokeLine(x1, y1+50, x2, y2);
+                gc.strokeLine(x3, y3, x4, y4);
                 gc.strokeArc(x1+82, y1, 37, 50, -90, 180, ArcType.OPEN);
+                
+                
+                
+                
             }      
         });
         
         System.out.println("Dibujar Inicio");   
     }
-        @FXML
+    @FXML
     private void dibujarDocumento(ActionEvent event) {
         b= true;
         
         canvas.setOnMouseClicked((MouseEvent event2) -> {
             if(b){
-                double x1 = event2.getX()-50;
-                double y1 = event2.getY()-25;
-
+                
+                double x = event2.getX();
+                double y = event2.getY();
+                double x1 = x - 50;
+                double y1 = y - 25;
+                double x2 = x + 50;
+                double y2 = y - 25;
+                double x3 = x + 50;
+                double y3 = y + 25;
+                double x4 = x - 50;
+                double y4 = y + 25;
+                
+                gc.setStroke(Color.CHARTREUSE);
+                
                 for (double i = 0; i < 50; i+=0.5) {
-                    gc.setStroke(Color.CHARTREUSE);
-                    gc.strokeLine(x1+i, y1+i*0.9, x1+100, y1);
+                    
+                    gc.strokeLine(x1+i, y1+i*0.9, x2, y2);
                     gc.strokeLine(x1+i, y1, x1, y1+50);
                     if(i>=25){
-                        gc.strokeLine(x1+100, y1, x1+100-i, y1+50-i);
+                        gc.strokeLine(x2, y2, x2-i, y1+50-i);
                     }else{
-                        gc.strokeLine(x1+100, y1, x1+100-i, y1+50-i*1.9); 
+                        gc.strokeLine(x2, y2, x2-i, y1+50-i*1.9); 
                     }
                     
                     /**
@@ -237,11 +285,20 @@ public class FXMLDocumentController implements Initializable {
 
                 }
                 gc.setStroke(Color.BLACK);
-                gc.strokeLine(x1, y1, x1+100, y1);
-                gc.strokeLine(x1, y1, x1, y1+50);
-                gc.strokeLine(x1+100, y1, x1+100, y1+50);
+                gc.strokeLine(x1, y1, x2, y2);
+                gc.strokeLine(x1, y1, x4, y4);
+                gc.strokeLine(x2, y2, x3, y3);
                 gc.strokeArc(x1, y1+36, 50, 30, 180, 180, ArcType.OPEN);
                 gc.strokeArc(x1+50, y1+36, 50, 30, 360, 180, ArcType.OPEN);
+                
+                Documento documento = new Documento(new Vertice(x,y), TipoF.DOCUMENTACION);
+                documento.getVertices().add(new Vertice(x1,y1));
+                documento.getVertices().add(new Vertice(x2,y2));
+                documento.getVertices().add(new Vertice(x3,y3));
+                documento.getVertices().add(new Vertice(x4,y4));
+                
+                sistema.getDocumentos().add(documento);
+                
                 b=false;
 
             }      
