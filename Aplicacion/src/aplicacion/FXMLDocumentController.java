@@ -55,45 +55,72 @@ public class FXMLDocumentController implements Initializable {
     
     
     private GraphicsContext gc;
-  
+    
+    private Sistema sistema;
     
     boolean b = true;
     @FXML
     /**
      * Proceso
      */
-    private void dibujar1(ActionEvent event) {
+    private void dibujarProceso(ActionEvent event) {
         
         b=true;
         canvas.setOnMouseClicked((MouseEvent event2) -> {
             
             if(b){
-                double x1 = event2.getX() - 50;
-                double y1 = event2.getY() -25;
-                double x2 = event2.getX() + 50;
-                double y2 = event2.getY() +25;
+                double x = event2.getX();
+                double y = event2.getY();
+                double x1 = x - 50;
+                double y1 = y - 25;
+                double x2 = x + 50;
+                double y2 = y - 25;
+                double x3 = x + 50;
+                double y3 = y + 25;
+                double x4 = x - 50;
+                double y4 = y +25;
+               
 
                 for (int i = 0; i < 50; i++) {
                     gc.setStroke(Color.RED);
-                    gc.strokeLine(x1, y1+i, x1+100, y1+i);
-                    gc.strokeLine(x1+100, y1, x2, y2);
-                    gc.strokeLine(x1, y1+50, x2, y2);
-                    gc.strokeLine(x1, y1, x1, y1+50);
+                    gc.strokeLine(x1, y1+i, x2, y2+i);
+                    gc.strokeLine(x2, y2, x3, y3);
+                    gc.strokeLine(x3, y3, x4, y4);
+                    gc.strokeLine(x4, y4, x1, y1);
                     
                 }
                 gc.setStroke(Color.BLACK);
-                gc.strokeLine(x1, y1, x1+100, y1);
-                    gc.strokeLine(x1+100, y1, x2, y2);
-                    gc.strokeLine(x1, y1+50, x2, y2);
-                    gc.strokeLine(x1, y1, x1, y1+50);
+                gc.strokeLine(x1, y1, x2, y2);
+                gc.strokeLine(x2, y2, x3, y3);
+                gc.strokeLine(x3, y3, x4, y4);
+                gc.strokeLine(x4, y4, x1, y1);
+
+                Proceso proceso = new Proceso(new Vertice(x,y), TipoF.PROCESO);
+                proceso.getVertices().add(new Vertice(x1, y1));
+                proceso.getVertices().add(new Vertice(x2, y2));
+                proceso.getVertices().add(new Vertice(x3, y3));
+                proceso.getVertices().add(new Vertice(x4, y4));
+                
+                sistema.getProcesos().add(proceso);
+                
+                for (int i = 0; i < sistema.getProcesos().size(); i++) {
+                    System.out.println("Vertice: "+ (i+1));
+                    for(int j = 0; j < sistema.getProcesos().get(i).getVertices().size(); j++){
+                        
+                        System.out.println("Punto "+j+1+" "+sistema.getProcesos().get(i).getVertices().get(j).getX()+", "+sistema.getProcesos().get(i).getVertices().get(j).getY());    
+                    }
+                    System.out.println("");
+                }
+                
+                System.out.println("Finish");    
                 b=false;
             }  
         });
 
-        System.out.println("Dibujar 1");   
+        
     }
     @FXML
-    private void dibujar2(ActionEvent event) {
+    private void dibujarFlujo(ActionEvent event) {
         gc.setStroke(Color.BLACK);
         System.out.println("datitox");   
         b=true;
@@ -110,11 +137,11 @@ public class FXMLDocumentController implements Initializable {
             });
             
         });
-        System.out.println("Dibujar 2");   
+        System.out.println("Dibujar Flujo");   
     }
 
     @FXML
-    private void dibujar3(ActionEvent event) {
+    private void dibujarEntrada(ActionEvent event) {
         
         b= true;
         canvas.setOnMouseClicked((MouseEvent event2) -> {
@@ -143,15 +170,15 @@ public class FXMLDocumentController implements Initializable {
         System.out.println("Dibujar 3");   
     }
     @FXML
-    private void dibujar4(ActionEvent event) {
+    private void limpiar(ActionEvent event) {
      
         gc.fillRect(0, 0, 642, 515);
-        System.out.println("Dibujar 4");   
+        System.out.println("Limpieza");   
     }
     
     
     @FXML
-    private void dibujar5(ActionEvent event) {
+    private void dibujarInicio(ActionEvent event) {
         b= true;
         
         canvas.setOnMouseClicked((MouseEvent event2) -> {
@@ -177,10 +204,10 @@ public class FXMLDocumentController implements Initializable {
             }      
         });
         
-        System.out.println("Dibujar 3");   
+        System.out.println("Dibujar Inicio");   
     }
         @FXML
-    private void dibujar6(ActionEvent event) {
+    private void dibujarDocumento(ActionEvent event) {
         b= true;
         
         canvas.setOnMouseClicked((MouseEvent event2) -> {
@@ -220,12 +247,12 @@ public class FXMLDocumentController implements Initializable {
             }      
         });
         
-        System.out.println("Dibujar 6");   
+        System.out.println("Dibujar Documento");   
     }
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        
+        sistema = new Sistema();
         gc = canvas.getGraphicsContext2D();
         gc.setFill(Color.WHITE);
         gc.fillRect(0, 0, 500, 500);
