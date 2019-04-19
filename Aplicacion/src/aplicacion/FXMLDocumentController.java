@@ -114,7 +114,23 @@ public class FXMLDocumentController implements Initializable {
                 double y3 = y + 25;
                 double x4 = x - 50;
                 double y4 = y +25;
-               
+                /***
+                 * caso en que el punto se crea muy arriba o si el punto se crea
+                 * muy a la izquierda
+                 */
+
+                if(x1<0){
+                    x2=x2-x1;
+                    x3=x3-x1;
+                    x1=0;
+                    x4=0;
+                }
+                if(y1<0){
+                    y3=y3-y1;
+                    y4=y4-y1;
+                    y1=0;
+                    y2=0;
+                }
 
                 for (int i = 0; i < 50; i++) {
                     gc.setStroke(Color.RED);
@@ -226,7 +242,22 @@ public class FXMLDocumentController implements Initializable {
                 double y3 = y + 25;
                 double x4 = x - 67;
                 double y4 = y + 25;
-                
+                /***
+                 * por si la figura se sale por la izquierda y
+                 * por si la figura se sale por la parte superior
+                 */
+                if(x4<0){
+                    x1=x1-x4;
+                    x2=x2-x4;
+                    x3=x3-x4;
+                    x4=0;
+                }
+                if(y1<0){
+                    y3=y3-y1;
+                    y4=y3;
+                    y2=0;
+                    y1=0;
+                }
                 gc.setStroke(Color.YELLOW);
                 for (double i = 0; i < 100; i+=0.5) {
                     gc.strokeLine(x2-i, y2, x3-i, y3);
@@ -302,6 +333,20 @@ public class FXMLDocumentController implements Initializable {
                 double x4 = x - 50;
                 double y4 = y + 25;
                 
+                if(x1-20<0){
+                    x2=x2-x1+20;
+                    x3=x3-x1+20;
+                    x4=x4-x1+20;
+                    x1=20;
+                }
+                if(y1<0){
+                    y3=y3-y1;
+                    y4=y4-y1;
+                    y1=0;
+                    y2=0;
+                }
+                
+                
                 gc.setStroke(Color.AQUAMARINE);
                 for (double i = 0; i < 50; i+=0.5) {
                     
@@ -327,6 +372,12 @@ public class FXMLDocumentController implements Initializable {
     }
     @FXML
     private void dibujarDocumento(ActionEvent event) throws IOException {
+        /***
+         * Cambiar esto de abajo que salen palabras que no deberian ir en un 
+         * codigo formal
+         * primer aviso
+         */
+        
         
         //String pene = JOptionPane.showInputDialog("ingresar algo scw");
         //System.out.println(pene);
@@ -358,6 +409,22 @@ public class FXMLDocumentController implements Initializable {
                 double x4 = x - 50;
                 double y4 = y + 25;
                 
+                /***
+                 * por si la figura a crear se crea muy arriba o muy a la izquierda 
+                 * o la combinacion de las dos anteriores
+                 */
+                if(x1<0){
+                    x2=x2-x1;
+                    x3=x3-x1;
+                    x4=0;
+                    x1=0;
+                }
+                if(y1<0){
+                    y3=y3-y1;
+                    y4=y4-y1;        
+                    y2=0;
+                    y1=0;
+                }
                 gc.setStroke(Color.CHARTREUSE);
                 
                 for (double i = 0; i < 50; i+=0.5) {
