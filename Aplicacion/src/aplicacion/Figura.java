@@ -10,12 +10,14 @@ public class Figura {
     protected ArrayList<Vertice> conexiones;
     protected Vertice verticeCentro;
     protected TipoF tipo;
+    String texto;
 
     public Figura( Vertice verticeCentro, TipoF tipo) {
         this.vertices = new ArrayList<>();
         this.conexiones = new ArrayList<>();
         this.verticeCentro = verticeCentro;
         this.tipo = tipo;
+        
     }
 
     public Vertice getVerticeCentro() {
