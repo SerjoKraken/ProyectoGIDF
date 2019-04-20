@@ -11,8 +11,8 @@ package aplicacion;
  */
 public class Documento extends Figura{
     
-    public Documento(Vertice verticeCentro, TipoF tipo) {
-        super(verticeCentro, tipo);
+    public Documento(TipoF tipo) {
+        super(tipo);
     }
     
 }

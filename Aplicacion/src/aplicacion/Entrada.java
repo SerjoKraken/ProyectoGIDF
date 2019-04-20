@@ -10,9 +10,9 @@ package aplicacion;
  * @author Serjo
  */
 public class Entrada extends Figura{
-
-    public Entrada(Vertice verticeCentro, TipoF tipo) {
-        super(verticeCentro, tipo);
+    
+    public Entrada( TipoF tipo) {
+        super(tipo);
     }
     
     

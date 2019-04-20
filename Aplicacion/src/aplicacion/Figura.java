@@ -12,10 +12,9 @@ public class Figura {
     protected TipoF tipo;
     String texto;
 
-    public Figura( Vertice verticeCentro, TipoF tipo) {
+    public Figura(TipoF tipo) {
         this.vertices = new ArrayList<>();
         this.conexiones = new ArrayList<>();
-        this.verticeCentro = verticeCentro;
         this.tipo = tipo;
         
     }
@@ -56,6 +55,9 @@ public class Figura {
     public void setVertices(ArrayList<Vertice> vertices) {
         this.vertices = vertices;
     }
+    
+    
+    
     public boolean comprobarPosicion(Figura figura, double puntoX,double puntoY){
         /** 
          * dejo esto por el momento, planeo dejar solo que quede con el tema del flujo, porque documentacion

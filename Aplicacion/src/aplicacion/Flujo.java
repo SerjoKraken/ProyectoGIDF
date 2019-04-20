@@ -11,8 +11,8 @@ package aplicacion;
  */
 public class Flujo extends Figura{
     
-    public Flujo(Vertice verticeCentro, TipoF tipo) {
-        super(verticeCentro, tipo);
+    public Flujo( TipoF tipo) {
+        super(tipo);
     }
     
 }

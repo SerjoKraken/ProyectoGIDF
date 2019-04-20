@@ -64,6 +64,7 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private AnchorPane ap;
     
+    private ArrayList<Figura> figuras = new ArrayList<>();
     
     private GraphicsContext gc;
     
@@ -88,7 +89,7 @@ public class FXMLDocumentController implements Initializable {
         Optional<String> result = dialog.showAndWait();
         if (result.isPresent() && !result.get().equals("")){
             System.out.println("Your name: " + result.get());
-            double powerUp =0;
+            double powerUp = 0;
             if(wea(result.get())>12){
                 powerUp+=20;
                 boolean a= true;
@@ -125,6 +126,7 @@ public class FXMLDocumentController implements Initializable {
                     x1=0;
                     x4=0;
                 }
+                
                 if(y1<0){
                     y3=y3-y1;
                     y4=y4-y1;
@@ -150,7 +152,8 @@ public class FXMLDocumentController implements Initializable {
                 gc.setFill(Color.BLACK);
                 gc.fillText(result.get(), x1+5,y1+30);
 
-                Proceso proceso = new Proceso(new Vertice(x,y), TipoF.PROCESO);
+                Proceso proceso = new Proceso( TipoF.PROCESO);
+                proceso.setVerticeCentro(new Vertice(x,y));
                 proceso.getVertices().add(new Vertice(x1, y1));
                 proceso.getVertices().add(new Vertice(x2, y2));
                 proceso.getVertices().add(new Vertice(x3, y3));
@@ -159,18 +162,8 @@ public class FXMLDocumentController implements Initializable {
                 
                 proceso.texto = result.get();
                 
-                sistema.getProcesos().add(proceso);
-                
-                for (int i = 0; i < sistema.getProcesos().size(); i++) {
-                    System.out.println("Vertice: "+ (i+1));
-                    for(int j = 0; j < sistema.getProcesos().get(i).getVertices().size(); j++){
-                        
-                        System.out.println("Punto "+j+1+" "+sistema.getProcesos().get(i).getVertices().get(j).getX()+", "+sistema.getProcesos().get(i).getVertices().get(j).getY());    
-                    }
-                    System.out.println("");
-                }
-                
-                System.out.println("Finish");    
+                figuras.add(proceso);
+                   
                 b=false;
             }  
         });
@@ -200,19 +193,57 @@ public class FXMLDocumentController implements Initializable {
         canvas.setOnMouseClicked((MouseEvent event1) -> {
             double x1 = event1.getX();
             double y1 = event1.getY();
-            canvas.setOnMouseClicked((MouseEvent event2) -> {
-                if(b){
-                    gc.strokeLine(x1, y1, event2.getX(), event2.getY());                    
-                    b=false;
-                }
-                
-                
-            });
+            Vertice vertice1;
+            if((vertice1=buscarConexion(x1,y1))!=null){
+            
+                canvas.setOnMouseClicked((MouseEvent event2) -> {
+                    if(b){
+                        double x2 = event2.getX();
+                        double y2 = event2.getY();
+                        Vertice vertice2;
+                      
+                        if((vertice2 = buscarConexion(x2,y2))!=null){
+                            gc.strokeLine(vertice1.getX(), vertice1.getY(), vertice2.getX(), vertice2.getY());
+
+
+                            Flujo flujo = new Flujo(TipoF.FLUJO);
+                            flujo.getVertices().add(new Vertice(x1,y1));
+                            flujo.getVertices().add(new Vertice(x2,y2));
+                            figuras.add(flujo);
+                            b=false;
+                        }
+                    }
+
+
+                });
+            
+            }
             
         });
-        System.out.println("Dibujar Flujo");   
+           
     }
 
+    public Vertice buscarConexion(double x, double y){
+        if(!figuras.isEmpty()) {
+            for (Figura figura : figuras) {
+                if(!(figura instanceof Flujo)){
+                    if(x<=figura.getVertices().get(2).getX()){
+                        if(x>=figura.getVertices().get(0).getX()){
+                           if(y<=figura.getVertices().get(2).getY()){
+                                if(y>=figura.getVertices().get(0).getY()){
+                                    return figura.verticeCentro;
+                                }
+                            } 
+                        }
+                    }
+                }
+            }
+        }
+        
+        return null;
+    }
+
+    
     @FXML
     private void dibujarEntrada(ActionEvent event) throws IOException {
         
@@ -271,13 +302,14 @@ public class FXMLDocumentController implements Initializable {
                 gc.setFill(Color.BLACK);
                 gc.fillText(result.get(), x1+5,y1+30);
                 
-                Entrada entrada = new Entrada(new Vertice(x,y), TipoF.ENTRADA);
+                Entrada entrada = new Entrada(TipoF.ENTRADA);
+                entrada.setVerticeCentro(new Vertice(x,y));
                 entrada.getVertices().add(new Vertice(x1,y1));
                 entrada.getVertices().add(new Vertice(x2,y2));
                 entrada.getVertices().add(new Vertice(x3,y3));
                 entrada.getVertices().add(new Vertice(x4,y4));
                 entrada.texto = result.get();
-                sistema.getEntradas().add(entrada);
+                figuras.add(entrada);
                 b=false;
             }       
         });
@@ -302,12 +334,7 @@ public class FXMLDocumentController implements Initializable {
     private void limpiar(ActionEvent event) {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         
-        sistema.getDocumentos().clear();
-        sistema.getEntradas().clear();
-        sistema.setFin(null);
-        sistema.setInicio(null);
-        sistema.getFlujos().clear();
-        sistema.getProcesos().clear();
+        sistema.getFiguras().clear();
         
         System.out.println("Limpieza");   
     }
@@ -315,61 +342,111 @@ public class FXMLDocumentController implements Initializable {
     
     @FXML
     private void dibujarInicio(ActionEvent event) throws IOException {
-            b= true;
+        b= true;
         
             canvas.setOnMouseClicked((MouseEvent event2) -> {
-            double p1 = event2.getX();
-            double p2 = event2.getY();
-            redimensionCanvas(p1,p2);    
-            if(b && (sistema.getInicio()==null || sistema.getFin()==null)){
-                double x = event2.getX();
-                double y = event2.getY();
-                double x1 = x - 50;
-                double y1 = y - 25;
-                double x2 = x + 50;
-                double y2 = y - 25;
-                double x3 = x + 50;
-                double y3 = y + 25;
-                double x4 = x - 50;
-                double y4 = y + 25;
-                
-                if(x1-20<0){
-                    x2=x2-x1+20;
-                    x3=x3-x1+20;
-                    x4=x4-x1+20;
-                    x1=20;
-                }
-                if(y1<0){
-                    y3=y3-y1;
-                    y4=y4-y1;
-                    y1=0;
-                    y2=0;
-                }
-                
-                
-                gc.setStroke(Color.AQUAMARINE);
-                for (double i = 0; i < 50; i+=0.5) {
+                double p1 = event2.getX();
+                double p2 = event2.getY();
+                if(existeInicio()==false || existeFin()==false){
+                redimensionCanvas(p1,p2);    
+                if(b){
+                    double x = event2.getX();
+                    double y = event2.getY();
+                    double x1 = x - 50;
+                    double y1 = y - 25;
+                    double x2 = x + 50;
+                    double y2 = y - 25;
+                    double x3 = x + 50;
+                    double y3 = y + 25;
+                    double x4 = x - 50;
+                    double y4 = y + 25;
+
+                    if(x1-20<0){
+                        x2=x2-x1+20;
+                        x3=x3-x1+20;
+                        x4=x4-x1+20;
+                        x1=20;
+                    }
+                    if(y1<0){
+                        y3=y3-y1;
+                        y4=y4-y1;
+                        y1=0;
+                        y2=0;
+                    }
+
+
+                    gc.setStroke(Color.AQUAMARINE);
+                    for (double i = 0; i < 50; i+=0.5) {
+
+                        gc.strokeLine(x1, y1+i, x2, y2+i);
+                        gc.strokeArc(x1-19+i, y1, 37, 50, 90, 180, ArcType.OPEN);
+                        //gc.strokeLine(x3, y3, x4, y4);
+                        gc.strokeArc(x1+82-i, y1, 37, 50, -90, 180, ArcType.OPEN);
+
+                    }
+                    b=false;
+                    gc.setStroke(Color.BLACK);
+                    gc.strokeLine(x1, y1, x2, y2);
+                    gc.strokeArc(x1-19, y1, 37, 50, 90, 180, ArcType.OPEN);
+                    gc.strokeLine(x3, y3, x4, y4);
+                    gc.strokeArc(x1+82, y1, 37, 50, -90, 180, ArcType.OPEN);
+
+
+                    if(existeInicio()==false){
+                        Inicio inicio = new Inicio(TipoF.INICIO);
+                        inicio.setVerticeCentro(new Vertice(x,y));
+                        inicio.getVertices().add(new Vertice(x1,y1));
+                        inicio.getVertices().add(new Vertice(x2,y2));
+                        inicio.getVertices().add(new Vertice(x3,y3));
+                        inicio.getVertices().add(new Vertice(x4,y4));
+                        //se debe validar la diferencia entre inicio y fin
+                        inicio.texto = "INICIO";
+                        gc.fillText(inicio.texto, x1+5,y1+30);
+                        figuras.add(inicio);
+                        
+                    }else if(existeFin() == false){
+                        Inicio inicio = new Inicio(TipoF.FIN);
+                        inicio.setVerticeCentro(new Vertice(x,y));
+                        inicio.getVertices().add(new Vertice(x1,y1));
+                        inicio.getVertices().add(new Vertice(x2,y2));
+                        inicio.getVertices().add(new Vertice(x3,y3));
+                        inicio.getVertices().add(new Vertice(x4,y4));
+                        //se debe validar la diferencia entre inicio y fin
+                        inicio.texto = "FIN";
+                        gc.fillText(inicio.texto, x1+5,y1+30);
+                        figuras.add(inicio);
+                    }
                     
-                    gc.strokeLine(x1, y1+i, x2, y2+i);
-                    gc.strokeArc(x1-19+i, y1, 37, 50, 90, 180, ArcType.OPEN);
-                    //gc.strokeLine(x3, y3, x4, y4);
-                    gc.strokeArc(x1+82-i, y1, 37, 50, -90, 180, ArcType.OPEN);
-                   
                 }
-                b=false;
-                gc.setStroke(Color.BLACK);
-                gc.strokeLine(x1, y1, x2, y2);
-                gc.strokeArc(x1-19, y1, 37, 50, 90, 180, ArcType.OPEN);
-                gc.strokeLine(x3, y3, x4, y4);
-                gc.strokeArc(x1+82, y1, 37, 50, -90, 180, ArcType.OPEN);
-                
-                
-                
-                
-            }      
-        }); 
+                }
+            
+             
+        });
+    
         System.out.println("Dibujar Inicio");   
     }
+    
+    public boolean existeInicio(){
+        if(!figuras.isEmpty()){
+            for (Figura figura : figuras) {
+                if(figura.getTipo()==TipoF.INICIO){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    public boolean existeFin(){
+        if(!figuras.isEmpty()){
+            for (Figura figura : figuras) {
+                if(figura.getTipo()==TipoF.FIN){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    
     @FXML
     private void dibujarDocumento(ActionEvent event) throws IOException {
         /***
@@ -457,17 +534,18 @@ public class FXMLDocumentController implements Initializable {
                 gc.setFill(Color.BLACK);
                 gc.fillText(result.get(), x1+5,y1+30);
                 
-                Documento documento = new Documento(new Vertice(x,y), TipoF.DOCUMENTACION);
+                Documento documento = new Documento(TipoF.DOCUMENTACION);
+                documento.setVerticeCentro(new Vertice(x,y));
                 documento.getVertices().add(new Vertice(x1,y1));
                 documento.getVertices().add(new Vertice(x2,y2));
                 documento.getVertices().add(new Vertice(x3,y3));
                 documento.getVertices().add(new Vertice(x4,y4));
                 documento.texto = result.get();
-                sistema.getDocumentos().add(documento);
+                figuras.add(documento);
                 
                 b=false;
                 
-                System.out.println(sistema.getDocumentos().get(0).texto);
+                
 
             }      
           
@@ -512,6 +590,7 @@ public class FXMLDocumentController implements Initializable {
         
     }
     
+    /*
     public void validarAreaEntrada(double x,double y){
         if(!sistema.getEntradas().isEmpty()){
             Entrada d = sistema.getEntradas().get(0);
@@ -532,9 +611,9 @@ public class FXMLDocumentController implements Initializable {
         
         
     }
+   */
     
-    
-    
+    /*
     public void validarAreaProceso(double x,double y){
         if(!sistema.getProcesos().isEmpty()){
             Proceso d = sistema.getProcesos().get(0);
@@ -554,6 +633,8 @@ public class FXMLDocumentController implements Initializable {
         }
         
     }
+    */
+    
     
     public void redimensionCanvas(double p1, double p2){
         if(p1+51>canvas.getWidth()){
@@ -569,13 +650,25 @@ public class FXMLDocumentController implements Initializable {
     
     
     public int wea(String cadena){
-		char[] arrayChar = cadena.toCharArray();
-                int cant=0;
-		for(int i=0; i<arrayChar.length; i++){
-                    cant++;
-		}
-                System.out.println(cant);
-                
-                return cant;
+        char[] arrayChar = cadena.toCharArray();
+        int cant=0;
+        for(int i=0; i<arrayChar.length; i++){
+            cant++;
+        }
+        System.out.println(cant);
+
+        return cant;
     }
+
+    public ArrayList<Figura> getFiguras() {
+        return figuras;
+    }
+
+    public void setFiguras(ArrayList<Figura> figuras) {
+        this.figuras = figuras;
+    }
+
+    
+    
+    
 }
