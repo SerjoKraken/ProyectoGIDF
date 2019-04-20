@@ -121,6 +121,7 @@ public class FXMLDocumentController implements Initializable {
                  */
 
                 if(x1<0){
+                    x=50;
                     x2=x2-x1;
                     x3=x3-x1;
                     x1=0;
@@ -128,6 +129,7 @@ public class FXMLDocumentController implements Initializable {
                 }
                 
                 if(y1<0){
+                    y=25;
                     y3=y3-y1;
                     y4=y4-y1;
                     y1=0;
@@ -278,12 +280,14 @@ public class FXMLDocumentController implements Initializable {
                  * por si la figura se sale por la parte superior
                  */
                 if(x4<0){
+                    x=55;
                     x1=x1-x4;
                     x2=x2-x4;
                     x3=x3-x4;
                     x4=0;
                 }
                 if(y1<0){
+                    y=25;
                     y3=y3-y1;
                     y4=y3;
                     y2=0;
@@ -362,12 +366,14 @@ public class FXMLDocumentController implements Initializable {
                     double y4 = y + 25;
 
                     if(x1-20<0){
+                        x=70;
                         x2=x2-x1+20;
                         x3=x3-x1+20;
                         x4=x4-x1+20;
                         x1=20;
                     }
                     if(y1<0){
+                        y=25;
                         y3=y3-y1;
                         y4=y4-y1;
                         y1=0;
@@ -491,12 +497,14 @@ public class FXMLDocumentController implements Initializable {
                  * o la combinacion de las dos anteriores
                  */
                 if(x1<0){
+                    x=50;
                     x2=x2-x1;
                     x3=x3-x1;
                     x4=0;
                     x1=0;
                 }
                 if(y1<0){
+                    y=25;
                     y3=y3-y1;
                     y4=y4-y1;        
                     y2=0;
