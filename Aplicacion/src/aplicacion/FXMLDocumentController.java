@@ -71,7 +71,7 @@ public class FXMLDocumentController implements Initializable {
     /*private Sistema sistema;*/
     
     private Figura f;
-    
+    public double powerUp=0;
     boolean b = true;
     @FXML
     /**
@@ -89,9 +89,9 @@ public class FXMLDocumentController implements Initializable {
         Optional<String> result = dialog.showAndWait();
         if (result.isPresent() && !result.get().equals("")){
             System.out.println("Your name: " + result.get());
-            double powerUp = 0;
-            if(wea(result.get())>12){
-                powerUp+=20;
+   
+            if(contar(result.get())>12){
+                powerUp = 80;
                 boolean a= true;
             }
             
@@ -109,9 +109,9 @@ public class FXMLDocumentController implements Initializable {
                 double y = event2.getY();
                 double x1 = x - 50;
                 double y1 = y - 25;
-                double x2 = x + 50;
+                double x2 = x + 50+powerUp;
                 double y2 = y - 25;
-                double x3 = x + 50;
+                double x3 = x + 50+powerUp;
                 double y3 = y + 25;
                 double x4 = x - 50;
                 double y4 = y +25;
@@ -160,6 +160,8 @@ public class FXMLDocumentController implements Initializable {
                     proceso.getVertices().add(new Vertice(x2, y2));
                     proceso.getVertices().add(new Vertice(x3, y3));
                     proceso.getVertices().add(new Vertice(x4, y4));
+                    
+                    
                 
                 
                 proceso.texto = result.get();
@@ -167,8 +169,14 @@ public class FXMLDocumentController implements Initializable {
                 figuras.add(proceso);
                 }else{
                     System.out.println("Naipes");
+                    Alert alert = new Alert(AlertType.WARNING);
+                    alert.setTitle("Error");
+                    alert.setHeaderText("Cuidado");
+                    alert.setContentText("Ya se encuentra una figura creada aquí ");
+                    alert.showAndWait();
                 }
                 b=false;
+                powerUp=0;
             }  
         });
             
@@ -393,6 +401,12 @@ public class FXMLDocumentController implements Initializable {
                     entrada.getVertices().add(new Vertice(x4,y4));
                     entrada.texto = result.get();
                     figuras.add(entrada);
+                }else{
+                    Alert alert = new Alert(AlertType.WARNING);
+                    alert.setTitle("Error");
+                    alert.setHeaderText("Cuidado");
+                    alert.setContentText("Ya se encuentra una figura creada aquí ");
+                    alert.showAndWait();
                 }
                 b=false;
             }       
@@ -502,6 +516,12 @@ public class FXMLDocumentController implements Initializable {
                             gc.fillText(inicio.texto, x1+5,y1+30);
                             figuras.add(inicio);
                         }
+                    }else{
+                        Alert alert = new Alert(AlertType.WARNING);
+                        alert.setTitle("Error");
+                        alert.setHeaderText("Cuidado");
+                        alert.setContentText("Ya se encuentra una figura creada aquí ");
+                        alert.showAndWait();
                     }
                 }
                 }
@@ -631,6 +651,12 @@ public class FXMLDocumentController implements Initializable {
                     documento.getVertices().add(new Vertice(x4,y4));
                     documento.texto = result.get();
                     figuras.add(documento);
+                }else{
+                    Alert alert = new Alert(AlertType.WARNING);
+                    alert.setTitle("Error");
+                    alert.setHeaderText("Cuidado");
+                    alert.setContentText("Ya se encuentra una figura creada aquí ");
+                    alert.showAndWait();
                 }
                 b=false;
                 
@@ -738,7 +764,7 @@ public class FXMLDocumentController implements Initializable {
     }
     
     
-    public int wea(String cadena){
+    public int contar(String cadena){
         char[] arrayChar = cadena.toCharArray();
         int cant=0;
         for(int i=0; i<arrayChar.length; i++){
