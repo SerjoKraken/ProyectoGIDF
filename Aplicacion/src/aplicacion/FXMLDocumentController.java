@@ -136,37 +136,17 @@ public class FXMLDocumentController implements Initializable {
                     y2=0;
                 }
                 if(comprobarPosicion(x1,y1,x2,y2,x3,y3,x4,y4)==true){
-                    System.out.println("Holanda pirinalga");
-                    for (int i = 0; i < 50; i++) {
-                    gc.setStroke(Color.RED);
-                    gc.strokeLine(x1, y1+i, x2, y2+i);
-                    gc.strokeLine(x2, y2, x3, y3);
-                    gc.strokeLine(x3, y3, x4, y4);
-                    gc.strokeLine(x4, y4, x1, y1);
-                    
-                    }
-
-
-                    gc.setStroke(Color.BLACK);
-                    gc.strokeLine(x1, y1, x2, y2);
-                    gc.strokeLine(x2, y2, x3, y3);
-                    gc.strokeLine(x3, y3, x4, y4);
-                    gc.strokeLine(x4, y4, x1, y1);
-                    gc.setFill(Color.BLACK);
-                    gc.fillText(result.get(), x1+5,y1+30);
+                   
                     Proceso proceso = new Proceso( TipoF.PROCESO);
                     proceso.setVerticeCentro(new Vertice(x,y));
                     proceso.getVertices().add(new Vertice(x1, y1));
                     proceso.getVertices().add(new Vertice(x2, y2));
                     proceso.getVertices().add(new Vertice(x3, y3));
                     proceso.getVertices().add(new Vertice(x4, y4));
+                    proceso.texto = result.get();
+                    figuras.add(proceso);
+                    proceso.dibujar(gc);
                     
-                    
-                
-                
-                proceso.texto = result.get();
-                
-                figuras.add(proceso);
                 }else{
                     System.out.println("Naipes");
                     Alert alert = new Alert(AlertType.WARNING);
@@ -210,18 +190,20 @@ public class FXMLDocumentController implements Initializable {
             
                 canvas.setOnMouseClicked((MouseEvent event2) -> {
                     if(b){
+                        double puntox1=vertice1.getX();
+                        double puntoy1=vertice1.getY();
                         double x2 = event2.getX();
                         double y2 = event2.getY();
                         Vertice vertice2;
                       
                         if((vertice2 = buscarConexion(x2,y2))!=null){
-                            gc.strokeLine(vertice1.getX(), vertice1.getY(), vertice2.getX(), vertice2.getY());
-
-
+                            double puntox2= vertice2.getX();
+                            double puntoy2=vertice2.getY();
                             Flujo flujo = new Flujo(TipoF.FLUJO);
-                            flujo.getVertices().add(new Vertice(x1,y1));
-                            flujo.getVertices().add(new Vertice(x2,y2));
+                            flujo.getVertices().add(new Vertice(puntox1,puntoy1));
+                            flujo.getVertices().add(new Vertice(puntox2,puntoy2));
                             figuras.add(flujo);
+                            flujo.dibujar(gc);
                             b=false;
                         }
                     }
@@ -276,16 +258,16 @@ public class FXMLDocumentController implements Initializable {
                 
                 }
                 if(figuras.get(i).tipo!= TipoF.FLUJO && figuras.get(i).tipo==TipoF.INICIO ||figuras.get(i).tipo!= TipoF.FLUJO && figuras.get(i).tipo==TipoF.FIN ){
-                    if(figuras.get(i).getVerticeCentro().getX()-70<=x1 && figuras.get(i).getVerticeCentro().getX()+70>=x1 && figuras.get(i).getVerticeCentro().getY()-25<=y1 && figuras.get(i).getVerticeCentro().getY()+25>=y1){
+                    if(figuras.get(i).getVerticeCentro().getX()-90<=x1 && figuras.get(i).getVerticeCentro().getX()+90>=x1 && figuras.get(i).getVerticeCentro().getY()-25<=y1 && figuras.get(i).getVerticeCentro().getY()+25>=y1){
                         return false;
                     }else{
-                        if(figuras.get(i).getVerticeCentro().getX()-70<=x2 && figuras.get(i).getVerticeCentro().getX()+70>=x2 && figuras.get(i).getVerticeCentro().getY()-25<=y2 && figuras.get(i).getVerticeCentro().getY()+25>=y2){
+                        if(figuras.get(i).getVerticeCentro().getX()-90<=x2 && figuras.get(i).getVerticeCentro().getX()+90>=x2 && figuras.get(i).getVerticeCentro().getY()-25<=y2 && figuras.get(i).getVerticeCentro().getY()+25>=y2){
                             return false;
                         }else{              
-                            if(figuras.get(i).getVerticeCentro().getX()-70<=x3 && figuras.get(i).getVerticeCentro().getX()+70>=x3 && figuras.get(i).getVerticeCentro().getY()-25<=y3 && figuras.get(i).getVerticeCentro().getY()+25>=y3){
+                            if(figuras.get(i).getVerticeCentro().getX()-90<=x3 && figuras.get(i).getVerticeCentro().getX()+90>=x3 && figuras.get(i).getVerticeCentro().getY()-25<=y3 && figuras.get(i).getVerticeCentro().getY()+25>=y3){
                                 return false;
                             }else{
-                                if(figuras.get(i).getVerticeCentro().getX()-70<=x4 && figuras.get(i).getVerticeCentro().getX()+70>=x4 && figuras.get(i).getVerticeCentro().getY()-25<=y4 && figuras.get(i).getVerticeCentro().getY()+25>=y4){
+                                if(figuras.get(i).getVerticeCentro().getX()-90<=x4 && figuras.get(i).getVerticeCentro().getX()+90>=x4 && figuras.get(i).getVerticeCentro().getY()-25<=y4 && figuras.get(i).getVerticeCentro().getY()+25>=y4){
                                     return false;
                                 }
                             }
@@ -310,16 +292,16 @@ public class FXMLDocumentController implements Initializable {
                     }
                 }
                 if(figuras.get(i).tipo!=TipoF.FLUJO && figuras.get(i).tipo==TipoF.DOCUMENTACION){
-                    if(figuras.get(i).getVerticeCentro().getX()-50<=x1 && figuras.get(i).getVerticeCentro().getX()+50>=x1 && figuras.get(i).getVerticeCentro().getY()-25<=y1 && figuras.get(i).getVerticeCentro().getY()+55>=y1){
+                    if(figuras.get(i).getVerticeCentro().getX()-50<=x1 && figuras.get(i).getVerticeCentro().getX()+50>=x1 && figuras.get(i).getVerticeCentro().getY()-25<=y1 && figuras.get(i).getVerticeCentro().getY()+75>=y1){
                         return false;
                     }else{
-                        if(figuras.get(i).getVerticeCentro().getX()-50<=x2 && figuras.get(i).getVerticeCentro().getX()+50>=x2 && figuras.get(i).getVerticeCentro().getY()-25<=y2 && figuras.get(i).getVerticeCentro().getY()+55>=y2){
+                        if(figuras.get(i).getVerticeCentro().getX()-50<=x2 && figuras.get(i).getVerticeCentro().getX()+50>=x2 && figuras.get(i).getVerticeCentro().getY()-25<=y2 && figuras.get(i).getVerticeCentro().getY()+75>=y2){
                             return false;
                         }else{              
-                            if(figuras.get(i).getVerticeCentro().getX()-50<=x3 && figuras.get(i).getVerticeCentro().getX()+50>=x3 && figuras.get(i).getVerticeCentro().getY()-25<=y3 && figuras.get(i).getVerticeCentro().getY()+55>=y3){
+                            if(figuras.get(i).getVerticeCentro().getX()-50<=x3 && figuras.get(i).getVerticeCentro().getX()+50>=x3 && figuras.get(i).getVerticeCentro().getY()-25<=y3 && figuras.get(i).getVerticeCentro().getY()+75>=y3){
                                 return false;
                             }else{
-                                if(figuras.get(i).getVerticeCentro().getX()-50<=x4 && figuras.get(i).getVerticeCentro().getX()+50>=x4 && figuras.get(i).getVerticeCentro().getY()-25<=y4 && figuras.get(i).getVerticeCentro().getY()+55>=y4){
+                                if(figuras.get(i).getVerticeCentro().getX()-50<=x4 && figuras.get(i).getVerticeCentro().getX()+50>=x4 && figuras.get(i).getVerticeCentro().getY()-25<=y4 && figuras.get(i).getVerticeCentro().getY()+75>=y4){
                                     return false;
                                 }
                             }
@@ -380,19 +362,6 @@ public class FXMLDocumentController implements Initializable {
                     y1=0;
                 }
                 if(comprobarPosicion(x1,y1,x2,y2,x3,y3,x4,y4)){
-                    gc.setStroke(Color.YELLOW);
-                    for (double i = 0; i < 100; i+=0.5) {
-                        gc.strokeLine(x2-i, y2, x3-i, y3);
-
-                    }
-                    gc.setStroke(Color.BLACK);
-                    gc.strokeLine(x1, y1, x2, y2);
-                    gc.strokeLine(x2, y2, x3, y3);
-                    gc.strokeLine(x3, y3, x4, y4);
-                    gc.strokeLine(x4, y4, x1, y1);
-                    gc.setFill(Color.BLACK);
-                    gc.fillText(result.get(), x1+5,y1+30);
-
                     Entrada entrada = new Entrada(TipoF.ENTRADA);
                     entrada.setVerticeCentro(new Vertice(x,y));
                     entrada.getVertices().add(new Vertice(x1,y1));
@@ -401,6 +370,7 @@ public class FXMLDocumentController implements Initializable {
                     entrada.getVertices().add(new Vertice(x4,y4));
                     entrada.texto = result.get();
                     figuras.add(entrada);
+                    entrada.dibujar(gc);
                 }else{
                     Alert alert = new Alert(AlertType.WARNING);
                     alert.setTitle("Error");
@@ -474,24 +444,7 @@ public class FXMLDocumentController implements Initializable {
                         y2=0;
                     }
                     if(comprobarPosicion(x1,y1,x2,y2,x3,y3,x4,y4)){
-
-                        gc.setStroke(Color.AQUAMARINE);
-                        for (double i = 0; i < 50; i+=0.5) {
-
-                            gc.strokeLine(x1, y1+i, x2, y2+i);
-                            gc.strokeArc(x1-19+i, y1, 37, 50, 90, 180, ArcType.OPEN);
-                            //gc.strokeLine(x3, y3, x4, y4);
-                            gc.strokeArc(x1+82-i, y1, 37, 50, -90, 180, ArcType.OPEN);
-
-                        }
                         b=false;
-                        gc.setStroke(Color.BLACK);
-                        gc.strokeLine(x1, y1, x2, y2);
-                        gc.strokeArc(x1-19, y1, 37, 50, 90, 180, ArcType.OPEN);
-                        gc.strokeLine(x3, y3, x4, y4);
-                        gc.strokeArc(x1+82, y1, 37, 50, -90, 180, ArcType.OPEN);
-
-
                         if(existeInicio()==false){
                             Inicio inicio = new Inicio(TipoF.INICIO);
                             inicio.setVerticeCentro(new Vertice(x,y));
@@ -501,8 +454,8 @@ public class FXMLDocumentController implements Initializable {
                             inicio.getVertices().add(new Vertice(x4,y4));
                             //se debe validar la diferencia entre inicio y fin
                             inicio.texto = "INICIO";
-                            gc.fillText(inicio.texto, x1+5,y1+30);
                             figuras.add(inicio);
+                            inicio.dibujar(gc);
 
                         }else if(existeFin() == false){
                             Inicio inicio = new Inicio(TipoF.FIN);
@@ -513,8 +466,8 @@ public class FXMLDocumentController implements Initializable {
                             inicio.getVertices().add(new Vertice(x4,y4));
                             //se debe validar la diferencia entre inicio y fin
                             inicio.texto = "FIN";
-                            gc.fillText(inicio.texto, x1+5,y1+30);
                             figuras.add(inicio);
+                            inicio.dibujar(gc);
                         }
                     }else{
                         Alert alert = new Alert(AlertType.WARNING);
@@ -611,38 +564,6 @@ public class FXMLDocumentController implements Initializable {
                     y1=0;
                 }
                 if(comprobarPosicion(x1,y1,x2,y2,x3,y3,x4,y4)){
-                    gc.setStroke(Color.CHARTREUSE);
-
-                    for (double i = 0; i < 50; i+=0.5) {
-
-                        gc.strokeLine(x1+i, y1+i*0.9, x2, y2);
-                        gc.strokeLine(x1+i, y1, x1, y1+50);
-                        if(i>=25){
-                            gc.strokeLine(x2, y2, x2-i, y1+50-i);
-                        }else{
-                            gc.strokeLine(x2, y2, x2-i, y1+50-i*1.9); 
-                        }
-
-                        /**
-                         * Güatita hacia abajo
-                         */
-                        gc.strokeArc(x1, y1+36-i, 50, 30, 180, 180, ArcType.OPEN);
-
-                        /**
-                         * Güatita hacia arriba
-                         */
-                        gc.strokeArc(x1+50, y1+36-i, 50, 30-i, 360, 180, ArcType.OPEN);
-
-                    }
-                    gc.setStroke(Color.BLACK);
-                    gc.strokeLine(x1, y1, x2, y2);
-                    gc.strokeLine(x1, y1, x4, y4);
-                    gc.strokeLine(x2, y2, x3, y3);
-                    gc.strokeArc(x1, y1+36, 50, 30, 180, 180, ArcType.OPEN);
-                    gc.strokeArc(x1+50, y1+36, 50, 30, 360, 180, ArcType.OPEN);
-                    gc.setFill(Color.BLACK);
-                    gc.fillText(result.get(), x1+5,y1+30);
-
                     Documento documento = new Documento(TipoF.DOCUMENTACION);
                     documento.setVerticeCentro(new Vertice(x,y));
                     documento.getVertices().add(new Vertice(x1,y1));
@@ -651,6 +572,7 @@ public class FXMLDocumentController implements Initializable {
                     documento.getVertices().add(new Vertice(x4,y4));
                     documento.texto = result.get();
                     figuras.add(documento);
+                    documento.dibujar(gc);
                 }else{
                     Alert alert = new Alert(AlertType.WARNING);
                     alert.setTitle("Error");

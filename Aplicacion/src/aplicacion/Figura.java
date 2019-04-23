@@ -2,9 +2,10 @@
 package aplicacion;
 
 import java.util.ArrayList;
+import javafx.scene.canvas.GraphicsContext;
 
 
-public class Figura {
+public abstract class Figura {
     
     protected ArrayList<Vertice> vertices;
     protected ArrayList<Vertice> conexiones;
@@ -101,6 +102,9 @@ public class Figura {
         return false;
         
     }
+    public abstract void dibujar(GraphicsContext gc);
+        
+    
     }
     
 
