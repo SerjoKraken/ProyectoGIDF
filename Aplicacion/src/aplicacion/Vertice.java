@@ -35,11 +35,14 @@ public class Vertice {
         this.y = y;
     }
     
-    public Vertice puntoMedio(Vertice vertice){
+    public  Vertice puntoMedio(Vertice vertice){
         return new Vertice((this.x + vertice.x)/2,(this.y + vertice.y)/2);
     }
     public Vertice puntoMedio(double x, double y){
         return new Vertice((this.x + x)/2, (this.y + y)/2);
+    }
+    public double distancia(Vertice vertice){
+        return Math.sqrt(Math.pow(x-vertice.x, 2)+Math.pow(y-vertice.y, 2));
     }
     
     

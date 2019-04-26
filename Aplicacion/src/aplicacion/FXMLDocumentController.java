@@ -7,6 +7,7 @@ package aplicacion;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -143,6 +144,7 @@ public class FXMLDocumentController implements Initializable {
                     proceso.getVertices().add(new Vertice(x2, y2));
                     proceso.getVertices().add(new Vertice(x3, y3));
                     proceso.getVertices().add(new Vertice(x4, y4));
+                    proceso.calcularConexiones();
                     proceso.texto = result.get();
                     figuras.add(proceso);
                     proceso.dibujar(gc);
@@ -197,13 +199,21 @@ public class FXMLDocumentController implements Initializable {
                         Vertice vertice2;
                       
                         if((vertice2 = buscarConexion(x2,y2))!=null){
-                            double puntox2= vertice2.getX();
-                            double puntoy2=vertice2.getY();
+                            double puntox2 = vertice2.getX();
+                            double puntoy2 = vertice2.getY();
                             Flujo flujo = new Flujo(TipoF.FLUJO);
                             flujo.getVertices().add(new Vertice(puntox1,puntoy1));
                             flujo.getVertices().add(new Vertice(puntox2,puntoy2));
-                            figuras.add(flujo);
-                            flujo.dibujar(gc);
+                            flujo.calcularConexiones();
+                            agregarFiguras(flujo);
+                            flujo.calcularVertices();
+                            
+                            
+                            if(flujoValido(flujo)){
+                                
+                                figuras.add(flujo);
+                                flujo.dibujar(gc);
+                            }
                             b=false;
                         }
                     }
@@ -216,7 +226,48 @@ public class FXMLDocumentController implements Initializable {
         });
            
     }
-
+    
+    public void agregarFiguras(Flujo flujo){
+        for (Figura figura : figuras) {
+            if(!(figura instanceof Flujo)){
+                if(flujo.getVertices().get(0).distancia(figura.getVerticeCentro())==0){
+                    flujo.padre = figura;
+                    
+                }
+            }
+        }
+        
+        for (Figura figura : figuras) {
+            if(!(figura instanceof Flujo)){
+                if(flujo.getVertices().get(1).distancia(figura.getVerticeCentro())==0){
+                    flujo.hijo = figura;
+                    
+                }
+            }
+        }
+        
+    }
+    public boolean estaConectado(double x, double y){
+        if(!figuras.isEmpty()) {
+            for (Figura figura : figuras) {
+                if(!(figura instanceof Flujo)){
+                    if(x<=figura.getVertices().get(2).getX()){
+                        if(x>=figura.getVertices().get(0).getX()){
+                           if(y<=figura.getVertices().get(2).getY()){
+                                if(y>=figura.getVertices().get(0).getY()){
+                                    return true;
+                                }
+                            } 
+                        }
+                    }
+                }
+            }
+        }
+        
+        return false;
+    }
+    
+    
     public Vertice buscarConexion(double x, double y){
         if(!figuras.isEmpty()) {
             for (Figura figura : figuras) {
@@ -368,6 +419,7 @@ public class FXMLDocumentController implements Initializable {
                     entrada.getVertices().add(new Vertice(x2,y2));
                     entrada.getVertices().add(new Vertice(x3,y3));
                     entrada.getVertices().add(new Vertice(x4,y4));
+                    entrada.calcularConexiones();
                     entrada.texto = result.get();
                     figuras.add(entrada);
                     entrada.dibujar(gc);
@@ -452,6 +504,7 @@ public class FXMLDocumentController implements Initializable {
                             inicio.getVertices().add(new Vertice(x2,y2));
                             inicio.getVertices().add(new Vertice(x3,y3));
                             inicio.getVertices().add(new Vertice(x4,y4));
+                            inicio.calcularConexiones();
                             //se debe validar la diferencia entre inicio y fin
                             inicio.texto = "INICIO";
                             figuras.add(inicio);
@@ -464,6 +517,7 @@ public class FXMLDocumentController implements Initializable {
                             inicio.getVertices().add(new Vertice(x2,y2));
                             inicio.getVertices().add(new Vertice(x3,y3));
                             inicio.getVertices().add(new Vertice(x4,y4));
+                            inicio.calcularConexiones();
                             //se debe validar la diferencia entre inicio y fin
                             inicio.texto = "FIN";
                             figuras.add(inicio);
@@ -683,6 +737,32 @@ public class FXMLDocumentController implements Initializable {
                 canvas.setHeight(canvas.getHeight()+50);
                 
             }
+    }
+    
+    public boolean flujoValido(Flujo flujo){
+        for (Figura figura : figuras) {
+            if(figura instanceof Inicio){
+               
+            
+            }
+        }
+        for (Figura figura : figuras) {
+            if(figura instanceof Flujo){
+                if((flujo.vertices.get(0).distancia(figura.getVertices().get(0))==0 && flujo.vertices.get(1).distancia(figura.getVertices().get(1))==0) || 
+                        (flujo.vertices.get(0).distancia(figura.getVertices().get(1))==0 && flujo.vertices.get(1).distancia(figura.getVertices().get(0))==0)){
+                    return false;
+                }
+                if(true){
+
+                }
+            }
+        }
+        
+        for (Figura figura : figuras) {
+            
+        }
+        return true;
+    
     }
     
     

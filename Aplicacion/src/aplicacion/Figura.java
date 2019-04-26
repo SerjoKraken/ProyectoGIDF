@@ -103,6 +103,7 @@ public abstract class Figura {
         
     }
     public abstract void dibujar(GraphicsContext gc);
+    public abstract void calcularConexiones();
         
     
     }
