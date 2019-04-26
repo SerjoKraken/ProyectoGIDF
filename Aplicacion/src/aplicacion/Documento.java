@@ -1,0 +1,56 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package aplicacion;
+
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.ArcType;
+
+/**
+ *
+ * @author Serjo
+ */
+public class Documento extends Figura{
+    
+    public Documento(TipoF tipo) {
+        super(tipo);
+    }
+
+    @Override
+    public void dibujar(GraphicsContext gc) {
+        double x1=vertices.get(0).getX();
+        double y1=vertices.get(0).getY();
+        double x2=vertices.get(1).getX();
+        double y2=vertices.get(1).getY();
+        double x3=vertices.get(2).getX();
+        double y3=vertices.get(2).getY();
+        double x4=vertices.get(3).getX();
+        double y4=vertices.get(3).getY();
+        
+        gc.setStroke(Color.CHARTREUSE);
+        for (double i = 0; i < 50; i+=0.5) {
+            gc.strokeLine(x1+i, y1+i*0.9, x2, y2);
+            gc.strokeLine(x1+i, y1, x1, y1+50);
+            if(i>=25){
+                gc.strokeLine(x2, y2, x2-i, y1+50-i);
+            }else{
+                gc.strokeLine(x2, y2, x2-i, y1+50-i*1.9); 
+            }
+            gc.strokeArc(x1, y1+36-i, 50, 30, 180, 180, ArcType.OPEN);
+            gc.strokeArc(x1+50, y1+36-i, 50, 30-i, 360, 180, ArcType.OPEN);
+        }
+        gc.setStroke(Color.BLACK);
+        gc.strokeLine(x1, y1, x2, y2);
+        gc.strokeLine(x1, y1, x4, y4);
+        gc.strokeLine(x2, y2, x3, y3);
+        gc.strokeArc(x1, y1+36, 50, 30, 180, 180, ArcType.OPEN);
+        gc.strokeArc(x1+50, y1+36, 50, 30, 360, 180, ArcType.OPEN);
+        gc.setFill(Color.BLACK);
+        gc.fillText(texto, x1+5,y1+30);
+    }
+    
+    
+}
