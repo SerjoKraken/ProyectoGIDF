@@ -199,25 +199,24 @@ public class FXMLDocumentController implements Initializable {
                         Vertice vertice2;
                       
                         if((vertice2 = buscarConexion(x2,y2))!=null){
-                            double puntox2 = vertice2.getX();
-                            double puntoy2 = vertice2.getY();
-                            Flujo flujo = new Flujo(TipoF.FLUJO);
-                            flujo.getVertices().add(new Vertice(puntox1,puntoy1));
-                            flujo.getVertices().add(new Vertice(puntox2,puntoy2));
-                            flujo.calcularConexiones();
-                            agregarFiguras(flujo);
-                            flujo.calcularVertices();
-                            
-                            
-                            if(flujoValido(flujo)){
-                                
+                            double puntox2= vertice2.getX();
+                            double puntoy2=vertice2.getY();
+                            if(comprobarFlujo(puntox1,puntoy1,puntox2,puntoy2)){
+                                Flujo flujo = new Flujo(TipoF.FLUJO);
+                                flujo.getVertices().add(new Vertice(puntox1,puntoy1));
+                                flujo.getVertices().add(new Vertice(puntox2,puntoy2));
                                 figuras.add(flujo);
                                 flujo.dibujar(gc);
+                                b=false;
+                            }else{
+                                Alert alert = new Alert(AlertType.WARNING);
+                                alert.setTitle("Error");
+                                alert.setHeaderText("Cuidado");
+                                alert.setContentText("Ya se ha creado un flujo entre estas dos figuras");
+                                alert.showAndWait();
                             }
-                            b=false;
                         }
                     }
-
 
                 });
             
@@ -287,6 +286,41 @@ public class FXMLDocumentController implements Initializable {
         
         return null;
     }
+    public boolean comprobarFlujo(double x1,double y1,double x2,double y2){
+        for (int i = 0; i < figuras.size(); i++) {
+            if(figuras.get(i).tipo==TipoF.FLUJO){
+                if(figuras.get(i).getVertices().get(0).getX()==x1 && figuras.get(i).getVertices().get(0).getY()==y1 ||figuras.get(i).getVertices().get(0).getX()==x2 && figuras.get(i).getVertices().get(0).getY()==y2){
+                    if(figuras.get(i).getVertices().get(1).getX()==x2 && figuras.get(i).getVertices().get(1).getY()==y2 || figuras.get(i).getVertices().get(1).getX()==x1 && figuras.get(i).getVertices().get(1).getY()==y1 ){
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+    /***
+    public void borrar(double x1,double y1){
+        if(!figuras.isEmpty()){
+            for (int i = 0; i < figuras.size(); i++) {
+                if(figuras.get(i).getTipo()==TipoF.PROCESO){
+                    if(figuras.get(i).getVerticeCentro().getX()-50 <= x1 && figuras.get(i).getVerticeCentro().getX()+50 >= x1 && figuras.get(i).getVerticeCentro().getY()-25 <= y1 && figuras.get(i).getVerticeCentro().getY()+25 >=y1 ){
+                        System.out.println("borrando");
+                    }
+                }
+            }
+        }
+        else{
+            Alert alert = new Alert(AlertType.WARNING);
+            alert.setTitle("Error");
+            alert.setHeaderText("Cuidado");
+            alert.setContentText("No hay figuras para borrar");
+            alert.showAndWait();
+        }
+    }
+    ***/
+    
+    
+    
     public boolean comprobarPosicion(double x1,double y1,double x2,double y2,double x3,double y3,double x4,double y4 ){
         if (!figuras.isEmpty()){
             for (int i = 0; i < figuras.size(); i++) {
@@ -452,14 +486,79 @@ public class FXMLDocumentController implements Initializable {
     
     @FXML
     private void limpiar(ActionEvent event) {
-        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        b=true;
+        canvas.setOnMouseClicked((MouseEvent event2)->{
+            double px=event2.getX();
+            double py=event2.getY();
+            ArrayList<Figura> aux = new ArrayList<>();
+            if(!figuras.isEmpty()){
+                if(b){
+                    for (int i = 0; i < figuras.size(); i++) {
+                        if(figuras.get(i).getVertices().get(0).getX()<= px &&
+                            figuras.get(i).getVertices().get(1).getX()>=px &&
+                            figuras.get(i).getVertices().get(0).getY()<= py &&
+                            figuras.get(i).getVertices().get(2).getY()>=py &&
+                            figuras.get(i).getTipo()==TipoF.PROCESO){
+                        }else{
+                            if(figuras.get(i).getVertices().get(0).getX()-20<= px &&
+                            figuras.get(i).getVertices().get(1).getX()+20>=px &&
+                            figuras.get(i).getVertices().get(0).getY()<= py &&
+                            figuras.get(i).getVertices().get(2).getY()>=py &&
+                            figuras.get(i).getTipo()==TipoF.INICIO || figuras.get(i).getTipo()==TipoF.FIN){
+                            }else{
+                                if(figuras.get(i).getVertices().get(0).getX()<= px &&
+                                figuras.get(i).getVertices().get(1).getX()>=px &&
+                                figuras.get(i).getVertices().get(0).getY()<= py &&
+                                figuras.get(i).getVertices().get(2).getY()+20>=py &&
+                                figuras.get(i).getTipo()==TipoF.ENTRADA){
+                            }else{
+                                if(figuras.get(i).getVertices().get(0).getX()<= px &&
+                                figuras.get(i).getVertices().get(1).getX()>=px &&
+                                figuras.get(i).getVertices().get(0).getY()<= py &&
+                                figuras.get(i).getVertices().get(2).getY()>=py &&
+                                figuras.get(i).getTipo()==TipoF.DOCUMENTACION){
+                                
+                                }else{
+                                    /**
+                                     * Comprobacion si es un flujo a borrar
+                                    if(){
+                                    }
+                                    ***/
+                                    aux.add(figuras.get(i));
+                                }
+                                }
+                                
+                            }
+                        }
+                    }
+                    figuras.clear();
+                    for (int i = 0; i < aux.size(); i++) {
+                        figuras.add(aux.get(i));
+                    }
+                    gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+                    System.out.println("Limpieza"); 
+                    actualizar();
+                    b=false;
+                }
+            }
+            else{
+                Alert alert = new Alert(AlertType.WARNING);
+                alert.setTitle("Error");
+                alert.setHeaderText("cuidado");
+                alert.setContentText("No has dibujo una figura, intenta crear una antes");
+
+                alert.showAndWait();
+            }
         
-        figuras.clear();
         
-        System.out.println("Limpieza");   
+          
+    });
     }
-    
-    
+    private void actualizar(){
+        for (int i = 0; i < figuras.size(); i++) {
+            figuras.get(i).dibujar(gc);
+        }
+    }
     @FXML
     private void dibujarInicio(ActionEvent event) throws IOException {
         b= true;
