@@ -36,14 +36,25 @@ public class Flujo extends Figura{
         vertices.set(0, v);
         vertices.set(1, v2);
         
+        verticeCentro = new Vertice((vertices.get(0).getX()+vertices.get(1).getX())/2, (vertices.get(0).getY()+vertices.get(1).getY())/2);
+        
+        vertices.add(0,new Vertice(verticeCentro.getX()+5, verticeCentro.getY()+5));
+        vertices.add(0,new Vertice(verticeCentro.getX()-5, verticeCentro.getY()-5) );
+        
+        
     }
 
     @Override
     public void dibujar(GraphicsContext gc) {
-        double x1=vertices.get(0).getX();
-        double y1=vertices.get(0).getY();
-        double x2=vertices.get(1).getX();
-        double y2=vertices.get(1).getY();
+        double x1=vertices.get(2).getX();
+        double y1=vertices.get(2).getY();
+        double x2=vertices.get(3).getX();
+        double y2=vertices.get(3).getY();
+        
+        double px1 =vertices.get(0).getX();
+        double py1 =vertices.get(0).getY();
+        double px2 =vertices.get(1).getX();
+        double py2 =vertices.get(1).getY();
         
         double tamanno = 15;
         double angulo = Math.atan2(y2-y1, x2-x1);
@@ -56,15 +67,14 @@ public class Flujo extends Figura{
         gc.strokeLine(x2, y2, x3, y3);
         gc.strokeLine(x2, y2, x4, y4);
         
+        for (double i = 0; i < 10; i+=0.5) {
+            gc.strokeLine(px1, py1+i, px2, py1+i);
+        }
+        
     }
 
     @Override
     public void calcularConexiones() {
-        Vertice aux1 = vertices.get(0);
-        Vertice aux2 = vertices.get(1);
-        
-        
-        verticeCentro = new Vertice((aux1.getX()+aux2.getX())/2, (aux1.getY()+aux2.getY())/2);
         
     }
     

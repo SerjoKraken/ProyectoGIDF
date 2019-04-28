@@ -470,11 +470,93 @@ public class FXMLDocumentController implements Initializable {
     
     @FXML
     private void limpiar(ActionEvent event) {
-        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        b=true;
+        canvas.setOnMouseClicked((MouseEvent event2)->{
+            double px=event2.getX();
+            double py=event2.getY();
+            ArrayList<Figura> aux = new ArrayList<>();
+            if(!figuras.isEmpty()){
+                if(b){
+                    for (int i = 0; i < figuras.size(); i++) {
+                        if(figuras.get(i).getVertices().get(0).getX()<= px &&
+                            figuras.get(i).getVertices().get(1).getX()>=px &&
+                            figuras.get(i).getVertices().get(0).getY()<= py &&
+                            figuras.get(i).getVertices().get(2).getY()>=py &&
+                            figuras.get(i).getTipo()==TipoF.PROCESO){
+                        }else{
+                            if(figuras.get(i).getVertices().get(0).getX()-20<= px &&
+                            figuras.get(i).getVertices().get(1).getX()+20>=px &&
+                            figuras.get(i).getVertices().get(0).getY()<= py &&
+                            figuras.get(i).getVertices().get(2).getY()>=py &&
+                            figuras.get(i).getTipo()==TipoF.INICIO){
+                            }else if(figuras.get(i).getVertices().get(0).getX()-20<= px &&
+                            figuras.get(i).getVertices().get(1).getX()+20>=px &&
+                            figuras.get(i).getVertices().get(0).getY()<= py &&
+                            figuras.get(i).getVertices().get(2).getY()>=py &&
+                            figuras.get(i).getTipo()==TipoF.FIN){
+                            
+                                
+                            }else{
+                                
+                                if(figuras.get(i).getVertices().get(0).getX()<= px &&
+                                figuras.get(i).getVertices().get(1).getX()>=px &&
+                                figuras.get(i).getVertices().get(0).getY()<= py &&
+                                figuras.get(i).getVertices().get(2).getY()+20>=py &&
+                                figuras.get(i).getTipo()==TipoF.ENTRADA){
+                                    
+                                }else{
+                                    if(figuras.get(i).getVertices().get(0).getX()<= px &&
+                                    figuras.get(i).getVertices().get(1).getX()>=px &&
+                                    figuras.get(i).getVertices().get(0).getY()<= py &&
+                                    figuras.get(i).getVertices().get(2).getY()>=py &&
+                                    figuras.get(i).getTipo()==TipoF.DOCUMENTACION){
+                                
+                                    }else{
+                                    
+                                    
+                                        if(figuras.get(i) instanceof Flujo && figuras.get(i).getVertices().get(0).getX()<= px &&
+                                        figuras.get(i).getVertices().get(1).getX()>=px &&
+                                        figuras.get(i).getVertices().get(0).getY()<= py &&
+                                        figuras.get(i).getVertices().get(1).getY()>=py &&
+                                        figuras.get(i).getTipo()==TipoF.FLUJO){
+                                        }else{
+                                            aux.add(figuras.get(i));
+                                        }
+                                    
+                                    
+                                    }
+                                }
+                                
+                            }
+                        }
+                    }
+                    figuras.clear();
+                    for (int i = 0; i < aux.size(); i++) {
+                        figuras.add(aux.get(i));
+                    }
+                    gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+                    System.out.println("Limpieza"); 
+                    actualizar();
+                    b=false;
+                }
+            }
+            else{
+                Alert alert = new Alert(AlertType.WARNING);
+                alert.setTitle("Error");
+                alert.setHeaderText("cuidado");
+                alert.setContentText("No has dibujo una figura, intenta crear una antes");
+
+                alert.showAndWait();
+            }
         
-        figuras.clear();
         
-        System.out.println("Limpieza");   
+          
+    });
+    }
+    private void actualizar(){
+        for (int i = 0; i < figuras.size(); i++) {
+            figuras.get(i).dibujar(gc);
+        }
     }
     
     
