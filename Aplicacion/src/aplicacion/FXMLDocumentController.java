@@ -178,6 +178,21 @@ public class FXMLDocumentController implements Initializable {
 
         
     }
+    
+    public boolean comprobarPadres(Flujo flujo){
+        for (Figura figura : figuras) {
+            if(figura instanceof Flujo){
+                if(flujo.padre.getVerticeCentro().distancia(((Flujo) figura).padre.getVerticeCentro())==0
+                        || flujo.hijo.getVerticeCentro().distancia(((Flujo) figura).hijo.getVerticeCentro())==0){
+                    return false;
+                }
+            }
+            
+        }
+        return true;
+    }
+    
+    
     @FXML
     private void dibujarFlujo(ActionEvent event) {
         
@@ -204,16 +219,19 @@ public class FXMLDocumentController implements Initializable {
                             Flujo flujo = new Flujo(TipoF.FLUJO);
                             flujo.getVertices().add(new Vertice(puntox1,puntoy1));
                             flujo.getVertices().add(new Vertice(puntox2,puntoy2));
+                            
                             flujo.calcularConexiones();
                             agregarFiguras(flujo);
+                            
+                            
                             flujo.calcularVertices();
-                            
-                            
+
                             if(flujoValido(flujo)){
-                                
+
                                 figuras.add(flujo);
                                 flujo.dibujar(gc);
                             }
+                            
                             b=false;
                         }
                     }
@@ -625,6 +643,7 @@ public class FXMLDocumentController implements Initializable {
                     documento.getVertices().add(new Vertice(x3,y3));
                     documento.getVertices().add(new Vertice(x4,y4));
                     documento.texto = result.get();
+                    documento.calcularConexiones();
                     figuras.add(documento);
                     documento.dibujar(gc);
                 }else{
@@ -740,27 +759,28 @@ public class FXMLDocumentController implements Initializable {
     }
     
     public boolean flujoValido(Flujo flujo){
-        for (Figura figura : figuras) {
-            if(figura instanceof Inicio){
-               
-            
-            }
+        
+        if(flujo.padre.getVerticeCentro().distancia(flujo.hijo.getVerticeCentro())==0){
+            return false;
+        }
+        
+        if(flujo.padre.getTipo() == TipoF.FIN || flujo.hijo.getTipo() == TipoF.INICIO){
+            return false;
         }
         for (Figura figura : figuras) {
             if(figura instanceof Flujo){
                 if((flujo.vertices.get(0).distancia(figura.getVertices().get(0))==0 && flujo.vertices.get(1).distancia(figura.getVertices().get(1))==0) || 
                         (flujo.vertices.get(0).distancia(figura.getVertices().get(1))==0 && flujo.vertices.get(1).distancia(figura.getVertices().get(0))==0)){
                     return false;
+                }if(flujo.padre.getVerticeCentro().distancia(((Flujo) figura).padre.getVerticeCentro())==0
+                        || flujo.hijo.getVerticeCentro().distancia(((Flujo) figura).hijo.getVerticeCentro())==0){
+                    return false;
                 }
-                if(true){
 
-                }
             }
         }
         
-        for (Figura figura : figuras) {
-            
-        }
+        
         return true;
     
     }
