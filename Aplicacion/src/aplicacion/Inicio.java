@@ -53,9 +53,9 @@ public class Inicio extends Figura{
         Vertice aux4 = vertices.get(3);
         
         conexiones.add(new Vertice((aux1.getX()+aux2.getX())/2, (aux1.getY()+aux2.getY())/2));
-        conexiones.add(new Vertice((aux2.getX()+aux3.getX())/2, (aux2.getY()+aux3.getY())/2));
+        conexiones.add(new Vertice(((aux2.getX()+aux3.getX())/2)+20, (aux2.getY()+aux3.getY())/2));
         conexiones.add(new Vertice((aux3.getX()+aux4.getX())/2, (aux3.getY()+aux4.getY())/2));
-        conexiones.add(new Vertice((aux4.getX()+aux1.getX())/2, (aux4.getY()+aux1.getY())/2));
+        conexiones.add(new Vertice(((aux4.getX()+aux1.getX())/2)-20, (aux4.getY()+aux1.getY())/2));
     }
     
 }
