@@ -42,6 +42,9 @@ public class FXMLDocumentController implements Initializable {
     private Label label;
     
     @FXML
+    private Button correr;
+    
+    @FXML
     private Button b1;
     
     @FXML
@@ -190,6 +193,65 @@ public class FXMLDocumentController implements Initializable {
             
         }
         return true;
+    }
+    
+        
+    private boolean buscarInicio(){ 
+        for (Figura figura : figuras) {           
+            if(figura.getTipo().equals(TipoF.INICIO)){
+                return true;
+            }
+        }    
+        return false;
+    }
+    
+    private boolean buscarFin(){ 
+        for (Figura figura : figuras) {           
+            if(figura.getTipo().equals(TipoF.FIN)){
+                return true;
+            }
+        }    
+        return false;
+    }
+        
+    @FXML
+    private void correr(ActionEvent event) {
+        Flujo flujo;
+        if (!figuras.isEmpty()){
+            if(buscarInicio() && buscarFin()){
+                for (Figura figura : figuras) {           
+                    if(figura.getTipo().equals(TipoF.FLUJO)){
+                        flujo = (Flujo) figura;
+                        if(flujo.padre.getTipo() == TipoF.INICIO ){
+                            for (Figura figura1 : figuras) {
+                                
+                                
+                            }
+                            
+                        }
+                        
+                    }
+                }     
+               
+            }else{
+                Alert alert = new Alert(AlertType.WARNING);
+                alert.setTitle("Error");
+                alert.setHeaderText("Cuidado");
+                alert.setContentText("No se ha encontrado el inicio o el fin");
+
+                alert.showAndWait();
+                
+            }
+        }else{
+            Alert alert = new Alert(AlertType.WARNING);
+            alert.setTitle("Error");
+            alert.setHeaderText("Cuidado");
+            alert.setContentText("No se ha encontrado ninguna figuras");
+
+            alert.showAndWait();
+            
+        }
+    
     }
     
     
