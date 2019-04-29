@@ -13,6 +13,7 @@ import javafx.scene.shape.ArcType;
  *
  * @author Serjo
  */
+
 public class Documento extends Figura{
     
     public Documento(TipoF tipo) {

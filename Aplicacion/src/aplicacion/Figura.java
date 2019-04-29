@@ -69,6 +69,7 @@ public abstract class Figura {
          * retorna true si la figura no tiene un contacto con la figura a comprobar
          * y false si la figura impacta en algun lado
          */
+        
         if (figura.getTipo() != TipoF.DOCUMENTACION || figura.getTipo() != TipoF.FLUJO){
             double x1=figura.getVerticeCentro().getX()-50;
             double x2=figura.getVerticeCentro().getX()+50;
