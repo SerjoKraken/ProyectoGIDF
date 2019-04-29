@@ -91,7 +91,7 @@ public class FXMLDocumentController implements Initializable {
 
         // Traditional way to get the response value.
         Optional<String> result = dialog.showAndWait();
-        if (result.isPresent() && !result.get().equals("")){
+        if (result.isPresent() && !result.get().equals("") && !result.get().equalsIgnoreCase(" ")){
             System.out.println("Your name: " + result.get());
    
             if(contar(result.get())>12){
@@ -456,7 +456,7 @@ public class FXMLDocumentController implements Initializable {
         
         // Traditional way to get the response value.
         Optional<String> result = dialog.showAndWait();
-        if (result.isPresent() && !result.get().equalsIgnoreCase("")){
+        if (result.isPresent() && !result.get().equalsIgnoreCase("") && !result.get().equalsIgnoreCase(" ")){
             System.out.println("Your name: " + result.get());
             b= true;
             canvas.setOnMouseClicked((MouseEvent event2) -> {
@@ -740,7 +740,7 @@ public class FXMLDocumentController implements Initializable {
 
         // Traditional way to get the response value.
         Optional<String> result = dialog.showAndWait();
-        if (result.isPresent() && !result.get().equalsIgnoreCase("")){
+        if (result.isPresent() && !result.get().equalsIgnoreCase("") && !result.get().equalsIgnoreCase(" ")){
             System.out.println("Your name: " + result.get());
             b= true;
         
@@ -887,19 +887,18 @@ public class FXMLDocumentController implements Initializable {
         }
         
     }
-    */
+    */    
     
     
     public void redimensionCanvas(double p1, double p2){
-        if(p1+51>canvas.getWidth()){
-                canvas.setWidth(canvas.getWidth()+50);
-                if(p2+51>canvas.getHeight()){
-                    canvas.setHeight(canvas.getHeight()+50);
+        if(p1+60>canvas.getWidth()){
+            canvas.setWidth(canvas.getWidth()+50);
+            if(p2+60>canvas.getHeight()){canvas.setHeight(canvas.getHeight()+50);
                 }
-            } else if (p2+51>canvas.getHeight()) {
+            }else if (p2+51>canvas.getHeight()) {
                 canvas.setHeight(canvas.getHeight()+50);
                 
-            }
+        }
     }
     
     public boolean flujoValido(Flujo flujo){
