@@ -53,6 +53,9 @@ public class Sistema implements Initializable {
     private Button b6;
     
     @FXML
+    private Button b7;
+    
+    @FXML
     private Canvas canvas;
     
     @FXML
@@ -429,6 +432,95 @@ public class Sistema implements Initializable {
         }
         return true;
     }
+    
+        @FXML
+    private void dibujarDesicion(ActionEvent event) throws IOException {
+        
+        TextInputDialog dialog = new TextInputDialog("");
+        dialog.setTitle("Crear proceso");
+        dialog.setContentText("Introduzca el texto:");
+
+
+        Optional<String> result = dialog.showAndWait();
+        if (result.isPresent() && !result.get().equals(" ") && !result.get().equalsIgnoreCase(" ")){
+           
+   
+            if(contar(result.get())>12){
+                powerUp = 80;
+                boolean a= true;
+            }
+            
+            b=true;
+            canvas.setOnMouseClicked((MouseEvent event2) -> {
+            double p1 = event2.getX();
+            double p2 = event2.getY();
+            
+            redimensionCanvas(p1,p2);
+            
+            
+            if(b){
+                
+                double x = event2.getX();
+                double y = event2.getY();
+                double x1 = x ;
+                double y1 = y - 50;
+                double x2 = x-50;
+                double y2 = y ;
+                double x3 = x ;
+                double y3 = y+50;
+                double x4 = x + 50;
+                double y4 = y;
+                
+                
+                Desicion desicion = new Desicion(TipoF.DESICION);
+                    desicion.setVerticeCentro(new Vertice(x,y));
+                    desicion.getVertices().add(new Vertice(x1, y1));
+                    desicion.getVertices().add(new Vertice(x2, y2));
+                    desicion.getVertices().add(new Vertice(x3, y3));
+                    desicion.getVertices().add(new Vertice(x4, y4));
+                    //desicion.calcularConexiones();
+                    desicion.texto = result.get();
+                    figuras.add(desicion);
+                    desicion.dibujar(gc);
+                /*if(comprobarPosicion(x1,y1,x2,y2,x3,y3,x4,y4)==true){
+                   
+                    //Proceso proceso = new Proceso( TipoF.PROCESO);
+                    
+                    Desicion desicion = new Desicion(TipoF.DESICION);
+                    desicion.setVerticeCentro(new Vertice(x,y));
+                    desicion.getVertices().add(new Vertice(x1, y1));
+                    desicion.getVertices().add(new Vertice(x2, y2));
+                    desicion.getVertices().add(new Vertice(x3, y3));
+                    desicion.getVertices().add(new Vertice(x4, y4));
+                    desicion.calcularConexiones();
+                    desicion.texto = result.get();
+                    figuras.add(desicion);
+                    desicion.dibujar(gc);
+                    
+                }else{
+        
+                    Alert alert = new Alert(AlertType.WARNING);
+                    alert.setTitle("Error");
+                    alert.setHeaderText("Cuidado");
+                    alert.setContentText("Ya se encuentra una figura creada aquÃ­ ");
+                    alert.showAndWait();
+                }*/
+                b=false;
+                powerUp=0;
+            }  
+        });
+            
+        } else {
+            Alert alert = new Alert(AlertType.WARNING);
+            alert.setTitle("Error");
+            alert.setHeaderText("cuidado");
+            alert.setContentText("Debes ingresar un texto");
+
+            alert.showAndWait();
+        }
+        
+    }
+    
     
     @FXML
     private void dibujarEntrada(ActionEvent event) throws IOException {

@@ -9,77 +9,68 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane id="AnchorPane" fx:id="ap" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="aplicacion.Sistema">
+<AnchorPane id="AnchorPane" fx:id="ap" prefHeight="780.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="aplicacion.Sistema">
     <children>
-      <ScrollPane layoutX="200.0" layoutY="50.0" prefHeight="548.0" prefWidth="600.0">
+      <ScrollPane layoutX="232.0" layoutY="64.0" prefHeight="712.0" prefWidth="790.0">
          <content>
-            <Canvas fx:id="canvas" height="545.0" width="598.0" />
+            <Canvas fx:id="canvas" height="709.0" width="788.0" />
          </content>
       </ScrollPane>
-      <Pane layoutY="5.0" prefHeight="594.0" prefWidth="200.0">
+      <Pane layoutY="5.0" prefHeight="12.0" prefWidth="200.0">
          <children>
-            <Pane layoutY="42.0" prefHeight="555.0" prefWidth="200.0" style="-fx-background-color: #aab2bd;">
+            <Pane layoutY="42.0" prefHeight="734.0" prefWidth="232.0" style="-fx-background-color: #aab2bd;">
                <children>
-                  <Button fx:id="b2" layoutX="8.0" layoutY="41.0" mnemonicParsing="false" onAction="#dibujarFlujo" prefHeight="79.0" prefWidth="187.0">
+                  <Button fx:id="b2" layoutX="8.0" layoutY="87.0" mnemonicParsing="false" onAction="#dibujarFlujo" prefHeight="79.0" prefWidth="187.0">
                      <graphic>
-                        <ImageView fitHeight="62.0" fitWidth="167.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="70.0" fitWidth="194.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../imagenes/flujo.png" />
                            </image>
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button fx:id="b6" layoutX="9.0" layoutY="221.0" mnemonicParsing="false" onAction="#dibujarDocumento" prefHeight="79.0" prefWidth="187.0">
+                  <Button fx:id="b6" layoutX="8.0" layoutY="288.0" mnemonicParsing="false" onAction="#dibujarDocumento" prefHeight="83.0" prefWidth="187.0">
                      <graphic>
-                        <ImageView fitHeight="62.0" fitWidth="152.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="66.0" fitWidth="169.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../imagenes/documento.png" />
                            </image>
                         </ImageView>
                      </graphic>
                   </Button>
-                    <Button fx:id="b1" layoutX="8.0" layoutY="401.0" onAction="#dibujarProceso" prefHeight="79.0" prefWidth="187.0">
+                    <Button fx:id="b1" layoutX="8.0" layoutY="488.0" onAction="#dibujarProceso" prefHeight="79.0" prefWidth="173.0">
                      <graphic>
-                        <ImageView fitHeight="61.0" fitWidth="154.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="71.0" fitWidth="170.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../imagenes/proceso.png" />
                            </image>
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button fx:id="b4" layoutX="124.0" layoutY="500.0" mnemonicParsing="false" onAction="#limpiar" prefHeight="40.0" prefWidth="45.0">
+                  <Button fx:id="b5" layoutX="8.0" layoutY="187.0" mnemonicParsing="false" onAction="#dibujarInicio" prefHeight="79.0" prefWidth="171.0">
                      <graphic>
-                        <ImageView fitHeight="31.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../imagenes/basurero-cerrado.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </Button>
-                  <Button fx:id="b5" layoutX="8.0" layoutY="131.0" mnemonicParsing="false" onAction="#dibujarInicio" prefHeight="79.0" prefWidth="171.0">
-                     <graphic>
-                        <ImageView fitHeight="72.0" fitWidth="167.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="63.0" fitWidth="170.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../imagenes/iniciofin.png" />
                            </image>
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button fx:id="b3" layoutX="7.0" layoutY="311.0" mnemonicParsing="false" onAction="#dibujarEntrada" prefHeight="79.0" prefWidth="187.0">
+                  <Button fx:id="b3" layoutX="6.0" layoutY="386.0" mnemonicParsing="false" onAction="#dibujarEntrada" prefHeight="79.0" prefWidth="216.0">
                      <graphic>
-                        <ImageView fitHeight="53.0" fitWidth="172.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="85.0" fitWidth="196.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../imagenes/entrada.png" />
                            </image>
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Text layoutX="64.0" layoutY="20.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Entidades:" />
-                  <Button fx:id="correr" layoutX="38.0" layoutY="501.0" mnemonicParsing="false" onAction="#correr" prefHeight="40.0" prefWidth="45.0">
+                  <Text layoutX="64.0" layoutY="54.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Entidades:" />
+                  <Button fx:id="b7" layoutX="8.0" layoutY="590.0" onAction="#dibujarDesicion" prefHeight="82.0" prefWidth="187.0">
                      <graphic>
-                        <ImageView fitHeight="31.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="87.0" fitWidth="168.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../imagenes/running_sport_3645.png" />
+                              <Image url="@../imagenes/desicion%20(1).jpg" />
                            </image>
                         </ImageView>
                      </graphic>
@@ -88,7 +79,28 @@
             </Pane>
          </children>
       </Pane>
-      <Pane layoutY="-1.0" prefHeight="52.0" prefWidth="800.0" style="-fx-background-color: #aab2bd;" />
+      <Pane prefHeight="68.0" prefWidth="1024.0" style="-fx-background-color: #aab2bd;">
+         <children>
+            <Button fx:id="b4" layoutX="957.0" layoutY="16.0" mnemonicParsing="false" onAction="#limpiar" prefHeight="40.0" prefWidth="45.0">
+               <graphic>
+                  <ImageView fitHeight="31.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../imagenes/basurero-cerrado.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Button fx:id="correr" layoutX="888.0" layoutY="16.0" mnemonicParsing="false" onAction="#correr" prefHeight="40.0" prefWidth="45.0">
+               <graphic>
+                  <ImageView fitHeight="31.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../imagenes/running_sport_3645.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+         </children>
+      </Pane>
       
     </children>
 </AnchorPane>
