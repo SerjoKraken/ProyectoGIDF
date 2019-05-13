@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane id="AnchorPane" fx:id="ap" prefHeight="780.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="aplicacion.Sistema">
+<AnchorPane id="AnchorPane" fx:id="ap" prefHeight="780.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="aplicacion.Sistema">
     <children>
       <ScrollPane layoutX="232.0" layoutY="64.0" prefHeight="712.0" prefWidth="790.0">
          <content>
@@ -81,24 +81,25 @@
       </Pane>
       <Pane prefHeight="68.0" prefWidth="1024.0" style="-fx-background-color: #aab2bd;">
          <children>
-            <Button fx:id="b4" layoutX="957.0" layoutY="16.0" mnemonicParsing="false" onAction="#limpiar" prefHeight="40.0" prefWidth="45.0">
-               <graphic>
-                  <ImageView fitHeight="31.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../imagenes/basurero-cerrado.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </Button>
-            <Button fx:id="correr" layoutX="888.0" layoutY="16.0" mnemonicParsing="false" onAction="#correr" prefHeight="40.0" prefWidth="45.0">
-               <graphic>
-                  <ImageView fitHeight="31.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../imagenes/running_sport_3645.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </Button>
+            <Button fx:id="b4" layoutX="811.0" layoutY="14.0" mnemonicParsing="false" onAction="#limpiar" prefHeight="40.0" prefWidth="45.0" />
+            <Button fx:id="correr" layoutX="862.0" layoutY="14.0" mnemonicParsing="false" onAction="#correr" prefHeight="40.0" prefWidth="45.0" />
+            <ImageView fitHeight="31.0" fitWidth="36.0" layoutX="818.0" layoutY="19.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../imagenes/basurero-cerrado.png" />
+               </image>
+            </ImageView>
+
+            <ImageView fitHeight="31.0" fitWidth="36.0" layoutX="869.0" layoutY="19.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../imagenes/running_sport_3645.png" />
+               </image>
+            </ImageView>
+            <Button fx:id="b8" layoutX="920.0" mnemonicParsing="false" onAction="#borrar" prefHeight="68.0" prefWidth="65.0" />
+            <ImageView disable="true" fitHeight="57.0" fitWidth="65.0" layoutX="920.0" layoutY="6.0" pickOnBounds="true">
+               <image>
+                  <Image url="@../imagenes/thanos.png" />
+               </image>
+            </ImageView>
          </children>
       </Pane>
       
