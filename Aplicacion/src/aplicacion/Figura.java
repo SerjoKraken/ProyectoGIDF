@@ -12,6 +12,9 @@ public abstract class Figura {
     protected Vertice verticeCentro;
     protected TipoF tipo;
     String texto;
+    String variable;
+    String varLetras;
+    double varNum;
 
     public Figura(TipoF tipo) {
         this.vertices = new ArrayList<>();
@@ -19,6 +22,31 @@ public abstract class Figura {
         this.tipo = tipo;
         
     }
+
+    public String getVariable() {
+        return variable;
+    }
+
+    public void setVariable(String variable) {
+        this.variable = variable;
+    }
+
+    public String getVarLetras() {
+        return varLetras;
+    }
+
+    public void setVarLetras(String varLetras) {
+        this.varLetras = varLetras;
+    }
+
+    public double getVarNum() {
+        return varNum;
+    }
+
+    public void setVarNum(double varNum) {
+        this.varNum = varNum;
+    }
+    
 
     public Vertice getVerticeCentro() {
         return verticeCentro;

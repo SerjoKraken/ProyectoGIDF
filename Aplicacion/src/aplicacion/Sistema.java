@@ -56,6 +56,9 @@ public class Sistema implements Initializable {
     private Button b7;
     
     @FXML
+    private Button b8;
+    
+    @FXML
     private Canvas canvas;
     
     @FXML
@@ -577,8 +580,31 @@ public class Sistema implements Initializable {
                     entrada.getVertices().add(new Vertice(x4,y4));
                     entrada.calcularConexiones();
                     entrada.texto = result.get();
-                    figuras.add(entrada);
+                    
                     entrada.dibujar(gc);
+                    String cad1="";
+                    String cad2="";
+                    int ks=0;
+                    String cadena=result.get();
+                    for (int i = 0; i < cadena.length(); i++) {
+                        if(cadena.charAt(i)=='='){
+                            ks=i+1;
+                            break;
+                        }
+                        if(cadena.charAt(i)!= '=' || cadena.charAt(i)!= ' '){
+                            cad1+=cadena.charAt(i);
+                        }
+                    }
+                    System.out.println(cad1);
+                    entrada.setVariable(cad1);
+                    for (int i = ks; i < cadena.length(); i++) {
+                        if(cadena.charAt(i) !=' '){
+                            cad2+=cadena.charAt(i);
+                        }
+                    }
+                    System.out.println(cad2);
+                    /* Aqui deberia guardar el valor pero diferenciando si son simbolos o numeros */
+                    figuras.add(entrada);
                 }else{
                     Alert alert = new Alert(AlertType.WARNING);
                     alert.setTitle("Error");
@@ -947,7 +973,18 @@ public class Sistema implements Initializable {
         this.figuras = figuras;
     }
 
-    
+     @FXML
+    private void borrar(ActionEvent event){
+        b=true;
+        if(b){
+            figuras.clear();
+            gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+            System.out.println("Limpieza"); 
+            actualizar();
+        }
+        b=false;
+    }
+
     
     
 }
