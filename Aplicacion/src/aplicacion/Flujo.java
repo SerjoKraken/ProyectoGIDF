@@ -77,5 +77,10 @@ public class Flujo extends Figura{
     public void calcularConexiones() {
         
     }
+
+    @Override
+    public void dibujar(GraphicsContext gc, double x, double y) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
 }

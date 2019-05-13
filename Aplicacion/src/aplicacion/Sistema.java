@@ -65,11 +65,46 @@ public class Sistema implements Initializable {
     
     private GraphicsContext gc;
     
- 
+    private Vertice aux = null;
     
     private Figura f;
     public double powerUp=0;
-    boolean b = true;
+    boolean b = false;
+    
+    @FXML
+    public void mover(MouseEvent event) throws IOException {
+        
+            
+            aux = buscarConexion(event.getX(), event.getY());
+            if(aux!=null){
+                for (Figura figura : figuras) {
+                    if(figura.getVerticeCentro().distancia(aux)==0){
+                        f = figura;
+                    }
+                }
+            }
+            if(aux!=null && moviendo){
+                System.out.println("Manteniendo");
+                redimensionCanvas(event.getX(), event.getY());
+                f.dibujar(gc, event.getX(), event.getY());
+            
+
+            actualizar();
+            }else if(!moviendo){
+                moviendo=true;
+            }
+
+
+            
+        canvas.setOnMouseReleased(e3->{
+                        
+            System.out.println("Soltado");
+            moviendo = false;
+            aux=null;
+        
+    
+        });
+    }
     
     @FXML
     private void dibujarProceso(ActionEvent event) throws IOException {
@@ -86,7 +121,7 @@ public class Sistema implements Initializable {
    
             if(contar(result.get())>12){
                 powerUp = 80;
-                boolean a= true;
+                boolean a = true;
             }
             
             b=true;
@@ -98,6 +133,8 @@ public class Sistema implements Initializable {
             
             
             if(b){
+                
+                
                 
                 double x = event2.getX();
                 double y = event2.getY();
@@ -129,7 +166,7 @@ public class Sistema implements Initializable {
                     y1=0;
                     y2=0;
                 }
-                if(comprobarPosicion(x1,y1,x2,y2,x3,y3,x4,y4)==true){
+               
                    
                     Proceso proceso = new Proceso( TipoF.PROCESO);
                     proceso.setVerticeCentro(new Vertice(x,y));
@@ -142,16 +179,11 @@ public class Sistema implements Initializable {
                     figuras.add(proceso);
                     proceso.dibujar(gc);
                     
-                }else{
-        
-                    Alert alert = new Alert(AlertType.WARNING);
-                    alert.setTitle("Error");
-                    alert.setHeaderText("Cuidado");
-                    alert.setContentText("Ya se encuentra una figura creada aquí ");
-                    alert.showAndWait();
-                }
+                
                 b=false;
+                
                 powerUp=0;
+                return;
             }  
         });
             
@@ -535,7 +567,7 @@ public class Sistema implements Initializable {
         if (result.isPresent() && !result.get().equalsIgnoreCase("") && !result.get().equalsIgnoreCase(" ")){
             
             b= true;
-            canvas.setOnMouseClicked((MouseEvent event2) -> {
+            canvas.setOnMousePressed((MouseEvent event2) -> {
             double p1 = event2.getX();
             double p2 = event2.getY();
             redimensionCanvas(p1,p2);
@@ -568,7 +600,7 @@ public class Sistema implements Initializable {
                     y2=0;
                     y1=0;
                 }
-                if(comprobarPosicion(x1,y1,x2,y2,x3,y3,x4,y4)){
+                
                     Entrada entrada = new Entrada(TipoF.ENTRADA);
                     entrada.setVerticeCentro(new Vertice(x,y));
                     entrada.getVertices().add(new Vertice(x1,y1));
@@ -579,14 +611,9 @@ public class Sistema implements Initializable {
                     entrada.texto = result.get();
                     figuras.add(entrada);
                     entrada.dibujar(gc);
-                }else{
-                    Alert alert = new Alert(AlertType.WARNING);
-                    alert.setTitle("Error");
-                    alert.setHeaderText("Cuidado");
-                    alert.setContentText("Ya se encuentra una figura creada aquí ");
-                    alert.showAndWait();
-                }
                 b=false;
+                return;
+                
             }       
         });
         }else {
@@ -688,8 +715,13 @@ public class Sistema implements Initializable {
     });
     }
     private void actualizar(){
-        for (int i = 0; i < figuras.size(); i++) {
-            figuras.get(i).dibujar(gc);
+        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        
+        for (Figura figura : figuras) {
+            if(figura instanceof Flujo){
+                ((Flujo) figura).calcularVertices();
+            }
+            figura.dibujar(gc);
         }
     }
     
@@ -698,7 +730,7 @@ public class Sistema implements Initializable {
     private void dibujarInicio(ActionEvent event) throws IOException {
         b= true;
         
-            canvas.setOnMouseClicked((MouseEvent event2) -> {
+            canvas.setOnMousePressed((MouseEvent event2) -> {
                 double p1 = event2.getX();
                 double p2 = event2.getY();
                 if(existeInicio()==false || existeFin()==false){
@@ -729,8 +761,8 @@ public class Sistema implements Initializable {
                         y1=0;
                         y2=0;
                     }
-                    if(comprobarPosicion(x1,y1,x2,y2,x3,y3,x4,y4)){
-                        b=false;
+                    
+                        
                         if(existeInicio()==false){
                             Inicio inicio = new Inicio(TipoF.INICIO);
                             inicio.setVerticeCentro(new Vertice(x,y));
@@ -757,13 +789,9 @@ public class Sistema implements Initializable {
                             figuras.add(inicio);
                             inicio.dibujar(gc);
                         }
-                    }else{
-                        Alert alert = new Alert(AlertType.WARNING);
-                        alert.setTitle("Error");
-                        alert.setHeaderText("Cuidado");
-                        alert.setContentText("Ya se encuentra una figura creada aquí ");
-                        alert.showAndWait();
-                    }
+                        b=false;
+                        return;
+                    
                 }
                 }
             
@@ -807,7 +835,7 @@ public class Sistema implements Initializable {
             
             b= true;
         
-            canvas.setOnMouseClicked((MouseEvent event2) -> {
+            canvas.setOnMousePressed((MouseEvent event2) -> {
             double p1 = event2.getX();
             double p2 = event2.getY();
             redimensionCanvas(p1,p2);   
@@ -842,7 +870,7 @@ public class Sistema implements Initializable {
                     y2=0;
                     y1=0;
                 }
-                if(comprobarPosicion(x1,y1,x2,y2,x3,y3,x4,y4)){
+                
                     Documento documento = new Documento(TipoF.DOCUMENTACION);
                     documento.setVerticeCentro(new Vertice(x,y));
                     documento.getVertices().add(new Vertice(x1,y1));
@@ -853,14 +881,9 @@ public class Sistema implements Initializable {
                     documento.calcularConexiones();
                     figuras.add(documento);
                     documento.dibujar(gc);
-                }else{
-                    Alert alert = new Alert(AlertType.WARNING);
-                    alert.setTitle("Error");
-                    alert.setHeaderText("Cuidado");
-                    alert.setContentText("Ya se encuentra una figura creada aquí ");
-                    alert.showAndWait();
-                }
+                
                 b=false;
+                return;
                 
             
 
@@ -878,9 +901,13 @@ public class Sistema implements Initializable {
         
     }
     
+    boolean moviendo = false;
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
+        
+        
+        
+        
         gc = canvas.getGraphicsContext2D();
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 

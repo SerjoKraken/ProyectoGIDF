@@ -9,11 +9,11 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane id="AnchorPane" fx:id="ap" prefHeight="780.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="aplicacion.Sistema">
+<AnchorPane id="AnchorPane" fx:id="ap" prefHeight="780.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="aplicacion.Sistema">
     <children>
       <ScrollPane layoutX="232.0" layoutY="64.0" prefHeight="712.0" prefWidth="790.0">
          <content>
-            <Canvas fx:id="canvas" height="709.0" width="788.0" />
+            <Canvas fx:id="canvas" height="709.0" onMouseDragged="#mover" width="788.0" />
          </content>
       </ScrollPane>
       <Pane layoutY="5.0" prefHeight="12.0" prefWidth="200.0">
