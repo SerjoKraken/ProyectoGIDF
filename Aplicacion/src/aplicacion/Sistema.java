@@ -6,10 +6,17 @@ package aplicacion;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
@@ -65,45 +72,44 @@ public class Sistema implements Initializable {
     
     private GraphicsContext gc;
     
-    private Vertice aux = null;
+    private Figura aux = null;
     
     private Figura f;
     public double powerUp=0;
     boolean b = false;
     
     @FXML
-    public void mover(MouseEvent event) throws IOException {
+    public void mover()  {
         
-            
-            aux = buscarConexion(event.getX(), event.getY());
-            if(aux!=null){
-                for (Figura figura : figuras) {
-                    if(figura.getVerticeCentro().distancia(aux)==0){
-                        f = figura;
-                    }
+        canvas.setOnMousePressed(e1->{
+            aux = buscarConexion(e1.getX(), e1.getY());
+            canvas.setOnMouseDragged(e2->{ 
+                if(aux!=null && moviendo){
+                    System.out.println("Manteniendo");
+                    redimensionCanvas(e2.getX(), e2.getY());
+                   
+                    aux.dibujar(gc, e2.getX(), e2.getY());
+
+
+                    actualizar();
+                }else if(!moviendo){
+                    moviendo=true;
                 }
-            }
-            if(aux!=null && moviendo){
-                System.out.println("Manteniendo");
-                redimensionCanvas(event.getX(), event.getY());
-                f.dibujar(gc, event.getX(), event.getY());
-            
+            });
 
-            actualizar();
-            }else if(!moviendo){
-                moviendo=true;
-            }
+            canvas.setOnMouseReleased(e3->{
+
+                System.out.println("Soltado");
+                moviendo = false;
+                
+                aux=null;
 
 
-            
-        canvas.setOnMouseReleased(e3->{
-                        
-            System.out.println("Soltado");
-            moviendo = false;
-            aux=null;
-        
-    
+
+            });
         });
+               
+        
     }
     
     @FXML
@@ -183,7 +189,7 @@ public class Sistema implements Initializable {
                 b=false;
                 
                 powerUp=0;
-                return;
+                canvas.setOnMouseClicked(null);
             }  
         });
             
@@ -234,24 +240,92 @@ public class Sistema implements Initializable {
         return false;
     }
         
+    
+    
+    Flujo flujo = null;
+    Figura fig = null;
+    ArrayList<Figura> corredors = new ArrayList<>(); 
+    
     @FXML
-    private void correr(ActionEvent event) {
-        Flujo flujo;
+    private void correr(ActionEvent event) throws InterruptedException {
+        
+        
+        final Timeline timeline = new Timeline();
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.setAutoReverse(true);
+
         if (!figuras.isEmpty()){
             if(buscarInicio() && buscarFin()){
-                for (Figura figura : figuras) {           
-                    if(figura.getTipo().equals(TipoF.FLUJO)){
-                        flujo = (Flujo) figura;
-                        if(flujo.padre.getTipo() == TipoF.INICIO ){
-                            for (Figura figura1 : figuras) {
-                                
-                                
+                //buscar inicio
+                for (Figura figura : figuras) {
+                    if(figura.getTipo() == TipoF.INICIO){
+                        fig = figura;
+                    }
+                }
+                // buscarFlujo que tenga el inicio
+                for (Figura figura : figuras) {
+                    if(figura instanceof Flujo){
+                        if(((Flujo) figura).padre.equals(fig)){
+                            flujo = (Flujo) figura;
+                        }
+                    }
+                }
+                if(!flujo.equals(null)){
+                    System.out.println(fig.texto);
+                    corredors.add(fig);
+                    
+                  
+                    //actualizar();
+                    
+                    while(fig != null && fig.getTipo() != TipoF.FIN ){
+                        fig = figuras.get(flujo.indexHijo);
+                        for (Figura figura : figuras) {
+                            if(figura instanceof Flujo){
+                                if(((Flujo) figura).padre.equals(fig)){
+                                    flujo = (Flujo) figura;
+                                }
                             }
+                        }
+                        if(fig.tipo != TipoF.FIN){
+                           System.out.println(fig.texto);
+                           corredors.add(fig);
+                        }
+                    }
+                    if(fig == null){
+                        System.out.println("Mala construccion");
+                    }else if(fig.getTipo() == TipoF.FIN){
+                        System.out.println(fig.texto);
+                        corredors.add(fig);
+                    }
+                    
+                    gc.setFill(Color.RED);
+                    
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            for (Figura corredor : corredors) {
+                                gc.fillOval(corredor.verticeCentro.getX()-80, corredor.verticeCentro.getY(), 20, 20);
+                                try {
+                                    Thread.sleep(3000);
+                                    actualizar();
+                                } catch (InterruptedException ex) {
+                                    Logger.getLogger(Sistema.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                            }
+                            corredors.clear();
                             
                         }
+                    }).start();
+                    
+                    
+                    /*for (Figura corredor : corredors) {
                         
-                    }
-                }     
+                        timeline.getKeyFrames().add(new KeyFrame(javafx.util.Duration.millis(5000), (ActionEvent e) -> {gc.fillOval(corredor.verticeCentro.getX()-80, corredor.verticeCentro.getY()-80, 10, 10);}));
+                        timeline.play();
+                    }*/
+                    
+                    
+                }
                
             }else{
                 Alert alert = new Alert(AlertType.WARNING);
@@ -285,8 +359,8 @@ public class Sistema implements Initializable {
             double x1 = event1.getX();
             double y1 = event1.getY();
             Vertice vertice1;
-            if((vertice1=buscarConexion(x1,y1))!=null){
-            
+            if((vertice1=buscarConexion(x1,y1).getVerticeCentro())!=null){
+                canvas.setOnMouseClicked(null);
                 canvas.setOnMouseClicked((MouseEvent event2) -> {
                     if(b){
                         double puntox1=vertice1.getX();
@@ -295,18 +369,18 @@ public class Sistema implements Initializable {
                         double y2 = event2.getY();
                         Vertice vertice2;
                       
-                        if((vertice2 = buscarConexion(x2,y2))!=null){
+                        if((vertice2 = buscarConexion(x2,y2).getVerticeCentro())!=null){
                             double puntox2 = vertice2.getX();
                             double puntoy2 = vertice2.getY();
                             Flujo flujo = new Flujo(TipoF.FLUJO);
                             flujo.getVertices().add(new Vertice(puntox1,puntoy1));
                             flujo.getVertices().add(new Vertice(puntox2,puntoy2));
                             
-                            flujo.calcularConexiones();
+                            
                             agregarFiguras(flujo);
                             
                             
-                            flujo.calcularVertices();
+                            flujo.calcularVertices(figuras);
 
                             if(flujoValido(flujo)){
 
@@ -315,7 +389,9 @@ public class Sistema implements Initializable {
                             }
                             
                             b=false;
+                            canvas.setOnMouseClicked(null);
                         }
+                        
                     }
 
 
@@ -328,24 +404,26 @@ public class Sistema implements Initializable {
     }
     
     public void agregarFiguras(Flujo flujo){
-        for (Figura figura : figuras) {
-            if(!(figura instanceof Flujo)){
-                if(flujo.getVertices().get(0).distancia(figura.getVerticeCentro())==0){
-                    flujo.padre = figura;
-                    
+        
+        for (int i = 0; i < figuras.size(); i++) {
+            if(!(figuras.get(i) instanceof Flujo)){
+                if(flujo.getVertices().get(0).distancia(figuras.get(i).getVerticeCentro())==0){
+                    flujo.padre = figuras.get(i);
+                    flujo.indexPadre = i;
+                    break;
                 }
             }
         }
-        
-        for (Figura figura : figuras) {
-            if(!(figura instanceof Flujo)){
-                if(flujo.getVertices().get(1).distancia(figura.getVerticeCentro())==0){
-                    flujo.hijo = figura;
-                    
+        for (int i = 0; i < figuras.size(); i++) {
+            if(!(figuras.get(i) instanceof Flujo)){
+                if(flujo.getVertices().get(1).distancia(figuras.get(i).getVerticeCentro())==0){
+                    flujo.hijo = figuras.get(i);
+                    flujo.indexHijo = i;
+                    break;
                 }
             }
         }
-        
+   
     }
     public boolean estaConectado(double x, double y){
         if(!figuras.isEmpty()) {
@@ -368,7 +446,7 @@ public class Sistema implements Initializable {
     }
     
     
-    public Vertice buscarConexion(double x, double y){
+    public Figura buscarConexion(double x, double y){
         if(!figuras.isEmpty()) {
             for (Figura figura : figuras) {
                 if(!(figura instanceof Flujo)){
@@ -376,7 +454,7 @@ public class Sistema implements Initializable {
                         if(x>=figura.getVertices().get(0).getX()){
                            if(y<=figura.getVertices().get(2).getY()){
                                 if(y>=figura.getVertices().get(0).getY()){
-                                    return figura.verticeCentro;
+                                    return figura;
                                 }
                             } 
                         }
@@ -539,6 +617,7 @@ public class Sistema implements Initializable {
                 }*/
                 b=false;
                 powerUp=0;
+                canvas.setOnMouseClicked(null);
             }  
         });
             
@@ -567,7 +646,7 @@ public class Sistema implements Initializable {
         if (result.isPresent() && !result.get().equalsIgnoreCase("") && !result.get().equalsIgnoreCase(" ")){
             
             b= true;
-            canvas.setOnMousePressed((MouseEvent event2) -> {
+            canvas.setOnMouseClicked((MouseEvent event2) -> {
             double p1 = event2.getX();
             double p2 = event2.getY();
             redimensionCanvas(p1,p2);
@@ -612,7 +691,7 @@ public class Sistema implements Initializable {
                     figuras.add(entrada);
                     entrada.dibujar(gc);
                 b=false;
-                return;
+                canvas.setOnMouseClicked(null);
                 
             }       
         });
@@ -699,6 +778,7 @@ public class Sistema implements Initializable {
                     
                     actualizar();
                     b=false;
+                    canvas.setOnMouseClicked(null);
                 }
             }
             else{
@@ -719,7 +799,8 @@ public class Sistema implements Initializable {
         
         for (Figura figura : figuras) {
             if(figura instanceof Flujo){
-                ((Flujo) figura).calcularVertices();
+                
+                ((Flujo) figura).calcularVertices(figuras);
             }
             figura.dibujar(gc);
         }
@@ -730,72 +811,72 @@ public class Sistema implements Initializable {
     private void dibujarInicio(ActionEvent event) throws IOException {
         b= true;
         
-            canvas.setOnMousePressed((MouseEvent event2) -> {
-                double p1 = event2.getX();
-                double p2 = event2.getY();
-                if(existeInicio()==false || existeFin()==false){
-                redimensionCanvas(p1,p2);    
-                if(b){
-                    double x = event2.getX();
-                    double y = event2.getY();
-                    double x1 = x - 50;
-                    double y1 = y - 25;
-                    double x2 = x + 50;
-                    double y2 = y - 25;
-                    double x3 = x + 50;
-                    double y3 = y + 25;
-                    double x4 = x - 50;
-                    double y4 = y + 25;
+        canvas.setOnMouseClicked((MouseEvent event2) -> {
+            double p1 = event2.getX();
+            double p2 = event2.getY();
+            if(existeInicio()==false || existeFin()==false){
+            redimensionCanvas(p1,p2);    
+            if(b){
+                double x = event2.getX();
+                double y = event2.getY();
+                double x1 = x - 50;
+                double y1 = y - 25;
+                double x2 = x + 50;
+                double y2 = y - 25;
+                double x3 = x + 50;
+                double y3 = y + 25;
+                double x4 = x - 50;
+                double y4 = y + 25;
 
-                    if(x1-20<0){
-                        x=70;
-                        x2=x2-x1+20;
-                        x3=x3-x1+20;
-                        x4=x4-x1+20;
-                        x1=20;
-                    }
-                    if(y1<0){
-                        y=25;
-                        y3=y3-y1;
-                        y4=y4-y1;
-                        y1=0;
-                        y2=0;
-                    }
-                    
-                        
-                        if(existeInicio()==false){
-                            Inicio inicio = new Inicio(TipoF.INICIO);
-                            inicio.setVerticeCentro(new Vertice(x,y));
-                            inicio.getVertices().add(new Vertice(x1,y1));
-                            inicio.getVertices().add(new Vertice(x2,y2));
-                            inicio.getVertices().add(new Vertice(x3,y3));
-                            inicio.getVertices().add(new Vertice(x4,y4));
-                            inicio.calcularConexiones();
-                            //se debe validar la diferencia entre inicio y fin
-                            inicio.texto = "INICIO";
-                            figuras.add(inicio);
-                            inicio.dibujar(gc);
+                if(x1-20<0){
+                    x=70;
+                    x2=x2-x1+20;
+                    x3=x3-x1+20;
+                    x4=x4-x1+20;
+                    x1=20;
+                }
+                if(y1<0){
+                    y=25;
+                    y3=y3-y1;
+                    y4=y4-y1;
+                    y1=0;
+                    y2=0;
+                }
 
-                        }else if(existeFin() == false){
-                            Inicio inicio = new Inicio(TipoF.FIN);
-                            inicio.setVerticeCentro(new Vertice(x,y));
-                            inicio.getVertices().add(new Vertice(x1,y1));
-                            inicio.getVertices().add(new Vertice(x2,y2));
-                            inicio.getVertices().add(new Vertice(x3,y3));
-                            inicio.getVertices().add(new Vertice(x4,y4));
-                            inicio.calcularConexiones();
-                            //se debe validar la diferencia entre inicio y fin
-                            inicio.texto = "FIN";
-                            figuras.add(inicio);
-                            inicio.dibujar(gc);
-                        }
-                        b=false;
-                        return;
-                    
-                }
-                }
-            
-             
+
+                    if(existeInicio()==false){
+                        Inicio inicio = new Inicio(TipoF.INICIO);
+                        inicio.setVerticeCentro(new Vertice(x,y));
+                        inicio.getVertices().add(new Vertice(x1,y1));
+                        inicio.getVertices().add(new Vertice(x2,y2));
+                        inicio.getVertices().add(new Vertice(x3,y3));
+                        inicio.getVertices().add(new Vertice(x4,y4));
+                        inicio.calcularConexiones();
+                        //se debe validar la diferencia entre inicio y fin
+                        inicio.texto = "INICIO";
+                        figuras.add(inicio);
+                        inicio.dibujar(gc);
+
+                    }else if(existeFin() == false){
+                        Inicio inicio = new Inicio(TipoF.FIN);
+                        inicio.setVerticeCentro(new Vertice(x,y));
+                        inicio.getVertices().add(new Vertice(x1,y1));
+                        inicio.getVertices().add(new Vertice(x2,y2));
+                        inicio.getVertices().add(new Vertice(x3,y3));
+                        inicio.getVertices().add(new Vertice(x4,y4));
+                        inicio.calcularConexiones();
+                        //se debe validar la diferencia entre inicio y fin
+                        inicio.texto = "FIN";
+                        figuras.add(inicio);
+                        inicio.dibujar(gc);
+                    }
+                    b=false;
+                   canvas.setOnMouseClicked(null);
+
+            }
+            }
+
+
         });
     
        
@@ -835,7 +916,7 @@ public class Sistema implements Initializable {
             
             b= true;
         
-            canvas.setOnMousePressed((MouseEvent event2) -> {
+            canvas.setOnMouseClicked((MouseEvent event2) -> {
             double p1 = event2.getX();
             double p2 = event2.getY();
             redimensionCanvas(p1,p2);   
@@ -883,7 +964,7 @@ public class Sistema implements Initializable {
                     documento.dibujar(gc);
                 
                 b=false;
-                return;
+                canvas.setOnMouseClicked(null);
                 
             
 
@@ -905,6 +986,7 @@ public class Sistema implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         
+        mover();
         
         
         

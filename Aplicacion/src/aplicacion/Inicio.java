@@ -52,10 +52,20 @@ public class Inicio extends Figura{
         Vertice aux3 = vertices.get(2);
         Vertice aux4 = vertices.get(3);
         
-        conexiones.add(new Vertice((aux1.getX()+aux2.getX())/2, (aux1.getY()+aux2.getY())/2));
-        conexiones.add(new Vertice(((aux2.getX()+aux3.getX())/2)+20, (aux2.getY()+aux3.getY())/2));
-        conexiones.add(new Vertice((aux3.getX()+aux4.getX())/2, (aux3.getY()+aux4.getY())/2));
-        conexiones.add(new Vertice(((aux4.getX()+aux1.getX())/2)-20, (aux4.getY()+aux1.getY())/2));
+        if(conexiones.size()>0){
+            conexiones.set(0,new Vertice((aux1.getX()+aux2.getX())/2, (aux1.getY()+aux2.getY())/2));
+            conexiones.set(1,new Vertice(((aux2.getX()+aux3.getX())/2)+20, (aux2.getY()+aux3.getY())/2));
+            conexiones.set(2,new Vertice((aux3.getX()+aux4.getX())/2, (aux3.getY()+aux4.getY())/2));
+            conexiones.set(3,new Vertice(((aux4.getX()+aux1.getX())/2)-20, (aux4.getY()+aux1.getY())/2));
+        }else{
+            conexiones.add(new Vertice((aux1.getX()+aux2.getX())/2, (aux1.getY()+aux2.getY())/2));
+            conexiones.add(new Vertice(((aux2.getX()+aux3.getX())/2)+20, (aux2.getY()+aux3.getY())/2));
+            conexiones.add(new Vertice((aux3.getX()+aux4.getX())/2, (aux3.getY()+aux4.getY())/2));
+            conexiones.add(new Vertice(((aux4.getX()+aux1.getX())/2)-20, (aux4.getY()+aux1.getY())/2));
+            
+        }
+        
+        
     }
 
     @Override
@@ -68,6 +78,9 @@ public class Inicio extends Figura{
         double y3 = y + 25;
         double x4 = x - 50;
         double y4 = y + 25;
+        
+        verticeCentro.setX(x);
+        verticeCentro.setY(y);
         vertices.get(0).setX(x1);
         vertices.get(0).setY(y1);
         vertices.get(1).setX(x2);
