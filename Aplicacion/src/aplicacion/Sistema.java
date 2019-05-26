@@ -25,6 +25,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -52,7 +53,10 @@ public class Sistema implements Initializable {
     
     @FXML
     private Button b3;
-
+    
+    @FXML
+    private TextArea area;
+    
     @FXML
     private Button b4;
     
@@ -304,13 +308,18 @@ public class Sistema implements Initializable {
                         @Override
                         public void run() {
                             for (Figura corredor : corredors) {
+                                if (corredor.tipo!=TipoF.FIN && corredor.tipo!=TipoF.INICIO){
+                                        area.appendText(corredor.texto + "\n");
+                                    } 
                                 gc.fillOval(corredor.verticeCentro.getX()-80, corredor.verticeCentro.getY(), 20, 20);
+                                
                                 try {
                                     Thread.sleep(3000);
                                     actualizar();
                                 } catch (InterruptedException ex) {
                                     Logger.getLogger(Sistema.class.getName()).log(Level.SEVERE, null, ex);
                                 }
+                                
                             }
                             corredors.clear();
                             

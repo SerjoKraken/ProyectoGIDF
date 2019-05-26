@@ -46,7 +46,17 @@ public class Desicion extends Figura{
 
     @Override
     public void calcularConexiones() {
+        Vertice aux1 = vertices.get(0);
+        Vertice aux2 = vertices.get(1);
+        Vertice aux3 = vertices.get(2);
+        Vertice aux4 = vertices.get(3);
         
+       
+            conexiones.set(0,aux1);
+            conexiones.set(1,aux2);
+            conexiones.set(2,aux3);
+            conexiones.set(3,aux4);
+ 
         
     }
 
