@@ -82,6 +82,8 @@ public class Sistema implements Initializable {
     public double powerUp=0;
     boolean b = false;
     
+    ArrayList<Variable> variables = new ArrayList<>();
+    
     @FXML
     public void mover()  {
         
@@ -178,18 +180,19 @@ public class Sistema implements Initializable {
                 }
                
                    
-                    Proceso proceso = new Proceso( TipoF.PROCESO);
-                    proceso.setVerticeCentro(new Vertice(x,y));
-                    proceso.getVertices().add(new Vertice(x1, y1));
-                    proceso.getVertices().add(new Vertice(x2, y2));
-                    proceso.getVertices().add(new Vertice(x3, y3));
-                    proceso.getVertices().add(new Vertice(x4, y4));
-                    proceso.calcularConexiones();
-                    proceso.texto = result.get();
-                    figuras.add(proceso);
-                    proceso.dibujar(gc);
+                Proceso proceso = new Proceso( TipoF.PROCESO);
+                proceso.setVerticeCentro(new Vertice(x,y));
+                proceso.getVertices().add(new Vertice(x1, y1));
+                proceso.getVertices().add(new Vertice(x2, y2));
+                proceso.getVertices().add(new Vertice(x3, y3));
+                proceso.getVertices().add(new Vertice(x4, y4));
+                proceso.calcularConexiones();
+                proceso.texto = result.get();
+                figuras.add(proceso);
+                proceso.dibujar(gc);
                     
                 
+                actualizar();
                 b=false;
                 
                 powerUp=0;
@@ -246,17 +249,15 @@ public class Sistema implements Initializable {
         
     
     
-    Flujo flujo = null;
-    Figura fig = null;
-    ArrayList<Figura> corredors = new ArrayList<>(); 
+    
     
     @FXML
     private void correr(ActionEvent event) throws InterruptedException {
         
+        Flujo flujo = null;
+        Figura fig = null;
+        ArrayList<Figura> corredors = new ArrayList<>(); 
         
-        final Timeline timeline = new Timeline();
-        timeline.setCycleCount(Timeline.INDEFINITE);
-        timeline.setAutoReverse(true);
 
         if (!figuras.isEmpty()){
             if(buscarInicio() && buscarFin()){
@@ -309,8 +310,8 @@ public class Sistema implements Initializable {
                         public void run() {
                             for (Figura corredor : corredors) {
                                 if (corredor.tipo!=TipoF.FIN && corredor.tipo!=TipoF.INICIO){
-                                        area.appendText(corredor.texto + "\n");
-                                    } 
+                                    agregarVariable(corredor);
+                                } 
                                 gc.fillOval(corredor.verticeCentro.getX()-80, corredor.verticeCentro.getY(), 20, 20);
                                 
                                 try {
@@ -322,16 +323,13 @@ public class Sistema implements Initializable {
                                 
                             }
                             corredors.clear();
+                            variables.clear();
                             
                         }
                     }).start();
                     
                     
-                    /*for (Figura corredor : corredors) {
-                        
-                        timeline.getKeyFrames().add(new KeyFrame(javafx.util.Duration.millis(5000), (ActionEvent e) -> {gc.fillOval(corredor.verticeCentro.getX()-80, corredor.verticeCentro.getY()-80, 10, 10);}));
-                        timeline.play();
-                    }*/
+                    
                     
                     
                 }
@@ -357,6 +355,43 @@ public class Sistema implements Initializable {
     
     }
     
+    private boolean existeVariable(String nombre){
+        for (Variable variable : variables) {
+            if(variable.nombre.equals(nombre)){
+                return true;
+            }
+        }
+        return false;
+    }
+    private void agregarVariable(Figura figura){
+        
+        
+        
+        if(figura.tipo == TipoF.ENTRADA){
+            if(figura.texto.matches("[A-Z]+=.+")){
+                if(!existeVariable(figura.texto.split("=")[0])){
+                    area.appendText(figura.texto.split("=")[0]+" <- "+evaluarAritmetica(figura.texto.split("=")[1], variables)+" \n");
+                    variables.add(new Variable(figura.texto.split("=")[0],evaluarAritmetica(figura.texto.split("=")[1], variables)+""));
+                }else{
+                    for (int i = 0; i < variables.size(); i++) {
+                        if(variables.get(i).nombre.equals(figura.texto.split("=")[0])){
+                            variables.get(i).setValor(evaluarAritmetica(figura.texto.split("=")[1], variables)+"");
+                        }
+                    }
+
+                }
+            }else if(figura.texto.matches("[A-Z]+")){
+                area.appendText("\"el valor de la variable "+figura.texto+" es: "+valorAritmetico(figura.texto, variables)+"\" \n");
+            }
+        }else if(figura.tipo == TipoF.PROCESO){
+            for (int i = 0; i < variables.size(); i++) {
+                if(variables.get(i).nombre.equals(figura.texto.split("=")[0])){
+                    area.appendText(figura.texto.split("=")[0]+" <- "+evaluarAritmetica(figura.texto.split("=")[1], variables)+" \n");
+                    variables.get(i).setValor(evaluarAritmetica(figura.texto.split("=")[1], variables)+"");
+                }
+            }
+        }
+    }
     
     @FXML
     private void dibujarFlujo(ActionEvent event) {
@@ -397,6 +432,7 @@ public class Sistema implements Initializable {
                                 flujo.dibujar(gc);
                             }
                             
+                            actualizar();
                             b=false;
                             canvas.setOnMouseClicked(null);
                         }
@@ -624,6 +660,7 @@ public class Sistema implements Initializable {
                     alert.setContentText("Ya se encuentra una figura creada aquÃ­ ");
                     alert.showAndWait();
                 }*/
+                actualizar();
                 b=false;
                 powerUp=0;
                 canvas.setOnMouseClicked(null);
@@ -689,16 +726,19 @@ public class Sistema implements Initializable {
                     y1=0;
                 }
                 
-                    Entrada entrada = new Entrada(TipoF.ENTRADA);
-                    entrada.setVerticeCentro(new Vertice(x,y));
-                    entrada.getVertices().add(new Vertice(x1,y1));
-                    entrada.getVertices().add(new Vertice(x2,y2));
-                    entrada.getVertices().add(new Vertice(x3,y3));
-                    entrada.getVertices().add(new Vertice(x4,y4));
-                    entrada.calcularConexiones();
-                    entrada.texto = result.get();
-                    figuras.add(entrada);
-                    entrada.dibujar(gc);
+                Entrada entrada = new Entrada(TipoF.ENTRADA);
+                entrada.setVerticeCentro(new Vertice(x,y));
+                entrada.getVertices().add(new Vertice(x1,y1));
+                entrada.getVertices().add(new Vertice(x2,y2));
+                entrada.getVertices().add(new Vertice(x3,y3));
+                entrada.getVertices().add(new Vertice(x4,y4));
+                entrada.calcularConexiones();
+                entrada.texto = result.get();
+                figuras.add(entrada);
+                entrada.dibujar(gc);
+                
+                actualizar();
+                
                 b=false;
                 canvas.setOnMouseClicked(null);
                 
@@ -763,10 +803,11 @@ public class Sistema implements Initializable {
                                     }else{
                                     
                                     
-                                        if(figuras.get(i) instanceof Flujo && figuras.get(i).getVertices().get(0).getX()<= px &&
-                                        figuras.get(i).getVertices().get(1).getX()>=px &&
-                                        figuras.get(i).getVertices().get(0).getY()<= py &&
-                                        figuras.get(i).getVertices().get(1).getY()>=py &&
+                                        if(figuras.get(i) instanceof Flujo && 
+                                        figuras.get(i).getVerticeCentro().getX()-5 <= px &&
+                                        figuras.get(i).getVerticeCentro().getX()+5 >= px &&
+                                        figuras.get(i).getVerticeCentro().getY()-5 <= py &&
+                                        figuras.get(i).getVerticeCentro().getY()+5 >= py &&
                                         figuras.get(i).getTipo()==TipoF.FLUJO){
                                         }else{
                                             aux.add(figuras.get(i));
@@ -810,8 +851,14 @@ public class Sistema implements Initializable {
             if(figura instanceof Flujo){
                 
                 ((Flujo) figura).calcularVertices(figuras);
+                figura.dibujar(gc);
             }
-            figura.dibujar(gc);
+            
+        }
+        for (Figura figura : figuras) {
+            if(!(figura instanceof Flujo)){
+                figura.dibujar(gc);
+            }
         }
     }
     
@@ -824,33 +871,33 @@ public class Sistema implements Initializable {
             double p1 = event2.getX();
             double p2 = event2.getY();
             if(existeInicio()==false || existeFin()==false){
-            redimensionCanvas(p1,p2);    
-            if(b){
-                double x = event2.getX();
-                double y = event2.getY();
-                double x1 = x - 50;
-                double y1 = y - 25;
-                double x2 = x + 50;
-                double y2 = y - 25;
-                double x3 = x + 50;
-                double y3 = y + 25;
-                double x4 = x - 50;
-                double y4 = y + 25;
+                redimensionCanvas(p1,p2);    
+                if(b){
+                    double x = event2.getX();
+                    double y = event2.getY();
+                    double x1 = x - 50;
+                    double y1 = y - 25;
+                    double x2 = x + 50;
+                    double y2 = y - 25;
+                    double x3 = x + 50;
+                    double y3 = y + 25;
+                    double x4 = x - 50;
+                    double y4 = y + 25;
 
-                if(x1-20<0){
-                    x=70;
-                    x2=x2-x1+20;
-                    x3=x3-x1+20;
-                    x4=x4-x1+20;
-                    x1=20;
-                }
-                if(y1<0){
-                    y=25;
-                    y3=y3-y1;
-                    y4=y4-y1;
-                    y1=0;
-                    y2=0;
-                }
+                    if(x1-20<0){
+                        x=70;
+                        x2=x2-x1+20;
+                        x3=x3-x1+20;
+                        x4=x4-x1+20;
+                        x1=20;
+                    }
+                    if(y1<0){
+                        y=25;
+                        y3=y3-y1;
+                        y4=y4-y1;
+                        y1=0;
+                        y2=0;
+                    }
 
 
                     if(existeInicio()==false){
@@ -865,6 +912,7 @@ public class Sistema implements Initializable {
                         inicio.texto = "INICIO";
                         figuras.add(inicio);
                         inicio.dibujar(gc);
+                        
 
                     }else if(existeFin() == false){
                         Inicio inicio = new Inicio(TipoF.FIN);
@@ -879,13 +927,12 @@ public class Sistema implements Initializable {
                         figuras.add(inicio);
                         inicio.dibujar(gc);
                     }
+                    actualizar();
                     b=false;
-                   canvas.setOnMouseClicked(null);
+                    canvas.setOnMouseClicked(null);
 
+                }
             }
-            }
-
-
         });
     
        
@@ -961,17 +1008,21 @@ public class Sistema implements Initializable {
                     y1=0;
                 }
                 
-                    Documento documento = new Documento(TipoF.DOCUMENTACION);
-                    documento.setVerticeCentro(new Vertice(x,y));
-                    documento.getVertices().add(new Vertice(x1,y1));
-                    documento.getVertices().add(new Vertice(x2,y2));
-                    documento.getVertices().add(new Vertice(x3,y3));
-                    documento.getVertices().add(new Vertice(x4,y4));
-                    documento.texto = result.get();
-                    documento.calcularConexiones();
-                    figuras.add(documento);
-                    documento.dibujar(gc);
+                Documento documento = new Documento(TipoF.DOCUMENTACION);
+                documento.setVerticeCentro(new Vertice(x,y));
+                documento.getVertices().add(new Vertice(x1,y1));
+                documento.getVertices().add(new Vertice(x2,y2));
+                documento.getVertices().add(new Vertice(x3,y3));
+                documento.getVertices().add(new Vertice(x4,y4));
+                documento.texto = result.get();
+                documento.calcularConexiones();
+                figuras.add(documento);
+                documento.dibujar(gc);
                 
+                actualizar();
+                
+                
+                    
                 b=false;
                 canvas.setOnMouseClicked(null);
                 
@@ -1004,6 +1055,7 @@ public class Sistema implements Initializable {
 
         
         ap.setBackground(Background.EMPTY);
+        
         
     }    
     
@@ -1065,7 +1117,91 @@ public class Sistema implements Initializable {
         this.figuras = figuras;
     }
 
-    
+    public double evaluarAritmetica(String expresion, ArrayList<Variable> variables){
+        
+        if(expresion.matches("[0-9]+")){
+            return Double.parseDouble(expresion);
+            
+        }else if(expresion.matches("[A-Z]+")){
+            return valorAritmetico(expresion, variables);
+            
+        }else if(expresion.matches("\\(.+\\)")){
+           expresion = expresion.replaceFirst("[(]", "");
+           int index = expresion.lastIndexOf(")");
+           expresion = expresion.substring(0, index)+expresion.substring(index+1);
+           return evaluarAritmetica(expresion, variables);
+           
+        }else if(expresion.matches("-((-[0-9]+)|([0-9]+))")){
+            return -Double.parseDouble(expresion);
+            
+        }else if(expresion.matches("\\d+\\*.+")){
+            int index = expresion.indexOf("*");
+            return Double.parseDouble(expresion.substring(0, index)) * evaluarAritmetica(expresion.substring(index+1),variables);
+        
+        }else if(expresion.matches("\\d+\\/.+")){
+            int index = expresion.indexOf("/");
+            return Double.parseDouble(expresion.substring(0, index)) / evaluarAritmetica(expresion.substring(index+1),variables);
+        
+        }else if(expresion.matches("\\d+\\+.+")){
+            int index = expresion.indexOf("+");
+            return Double.parseDouble(expresion.substring(0, index)) + evaluarAritmetica(expresion.substring(index+1),variables);
+        
+        }else if(expresion.matches("\\d+\\-.+")){
+            int index = expresion.indexOf("-");
+            return Double.parseDouble(expresion.substring(0, index)) - evaluarAritmetica(expresion.substring(index+1),variables);
+            
+        }else if(expresion.matches("[A-Z]+\\*.+")){
+            int index = expresion.indexOf("*");
+            return valorAritmetico(expresion.substring(0, index), variables) * evaluarAritmetica(expresion.substring(index+1),variables);
+        
+        
+        }else if(expresion.matches("[A-Z]+\\/.+")){
+            int index = expresion.indexOf("/");
+            return valorAritmetico(expresion.substring(0, index), variables) / evaluarAritmetica(expresion.substring(index+1),variables);
+        
+        
+        }else if(expresion.matches("[A-Z]+\\+.+")){
+            int index = expresion.indexOf("+");
+            return valorAritmetico(expresion.substring(0, index), variables) + evaluarAritmetica(expresion.substring(index+1),variables);
+        
+        
+        }else if(expresion.matches("[A-Z]+\\-.+")){
+            int index = expresion.indexOf("-");
+            return valorAritmetico(expresion.substring(0, index), variables) - evaluarAritmetica(expresion.substring(index+1),variables);
+        
+        
+        }else if(expresion.matches("\\(.+\\)\\*\\(.+\\)")){
+            int index = expresion.indexOf("*");
+            return evaluarAritmetica(expresion.substring(0, index),variables) * evaluarAritmetica(expresion.substring(index+1),variables);
+            
+        }else if(expresion.matches("\\(.+\\)\\/\\(.+\\)")){
+            int index = expresion.indexOf("/");
+            return evaluarAritmetica(expresion.substring(0, index),variables) / evaluarAritmetica(expresion.substring(index+1),variables);
+            
+        }else if(expresion.matches("\\(.+\\)\\+\\(.+\\)")){
+            int index = expresion.indexOf("+");
+            return evaluarAritmetica(expresion.substring(0, index),variables) + evaluarAritmetica(expresion.substring(index+1),variables);
+            
+        }
+        else if(expresion.matches("\\(.+\\)-\\(.+\\)")){
+            int index = expresion.indexOf("-");
+            return evaluarAritmetica(expresion.substring(0, index),variables) - evaluarAritmetica(expresion.substring(index+1),variables);
+            
+        }else{
+            return 0;
+        }
+        
+       
+    }
+    public double valorAritmetico(String expresion, ArrayList<Variable> variables){
+        for (Variable variable : variables) {
+            if (variable.nombre.equals(expresion)) {
+                return Double.parseDouble(variable.valor);
+            }
+        }
+        // se deja esto asi por mientras
+        return 0;
+    }
     
     
 }

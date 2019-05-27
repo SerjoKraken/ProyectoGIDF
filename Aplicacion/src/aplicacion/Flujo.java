@@ -52,11 +52,11 @@ public class Flujo extends Figura{
         verticeCentro = new Vertice((v.getX()+v2.getX())/2, (v.getY()+v2.getY())/2);
         
         if(vertices.size()>2){
-            vertices.set(2,new Vertice(verticeCentro.getX()+5, verticeCentro.getY()+5));
-            vertices.set(3,new Vertice(verticeCentro.getX()-5, verticeCentro.getY()-5) );
+            vertices.set(2,new Vertice(verticeCentro.getX()-5, verticeCentro.getY()-5));
+            vertices.set(3,new Vertice(verticeCentro.getX()+5, verticeCentro.getY()+5) );
         }else{
-            vertices.add(new Vertice(verticeCentro.getX()+5, verticeCentro.getY()+5));
-            vertices.add(new Vertice(verticeCentro.getX()-5, verticeCentro.getY()-5) );
+            vertices.add(new Vertice(verticeCentro.getX()-5, verticeCentro.getY()-5));
+            vertices.add(new Vertice(verticeCentro.getX()+5, verticeCentro.getY()+5) );
         }
         
     }
