@@ -26,39 +26,65 @@ public class Flujo extends Figura{
     }
     
     public void calcularVertices(ArrayList<Figura> figuras){
+        /*hay algun problema que produce que se eliminen todas las figuras*/
+        System.out.println("Comprobando...");
+        System.out.println(""+indexPadre+" "+indexHijo);
         
         padre = figuras.get(indexPadre);
         hijo = figuras.get(indexHijo);
+        if (figuras.get(indexPadre).getEstado()!=false) {
+            System.out.println("Existe el padre");
+        }else{
+            System.out.println("No tiene Padre padre");
+        }
+            
+        if(figuras.get(indexHijo).getEstado()!=false){
+            System.out.println("Existe el Hijo");
+        }else{
+            System.out.println("No tiene Hijo");
+        }
+                
         
+        System.out.println("***");
+        System.out.println(""+figuras.get(indexPadre).tipo);
+        System.out.println(""+figuras.get(indexHijo).tipo);
         Vertice v ;
         Vertice v2;
         
+        System.out.println("********************");
         
-        v = padre.verticeCentro;
-        v2 = hijo.conexiones.get(0);
-        
-        
-        for (Vertice conexion2 : hijo.getConexiones()) {
-            if(v.distancia(conexion2) < v.distancia(v2)){
 
-                v2 = conexion2;
+        if(figuras.get(indexHijo).getEstado()==true && figuras.get(indexPadre).getEstado()==true && !(figuras.get(indexHijo) instanceof Flujo) && !(figuras.get(indexPadre) instanceof Flujo)){
+
+            v = padre.verticeCentro;
+            v2 = hijo.conexiones.get(0);
+
+
+            for (Vertice conexion2 : hijo.getConexiones()) {
+                if(v.distancia(conexion2) < v.distancia(v2)){
+
+                    v2 = conexion2;
+                }
+            }
+
+
+            vertices.set(0, v);
+            vertices.set(1, v2);
+
+            verticeCentro = new Vertice((v.getX()+v2.getX())/2, (v.getY()+v2.getY())/2);
+
+            if(vertices.size()>2){
+                vertices.set(2,new Vertice(verticeCentro.getX()-5, verticeCentro.getY()-5));
+                vertices.set(3,new Vertice(verticeCentro.getX()+5, verticeCentro.getY()+5) );
+            }else{
+                vertices.add(new Vertice(verticeCentro.getX()-5, verticeCentro.getY()-5));
+                vertices.add(new Vertice(verticeCentro.getX()+5, verticeCentro.getY()+5) );
             }
         }
-        
-        
-        vertices.set(0, v);
-        vertices.set(1, v2);
-        
-        verticeCentro = new Vertice((v.getX()+v2.getX())/2, (v.getY()+v2.getY())/2);
-        
-        if(vertices.size()>2){
-            vertices.set(2,new Vertice(verticeCentro.getX()-5, verticeCentro.getY()-5));
-            vertices.set(3,new Vertice(verticeCentro.getX()+5, verticeCentro.getY()+5) );
-        }else{
-            vertices.add(new Vertice(verticeCentro.getX()-5, verticeCentro.getY()-5));
-            vertices.add(new Vertice(verticeCentro.getX()+5, verticeCentro.getY()+5) );
+        else{
+            System.out.println("Omitiendo");
+            this.setEstado(false);
         }
-        
     }
 
     @Override
@@ -91,6 +117,8 @@ public class Flujo extends Figura{
         }
         
     }
+
+    
 
     @Override
     public void calcularConexiones() {

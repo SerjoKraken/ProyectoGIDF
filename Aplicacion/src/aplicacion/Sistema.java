@@ -188,6 +188,7 @@ public class Sistema implements Initializable {
                 proceso.getVertices().add(new Vertice(x4, y4));
                 proceso.calcularConexiones();
                 proceso.texto = result.get();
+                proceso.setEstado(true);
                 figuras.add(proceso);
                 proceso.dibujar(gc);
                     
@@ -257,102 +258,109 @@ public class Sistema implements Initializable {
         Flujo flujo = null;
         Figura fig = null;
         ArrayList<Figura> corredors = new ArrayList<>(); 
-        
-
-        if (!figuras.isEmpty()){
-            if(buscarInicio() && buscarFin()){
-                //buscar inicio
-                for (Figura figura : figuras) {
-                    if(figura.getTipo() == TipoF.INICIO){
-                        fig = figura;
-                    }
-                }
-                // buscarFlujo que tenga el inicio
-                for (Figura figura : figuras) {
-                    if(figura instanceof Flujo){
-                        if(((Flujo) figura).padre.equals(fig)){
-                            flujo = (Flujo) figura;
+        b=true;
+        if(b){
+            if (!figuras.isEmpty()){
+                if(buscarInicio() && buscarFin()){
+                    //buscar inicio
+                    for (Figura figura : figuras) {
+                        if(figura.getTipo() == TipoF.INICIO){
+                            fig = figura;
                         }
                     }
-                }
-                if(!flujo.equals(null)){
-                    System.out.println(fig.texto);
-                    corredors.add(fig);
-                    
-                  
-                    //actualizar();
-                    
-                    while(fig != null && fig.getTipo() != TipoF.FIN ){
-                        fig = figuras.get(flujo.indexHijo);
-                        for (Figura figura : figuras) {
-                            if(figura instanceof Flujo){
-                                if(((Flujo) figura).padre.equals(fig)){
-                                    flujo = (Flujo) figura;
-                                }
+                    // buscarFlujo que tenga el inicio
+                    for (Figura figura : figuras) {
+                        if(figura instanceof Flujo){
+                            if(((Flujo) figura).padre.equals(fig)){
+                                flujo = (Flujo) figura;
                             }
                         }
-                        if(fig.tipo != TipoF.FIN){
-                           System.out.println(fig.texto);
-                           corredors.add(fig);
-                        }
                     }
-                    if(fig == null){
-                        System.out.println("Mala construccion");
-                    }else if(fig.getTipo() == TipoF.FIN){
+                    if(!flujo.equals(null)){
                         System.out.println(fig.texto);
                         corredors.add(fig);
-                    }
-                    
-                    gc.setFill(Color.RED);
-                    
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            for (Figura corredor : corredors) {
-                                if (corredor.tipo!=TipoF.FIN && corredor.tipo!=TipoF.INICIO){
-                                    agregarVariable(corredor);
-                                } 
-                                gc.fillOval(corredor.verticeCentro.getX()-80, corredor.verticeCentro.getY(), 20, 20);
-                                
-                                try {
-                                    Thread.sleep(3000);
-                                    actualizar();
-                                } catch (InterruptedException ex) {
-                                    Logger.getLogger(Sistema.class.getName()).log(Level.SEVERE, null, ex);
+
+
+                        //actualizar();
+
+                        while(fig != null && fig.getTipo() != TipoF.FIN ){
+                            fig = figuras.get(flujo.indexHijo);
+                            for (Figura figura : figuras) {
+                                if(figura instanceof Flujo){
+                                    if(((Flujo) figura).padre.equals(fig)){
+                                        flujo = (Flujo) figura;
+                                    }
                                 }
-                                
                             }
-                            corredors.clear();
-                            variables.clear();
-                            
+                            if(fig.tipo != TipoF.FIN){
+                               System.out.println(fig.texto);
+                               corredors.add(fig);
+                            }
                         }
-                    }).start();
-                    
-                    
-                    
-                    
-                    
+                        if(fig == null){
+                            System.out.println("Mala construccion");
+                        }else if(fig.getTipo() == TipoF.FIN){
+                            System.out.println(fig.texto);
+                            corredors.add(fig);
+                        }
+
+                        gc.setFill(Color.RED);
+
+                        Thread hilo = new Thread(new Runnable() {
+                            @Override
+                            
+                            public void run() {
+
+
+                                    for (Figura corredor : corredors) {
+                                        if (corredor.tipo!=TipoF.FIN && corredor.tipo!=TipoF.INICIO){
+                                            agregarVariable(corredor);
+                                        } 
+                                        gc.fillOval(corredor.verticeCentro.getX()-80, corredor.verticeCentro.getY(), 20, 20);
+
+                                        try {
+                                            Thread.sleep(3000);
+                                            actualizar();
+                                        } catch (InterruptedException ex) {
+                                            Logger.getLogger(Sistema.class.getName()).log(Level.SEVERE, null, ex);
+                                        }
+
+                                    }
+                                    b=false;
+                                    corredors.clear();
+                                    variables.clear();
+                                    
+                                }
+                            
+                        
+                        });
+                        hilo.start();
+                        
+                        
+                        //hilo.stop();
+                        
+                    }
+                
+                }else{
+                    Alert alert = new Alert(AlertType.WARNING);
+                    alert.setTitle("Error");
+                    alert.setHeaderText("Cuidado");
+                    alert.setContentText("No se ha encontrado el inicio o el fin");
+
+                    alert.showAndWait();
+                    b=false;
                 }
-               
             }else{
                 Alert alert = new Alert(AlertType.WARNING);
                 alert.setTitle("Error");
                 alert.setHeaderText("Cuidado");
-                alert.setContentText("No se ha encontrado el inicio o el fin");
+                alert.setContentText("No se ha encontrado ninguna figuras");
 
                 alert.showAndWait();
-                
+                b=false;
             }
-        }else{
-            Alert alert = new Alert(AlertType.WARNING);
-            alert.setTitle("Error");
-            alert.setHeaderText("Cuidado");
-            alert.setContentText("No se ha encontrado ninguna figuras");
-
-            alert.showAndWait();
-            
         }
-    
+        b=false;
     }
     
     private boolean existeVariable(String nombre){
@@ -370,7 +378,7 @@ public class Sistema implements Initializable {
         if(figura.tipo == TipoF.ENTRADA){
             if(figura.texto.matches("[A-Z]+=.+")){
                 if(!existeVariable(figura.texto.split("=")[0])){
-                    area.appendText(figura.texto.split("=")[0]+" <- "+evaluarAritmetica(figura.texto.split("=")[1], variables)+" \n");
+                    area.appendText(figura.texto.split("=")[0]+"⟵  "+evaluarAritmetica(figura.texto.split("=")[1], variables)+" \n");
                     variables.add(new Variable(figura.texto.split("=")[0],evaluarAritmetica(figura.texto.split("=")[1], variables)+""));
                 }else{
                     for (int i = 0; i < variables.size(); i++) {
@@ -386,7 +394,7 @@ public class Sistema implements Initializable {
         }else if(figura.tipo == TipoF.PROCESO){
             for (int i = 0; i < variables.size(); i++) {
                 if(variables.get(i).nombre.equals(figura.texto.split("=")[0])){
-                    area.appendText(figura.texto.split("=")[0]+" <- "+evaluarAritmetica(figura.texto.split("=")[1], variables)+" \n");
+                    area.appendText(figura.texto.split("=")[0]+"⟵"+evaluarAritmetica(figura.texto.split("=")[1], variables)+" \n");
                     variables.get(i).setValor(evaluarAritmetica(figura.texto.split("=")[1], variables)+"");
                 }
             }
@@ -419,7 +427,7 @@ public class Sistema implements Initializable {
                             Flujo flujo = new Flujo(TipoF.FLUJO);
                             flujo.getVertices().add(new Vertice(puntox1,puntoy1));
                             flujo.getVertices().add(new Vertice(puntox2,puntoy2));
-                            
+                            flujo.setEstado(true);
                             
                             agregarFiguras(flujo);
                             
@@ -427,7 +435,7 @@ public class Sistema implements Initializable {
                             flujo.calcularVertices(figuras);
 
                             if(flujoValido(flujo)){
-
+                                
                                 figuras.add(flujo);
                                 flujo.dibujar(gc);
                             }
@@ -756,14 +764,14 @@ public class Sistema implements Initializable {
         
      
     }
-    
+    private ArrayList<Figura> auxi = new ArrayList<>();
     @FXML
     private void limpiar(ActionEvent event) {
         b=true;
         canvas.setOnMouseClicked((MouseEvent event2)->{
             double px=event2.getX();
             double py=event2.getY();
-            ArrayList<Figura> aux = new ArrayList<>();
+            
             if(!figuras.isEmpty()){
                 if(b){
                     for (int i = 0; i < figuras.size(); i++) {
@@ -771,19 +779,21 @@ public class Sistema implements Initializable {
                             figuras.get(i).getVertices().get(1).getX()>=px &&
                             figuras.get(i).getVertices().get(0).getY()<= py &&
                             figuras.get(i).getVertices().get(2).getY()>=py &&
-                            figuras.get(i).getTipo()==TipoF.PROCESO){
+                            figuras.get(i).getTipo()==TipoF.PROCESO ){
+                            figuras.get(i).setEstado(false);
                         }else{
                             if(figuras.get(i).getVertices().get(0).getX()-20<= px &&
                             figuras.get(i).getVertices().get(1).getX()+20>=px &&
                             figuras.get(i).getVertices().get(0).getY()<= py &&
                             figuras.get(i).getVertices().get(2).getY()>=py &&
-                            figuras.get(i).getTipo()==TipoF.INICIO){
+                            figuras.get(i).getTipo()==TipoF.INICIO ){
+                               figuras.get(i).setEstado(false);
                             }else if(figuras.get(i).getVertices().get(0).getX()-20<= px &&
                             figuras.get(i).getVertices().get(1).getX()+20>=px &&
                             figuras.get(i).getVertices().get(0).getY()<= py &&
                             figuras.get(i).getVertices().get(2).getY()>=py &&
-                            figuras.get(i).getTipo()==TipoF.FIN){
-                            
+                            figuras.get(i).getTipo()==TipoF.FIN ){
+                                figuras.get(i).setEstado(false);
                                 
                             }else{
                                 
@@ -809,27 +819,37 @@ public class Sistema implements Initializable {
                                         figuras.get(i).getVerticeCentro().getY()-5 <= py &&
                                         figuras.get(i).getVerticeCentro().getY()+5 >= py &&
                                         figuras.get(i).getTipo()==TipoF.FLUJO){
+                                            figuras.get(i).setEstado(false);
                                         }else{
-                                            aux.add(figuras.get(i));
+                                            if(figuras.get(i).getEstado()!=false){
+                                                
+                                                figuras.get(i).setEstado(true);
+                                            }
                                         }
-                                    
-                                    
                                     }
                                 }
-                                
                             }
                         }
                     }
-                    figuras.clear();
-                    for (int i = 0; i < aux.size(); i++) {
-                        figuras.add(aux.get(i));
+                    /*for (int i = 0; i < figuras.size(); i++) {
+                        System.out.println(""+figuras.get(i).getEstado());
+                    }*/
+                    /**figuras.clear();
+                    for (int i = 0; i < auxi.size(); i++) {
+                        figuras.add(auxi.get(i));
+                    }**/
+                    for (Figura figura : figuras) {
+                        if(figura instanceof Flujo && figura.getEstado()!=false){
+                            ((Flujo)figura).calcularVertices(figuras);
+                        }
                     }
                     gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
                     
                     actualizar();
-                    b=false;
+                    
                     canvas.setOnMouseClicked(null);
                 }
+                b=false;
             }
             else{
                 Alert alert = new Alert(AlertType.WARNING);
@@ -846,9 +866,12 @@ public class Sistema implements Initializable {
     }
     private void actualizar(){
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        System.out.println("Actualizando");
+
         
         for (Figura figura : figuras) {
-            if(figura instanceof Flujo){
+            //if(figura instanceof Flujo && figura.getEstado()!=false){
+            if(figura instanceof Flujo && figura.getEstado()!=false){
                 
                 ((Flujo) figura).calcularVertices(figuras);
                 figura.dibujar(gc);
@@ -856,11 +879,31 @@ public class Sistema implements Initializable {
             
         }
         for (Figura figura : figuras) {
-            if(!(figura instanceof Flujo)){
+            if(!(figura instanceof Flujo) && figura.getEstado()!=false){
+            //if(!(figura instanceof Flujo )&& figura.getEstado()!=false){
+                
                 figura.dibujar(gc);
             }
         }
+        
+        for (int i = 0; i < figuras.size(); i++) {
+            if(figuras.get(i).getEstado()!=false){
+                auxi.add(figuras.get(i));
+            }
+            
+        }
+        figuras.clear();
+        for (int i = 0; i < auxi.size(); i++) {
+            figuras.add(auxi.get(i));
+        }
+        auxi.clear();
+        
     }
+        
+
+        
+      
+
     
     
     @FXML
@@ -910,6 +953,7 @@ public class Sistema implements Initializable {
                         inicio.calcularConexiones();
                         //se debe validar la diferencia entre inicio y fin
                         inicio.texto = "INICIO";
+                        inicio.setEstado(true);
                         figuras.add(inicio);
                         inicio.dibujar(gc);
                         
@@ -924,9 +968,11 @@ public class Sistema implements Initializable {
                         inicio.calcularConexiones();
                         //se debe validar la diferencia entre inicio y fin
                         inicio.texto = "FIN";
+                        inicio.setEstado(true);
                         figuras.add(inicio);
                         inicio.dibujar(gc);
                     }
+                    
                     actualizar();
                     b=false;
                     canvas.setOnMouseClicked(null);
@@ -1086,7 +1132,7 @@ public class Sistema implements Initializable {
                         (flujo.vertices.get(0).distancia(figura.getVertices().get(1))==0 && flujo.vertices.get(1).distancia(figura.getVertices().get(0))==0)){
                     return false;
                 }if(flujo.padre.getVerticeCentro().distancia(((Flujo) figura).padre.getVerticeCentro())==0
-                        || flujo.hijo.getVerticeCentro().distancia(((Flujo) figura).hijo.getVerticeCentro())==0){
+                        || flujo.hijo.getVerticeCentro().distancia(((Flujo) figura).hijo.getVerticeCentro())==0 ){
                     return false;
                 }
 
@@ -1118,6 +1164,7 @@ public class Sistema implements Initializable {
     }
 
     public double evaluarAritmetica(String expresion, ArrayList<Variable> variables){
+        //hay que cambiarlo para ocupar la nueva manera
         
         if(expresion.matches("[0-9]+")){
             return Double.parseDouble(expresion);
