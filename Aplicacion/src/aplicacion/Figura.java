@@ -12,6 +12,7 @@ public abstract class Figura {
     protected Vertice verticeCentro;
     protected TipoF tipo;
     String texto;
+    boolean estado;
 
     public Figura(TipoF tipo) {
         this.vertices = new ArrayList<>();
@@ -35,7 +36,12 @@ public abstract class Figura {
     public void setTipo(TipoF tipo) {
         this.tipo = tipo;
     }
-
+    public void setEstado(boolean estado){
+        this.estado=estado;
+    }
+    public boolean getEstado(){
+        return estado;
+    }
     
 
     
@@ -104,6 +110,7 @@ public abstract class Figura {
         
     }
     public abstract void dibujar(GraphicsContext gc);
+    public abstract void dibujar(GraphicsContext gc, double x, double y);
     public abstract void calcularConexiones();
         
     

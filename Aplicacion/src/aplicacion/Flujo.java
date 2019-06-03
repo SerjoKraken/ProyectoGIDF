@@ -14,6 +14,9 @@ import javafx.scene.canvas.GraphicsContext;
  */
 public class Flujo extends Figura{
     
+    int indexPadre;
+    int indexHijo;
+    
     Figura padre;
     Figura hijo;
     
@@ -22,39 +25,81 @@ public class Flujo extends Figura{
         
     }
     
-    public void calcularVertices(){
-        Vertice v = padre.verticeCentro;
-        Vertice v2 = hijo.verticeCentro;
-        for (Vertice conexion1 : padre.getConexiones()) {
+    public void calcularVertices(ArrayList<Figura> figuras){
+        /*hay algun problema que produce que se eliminen todas las figuras*/
+        System.out.println("Comprobando...");
+        System.out.println(""+indexPadre+" "+indexHijo);
+        
+        padre = figuras.get(indexPadre);
+        hijo = figuras.get(indexHijo);
+        if (figuras.get(indexPadre).getEstado()!=false) {
+            System.out.println("Existe el padre");
+        }else{
+            System.out.println("No tiene Padre padre");
+        }
+            
+        if(figuras.get(indexHijo).getEstado()!=false){
+            System.out.println("Existe el Hijo");
+        }else{
+            System.out.println("No tiene Hijo");
+        }
+                
+        
+        System.out.println("***");
+        System.out.println(""+figuras.get(indexPadre).tipo);
+        System.out.println(""+figuras.get(indexHijo).tipo);
+        Vertice v ;
+        Vertice v2;
+        
+        System.out.println("********************");
+        
+
+        if(figuras.get(indexHijo).getEstado()==true && figuras.get(indexPadre).getEstado()==true && !(figuras.get(indexHijo) instanceof Flujo) && !(figuras.get(indexPadre) instanceof Flujo)){
+
+            v = padre.verticeCentro;
+            v2 = hijo.conexiones.get(0);
+
+
             for (Vertice conexion2 : hijo.getConexiones()) {
-                if(conexion1.distancia(conexion2) < v.distancia(v2)){
-                    v = conexion1;
+                if(v.distancia(conexion2) < v.distancia(v2)){
+
                     v2 = conexion2;
                 }
             }
+
+
+            vertices.set(0, v);
+            vertices.set(1, v2);
+
+            verticeCentro = new Vertice((v.getX()+v2.getX())/2, (v.getY()+v2.getY())/2);
+
+            if(vertices.size()>2){
+                vertices.set(2,new Vertice(verticeCentro.getX()-5, verticeCentro.getY()-5));
+                vertices.set(3,new Vertice(verticeCentro.getX()+5, verticeCentro.getY()+5) );
+            }else{
+                vertices.add(new Vertice(verticeCentro.getX()-5, verticeCentro.getY()-5));
+                vertices.add(new Vertice(verticeCentro.getX()+5, verticeCentro.getY()+5) );
+            }
         }
-        vertices.set(0, v);
-        vertices.set(1, v2);
-        
-        verticeCentro = new Vertice((vertices.get(0).getX()+vertices.get(1).getX())/2, (vertices.get(0).getY()+vertices.get(1).getY())/2);
-        
-        vertices.add(0,new Vertice(verticeCentro.getX()+5, verticeCentro.getY()+5));
-        vertices.add(0,new Vertice(verticeCentro.getX()-5, verticeCentro.getY()-5) );
-        
-        
+        else{
+            System.out.println("Omitiendo");
+            this.setEstado(false);
+        }
     }
 
     @Override
     public void dibujar(GraphicsContext gc) {
-        double x1=vertices.get(2).getX();
-        double y1=vertices.get(2).getY();
-        double x2=vertices.get(3).getX();
-        double y2=vertices.get(3).getY();
+        double x1=vertices.get(0).getX();
+        double y1=vertices.get(0).getY();
+        double x2=vertices.get(1).getX();
+        double y2=vertices.get(1).getY();
         
-        double px1 =vertices.get(0).getX();
-        double py1 =vertices.get(0).getY();
-        double px2 =vertices.get(1).getX();
-        double py2 =vertices.get(1).getY();
+        double px1 =vertices.get(2).getX();
+        double py1 =vertices.get(2).getY();
+        double px2 =vertices.get(3).getX();
+        double py2 =vertices.get(3).getY();
+        
+        
         
         double tamanno = 15;
         double angulo = Math.atan2(y2-y1, x2-x1);
@@ -73,9 +118,16 @@ public class Flujo extends Figura{
         
     }
 
+    
+
     @Override
     public void calcularConexiones() {
-        
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.   
+    }
+
+    @Override
+    public void dibujar(GraphicsContext gc, double x, double y) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }
