@@ -403,16 +403,16 @@ public class Sistema implements Initializable {
     }
     
     @FXML
-    private void dibujarFlujo(ActionEvent event) {
-        
-        gc.setStroke(Color.BLACK);
-  
+    private void dibujarFlujo(ActionEvent event) {        
+        gc.setStroke(Color.BLACK); 
         b=true;
         canvas.setOnMouseClicked((MouseEvent event1) -> {
             double x1 = event1.getX();
             double y1 = event1.getY();
             Vertice vertice1;
-            if((vertice1=buscarConexion(x1,y1).getVerticeCentro())!=null){
+            
+            if((buscarConexion(x1,y1))!=null){
+                vertice1=buscarConexion(x1,y1).getVerticeCentro();
                 canvas.setOnMouseClicked(null);
                 canvas.setOnMouseClicked((MouseEvent event2) -> {
                     if(b){
@@ -421,14 +421,37 @@ public class Sistema implements Initializable {
                         double x2 = event2.getX();
                         double y2 = event2.getY();
                         Vertice vertice2;
-                      
-                        if((vertice2 = buscarConexion(x2,y2).getVerticeCentro())!=null){
+                        Figura fig = buscarConexion(x2,y2);
+                        
+                        if((buscarConexion(x2,y2))!=null && fig.tipo!=TipoF.DESICION){
+                            vertice2=buscarConexion(x2,y2).getVerticeCentro();
                             double puntox2 = vertice2.getX();
                             double puntoy2 = vertice2.getY();
                             Flujo flujo = new Flujo(TipoF.FLUJO);
                             flujo.getVertices().add(new Vertice(puntox1,puntoy1));
                             flujo.getVertices().add(new Vertice(puntox2,puntoy2));
-                            flujo.setEstado(true);
+                            
+                            
+                            agregarFiguras(flujo);
+                                                       
+                            flujo.calcularVertices(figuras);
+
+                            if(flujoValido(flujo)){
+
+                                figuras.add(flujo);
+                                flujo.dibujar(gc);
+                            }
+                            
+                            b=false;
+                            canvas.setOnMouseClicked(null);
+                        }else{
+                            vertice2=buscarConexion(x2,y2).getVerticeCentro();
+                            double puntox2 = vertice2.getX();
+                            double puntoy2 = vertice2.getY();
+                            Flujo flujo = new Flujo(TipoF.FLUJO);
+                            flujo.getVertices().add(new Vertice(puntox1,puntoy1));
+                            flujo.getVertices().add(new Vertice(puntox2,puntoy2));
+                            
                             
                             agregarFiguras(flujo);
                             
@@ -436,12 +459,11 @@ public class Sistema implements Initializable {
                             flujo.calcularVertices(figuras);
 
                             if(flujoValido(flujo)){
-                                
+
                                 figuras.add(flujo);
                                 flujo.dibujar(gc);
                             }
                             
-                            actualizar();
                             b=false;
                             canvas.setOnMouseClicked(null);
                         }
@@ -479,6 +501,8 @@ public class Sistema implements Initializable {
         }
    
     }
+    
+    
     public boolean estaConectado(double x, double y){
         if(!figuras.isEmpty()) {
             for (Figura figura : figuras) {
@@ -503,9 +527,19 @@ public class Sistema implements Initializable {
     public Figura buscarConexion(double x, double y){
         if(!figuras.isEmpty()) {
             for (Figura figura : figuras) {
-                if(!(figura instanceof Flujo)){
+                if(!(figura instanceof Flujo) && !(figura instanceof Desicion)){
                     if(x<=figura.getVertices().get(2).getX()){
                         if(x>=figura.getVertices().get(0).getX()){
+                           if(y<=figura.getVertices().get(2).getY()){
+                                if(y>=figura.getVertices().get(0).getY()){
+                                    return figura;
+                                }
+                            } 
+                        }
+                    }
+                }else{
+                    if(x<=figura.getVertices().get(1).getX()){
+                        if(x>=figura.getVertices().get(3).getX()){
                            if(y<=figura.getVertices().get(2).getY()){
                                 if(y>=figura.getVertices().get(0).getY()){
                                     return figura;
@@ -600,6 +634,7 @@ public class Sistema implements Initializable {
         @FXML
     private void dibujarDesicion(ActionEvent event) throws IOException {
         
+        
         TextInputDialog dialog = new TextInputDialog("");
         dialog.setTitle("Crear proceso");
         dialog.setContentText("Introduzca el texto:");
@@ -628,27 +663,15 @@ public class Sistema implements Initializable {
                 double y = event2.getY();
                 double x1 = x ;
                 double y1 = y - 50;
-                double x2 = x-50;
+                double x2 = x+50;
                 double y2 = y ;
                 double x3 = x ;
                 double y3 = y+50;
-                double x4 = x + 50;
+                double x4 = x - 50;
                 double y4 = y;
                 
                 
-                Desicion desicion = new Desicion(TipoF.DESICION);
-                    desicion.setVerticeCentro(new Vertice(x,y));
-                    desicion.getVertices().add(new Vertice(x1, y1));
-                    desicion.getVertices().add(new Vertice(x2, y2));
-                    desicion.getVertices().add(new Vertice(x3, y3));
-                    desicion.getVertices().add(new Vertice(x4, y4));
-                    //desicion.calcularConexiones();
-                    desicion.texto = result.get();
-                    figuras.add(desicion);
-                    desicion.dibujar(gc);
-                /*if(comprobarPosicion(x1,y1,x2,y2,x3,y3,x4,y4)==true){
-                   
-                    //Proceso proceso = new Proceso( TipoF.PROCESO);
+                //if(comprobarPosicion(x1,y1,x2,y2,x3,y3,x4,y4)==true){
                     
                     Desicion desicion = new Desicion(TipoF.DESICION);
                     desicion.setVerticeCentro(new Vertice(x,y));
@@ -660,16 +683,24 @@ public class Sistema implements Initializable {
                     desicion.texto = result.get();
                     figuras.add(desicion);
                     desicion.dibujar(gc);
+                    desicion.estado=true;
+                    System.out.println("x:"+desicion.verticeCentro.getX()+"y:"+desicion.verticeCentro.getY());
+                    System.out.println(desicion.vertices.get(0).getX()+" "+desicion.vertices.get(0).getY());
+                    System.out.println(desicion.vertices.get(1).getX()+" "+desicion.vertices.get(1).getY());
+                    System.out.println(desicion.vertices.get(2).getX()+" "+desicion.vertices.get(2).getY());
+                    System.out.println(desicion.vertices.get(3).getX()+" "+desicion.vertices.get(3).getY());
                     
-                }else{
+                    canvas.setOnMouseClicked(null);
+                    
+                //}else{
         
-                    Alert alert = new Alert(AlertType.WARNING);
-                    alert.setTitle("Error");
-                    alert.setHeaderText("Cuidado");
-                    alert.setContentText("Ya se encuentra una figura creada aquÃ­ ");
-                    alert.showAndWait();
-                }*/
-                actualizar();
+                  //  Alert alert = new Alert(AlertType.WARNING);
+                  //  alert.setTitle("Error");
+                  //  alert.setHeaderText("Cuidado");
+                  //  alert.setContentText("Ya se encuentra una figura creada aquÃ­ ");
+                  //  alert.showAndWait();
+                //}
+                
                 b=false;
                 powerUp=0;
                 canvas.setOnMouseClicked(null);
@@ -684,7 +715,6 @@ public class Sistema implements Initializable {
 
             alert.showAndWait();
         }
-        
     }
     
     
