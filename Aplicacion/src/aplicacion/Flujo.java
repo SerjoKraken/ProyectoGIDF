@@ -135,6 +135,7 @@ public class Flujo extends Figura{
 
     @Override
     public void calcularConexiones() {
+        System.out.println("cambio");
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.   
     }
 

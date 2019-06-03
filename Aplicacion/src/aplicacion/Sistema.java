@@ -128,7 +128,7 @@ public class Sistema implements Initializable {
 
         
         Optional<String> result = dialog.showAndWait();
-        System.out.println(""+evaluarAritmetica(result.get().split("=")[1],variables));
+        
         if (result.get().matches("[A-Za-z1-9]+=.+")){
            
    
@@ -806,14 +806,14 @@ public class Sistema implements Initializable {
                                 figuras.get(i).getVertices().get(0).getY()<= py &&
                                 figuras.get(i).getVertices().get(2).getY()+20>=py &&
                                 figuras.get(i).getTipo()==TipoF.ENTRADA){
-                                    
+                                    figuras.get(i).setEstado(false);
                                 }else{
                                     if(figuras.get(i).getVertices().get(0).getX()<= px &&
                                     figuras.get(i).getVertices().get(1).getX()>=px &&
                                     figuras.get(i).getVertices().get(0).getY()<= py &&
                                     figuras.get(i).getVertices().get(2).getY()>=py &&
                                     figuras.get(i).getTipo()==TipoF.DOCUMENTACION){
-                                
+                                        figuras.get(i).setEstado(true);
                                     }else{
                                     
                                     
@@ -825,6 +825,7 @@ public class Sistema implements Initializable {
                                         figuras.get(i).getTipo()==TipoF.FLUJO){
                                             figuras.get(i).setEstado(false);
                                         }else{
+                                            
                                             if(figuras.get(i).getEstado()!=false){
                                                 
                                                 figuras.get(i).setEstado(true);
