@@ -125,88 +125,95 @@ public class Sistema implements Initializable {
         TextInputDialog dialog = new TextInputDialog("");
         dialog.setTitle("Crear proceso");
         dialog.setContentText("Introduzca el texto:");
-
+        
         
         Optional<String> result = dialog.showAndWait();
-        
-        if (result.get().matches("[A-Za-z1-9]+=.+")){
-           
-   
-            if(contar(result.get())>12){
-                powerUp = 80;
-                boolean a = true;
-            }
-            
-            b=true;
-            canvas.setOnMouseClicked((MouseEvent event2) -> {
-            double p1 = event2.getX();
-            double p2 = event2.getY();
-            
-            redimensionCanvas(p1,p2);
-            
-            
-            if(b){
-                
-                
-                
-                double x = event2.getX();
-                double y = event2.getY();
-                double x1 = x - 50;
-                double y1 = y - 25;
-                double x2 = x + 50+powerUp;
-                double y2 = y - 25;
-                double x3 = x + 50+powerUp;
-                double y3 = y + 25;
-                double x4 = x - 50;
-                double y4 = y +25;
-                /***
-                 * caso en que el punto se crea muy arriba o si el punto se crea
-                 * muy a la izquierda
-                 */
+        if(result.isPresent() && !result.get().equals(" ") && !result.get().equalsIgnoreCase(" ")){
+            if (result.get().matches("[A-Za-z1-9]+=.+")){
 
-                if(x1<0){
-                    x=50;
-                    x2=x2-x1;
-                    x3=x3-x1;
-                    x1=0;
-                    x4=0;
+
+                if(contar(result.get())>12){
+                    powerUp = 80;
+                    boolean a = true;
                 }
-                
-                if(y1<0){
-                    y=25;
-                    y3=y3-y1;
-                    y4=y4-y1;
-                    y1=0;
-                    y2=0;
-                }
-               
-                   
-                Proceso proceso = new Proceso( TipoF.PROCESO);
-                proceso.setVerticeCentro(new Vertice(x,y));
-                proceso.getVertices().add(new Vertice(x1, y1));
-                proceso.getVertices().add(new Vertice(x2, y2));
-                proceso.getVertices().add(new Vertice(x3, y3));
-                proceso.getVertices().add(new Vertice(x4, y4));
-                proceso.calcularConexiones();
-                proceso.texto = result.get();
-                proceso.setEstado(true);
-                figuras.add(proceso);
-                proceso.dibujar(gc);
-                    
-                
-                actualizar();
-                b=false;
-                
-                powerUp=0;
-                canvas.setOnMouseClicked(null);
-            }  
-        });
-            
+
+                b=true;
+                canvas.setOnMouseClicked((MouseEvent event2) -> {
+                double p1 = event2.getX();
+                double p2 = event2.getY();
+
+                redimensionCanvas(p1,p2);
+
+
+                if(b){
+
+
+
+                    double x = event2.getX();
+                    double y = event2.getY();
+                    double x1 = x - 50;
+                    double y1 = y - 25;
+                    double x2 = x + 50+powerUp;
+                    double y2 = y - 25;
+                    double x3 = x + 50+powerUp;
+                    double y3 = y + 25;
+                    double x4 = x - 50;
+                    double y4 = y +25;
+                    /***
+                     * caso en que el punto se crea muy arriba o si el punto se crea
+                     * muy a la izquierda
+                     */
+
+                    if(x1<0){
+                        x=50;
+                        x2=x2-x1;
+                        x3=x3-x1;
+                        x1=0;
+                        x4=0;
+                    }
+
+                    if(y1<0){
+                        y=25;
+                        y3=y3-y1;
+                        y4=y4-y1;
+                        y1=0;
+                        y2=0;
+                    }
+
+
+                    Proceso proceso = new Proceso( TipoF.PROCESO);
+                    proceso.setVerticeCentro(new Vertice(x,y));
+                    proceso.getVertices().add(new Vertice(x1, y1));
+                    proceso.getVertices().add(new Vertice(x2, y2));
+                    proceso.getVertices().add(new Vertice(x3, y3));
+                    proceso.getVertices().add(new Vertice(x4, y4));
+                    proceso.calcularConexiones();
+                    proceso.texto = result.get();
+                    proceso.setEstado(true);
+                    figuras.add(proceso);
+                    proceso.dibujar(gc);
+
+
+                    actualizar();
+                    b=false;
+
+                    powerUp=0;
+                    canvas.setOnMouseClicked(null);
+                }  
+            });
+            }else{
+                Alert alert = new Alert(AlertType.WARNING);
+                alert.setTitle("Error");
+                alert.setHeaderText("cuidado");
+                alert.setContentText("El formato del texto ingresado es incorrecto");
+
+                alert.showAndWait();
+            }    
         } else {
             Alert alert = new Alert(AlertType.WARNING);
             alert.setTitle("Error");
             alert.setHeaderText("cuidado");
-            alert.setContentText("El formato de texto ingresado es incorrecto");
+            alert.setContentText("Debes ingresar un texto");
 
             alert.showAndWait();
         }
@@ -699,68 +706,77 @@ public class Sistema implements Initializable {
         
         Optional<String> result = dialog.showAndWait();
         
-        System.out.println(""+result.get());
-        if (result.get().matches("[A-Za-z]+=.+") || result.get().matches("[A-Za-z]+")){
-                b= true;
-                canvas.setOnMouseClicked((MouseEvent event2) -> {
-                double p1 = event2.getX();
-                double p2 = event2.getY();
-                redimensionCanvas(p1,p2);
-                if(b){  
-                    double x = event2.getX();
-                    double y = event2.getY();
-                    double x1 = x - 33;
-                    double y1 = y - 25;
-                    double x2 = x + 67;
-                    double y2 = y - 25;
-                    double x3 = x + 33;
-                    double y3 = y + 25;
-                    double x4 = x - 67;
-                    double y4 = y + 25;
-                    /***
-                     * por si la figura se sale por la izquierda y
-                     * por si la figura se sale por la parte superior
-                     */
-                    if(x4<0){
-                        x=55;
-                        x1=x1-x4;
-                        x2=x2-x4;
-                        x3=x3-x4;
-                        x4=0;
-                    }
-                    if(y1<0){
-                        y=25;
-                        y3=y3-y1;
-                        y4=y3;
-                        y2=0;
-                        y1=0;
-                    }
+        
+        if(result.isPresent() && !result.get().equals(" ") && !result.get().equalsIgnoreCase(" ")){
+            if (result.get().matches("[A-Za-z]+=.+") || result.get().matches("[A-Za-z]+")){
+                    b= true;
+                    canvas.setOnMouseClicked((MouseEvent event2) -> {
+                    double p1 = event2.getX();
+                    double p2 = event2.getY();
+                    redimensionCanvas(p1,p2);
+                    if(b){  
+                        double x = event2.getX();
+                        double y = event2.getY();
+                        double x1 = x - 33;
+                        double y1 = y - 25;
+                        double x2 = x + 67;
+                        double y2 = y - 25;
+                        double x3 = x + 33;
+                        double y3 = y + 25;
+                        double x4 = x - 67;
+                        double y4 = y + 25;
+                        /***
+                         * por si la figura se sale por la izquierda y
+                         * por si la figura se sale por la parte superior
+                         */
+                        if(x4<0){
+                            x=55;
+                            x1=x1-x4;
+                            x2=x2-x4;
+                            x3=x3-x4;
+                            x4=0;
+                        }
+                        if(y1<0){
+                            y=25;
+                            y3=y3-y1;
+                            y4=y3;
+                            y2=0;
+                            y1=0;
+                        }
 
-                    Entrada entrada = new Entrada(TipoF.ENTRADA);
-                    entrada.setVerticeCentro(new Vertice(x,y));
-                    entrada.getVertices().add(new Vertice(x1,y1));
-                    entrada.getVertices().add(new Vertice(x2,y2));
-                    entrada.getVertices().add(new Vertice(x3,y3));
-                    entrada.getVertices().add(new Vertice(x4,y4));
-                    entrada.calcularConexiones();
-                    entrada.texto = result.get();
-                    entrada.setEstado(true);
-                    figuras.add(entrada);
-                    entrada.dibujar(gc);
+                        Entrada entrada = new Entrada(TipoF.ENTRADA);
+                        entrada.setVerticeCentro(new Vertice(x,y));
+                        entrada.getVertices().add(new Vertice(x1,y1));
+                        entrada.getVertices().add(new Vertice(x2,y2));
+                        entrada.getVertices().add(new Vertice(x3,y3));
+                        entrada.getVertices().add(new Vertice(x4,y4));
+                        entrada.calcularConexiones();
+                        entrada.texto = result.get();
+                        entrada.setEstado(true);
+                        figuras.add(entrada);
+                        entrada.dibujar(gc);
 
-                    actualizar();
+                        actualizar();
 
-                    b=false;
-                    canvas.setOnMouseClicked(null);
+                        b=false;
+                        canvas.setOnMouseClicked(null);
 
-                }       
-            });
-            
-        }else {
+                    }       
+                });
+
+            }else {
+                Alert alert = new Alert(AlertType.WARNING);
+                alert.setTitle("Error");
+                alert.setHeaderText("cuidado");
+                alert.setContentText("El texto ingresado es incorrecto debe ser del estilo 'algo' = 'algo' o solamente 'algo'");
+
+                alert.showAndWait();
+            }
+        }else{
             Alert alert = new Alert(AlertType.WARNING);
             alert.setTitle("Error");
             alert.setHeaderText("cuidado");
-            alert.setContentText("El texto ingresado es incorrecto debe ser del estilo 'algo' = 'algo' o solamente 'algo'");
+            alert.setContentText("Debes ingresar un texto");
 
             alert.showAndWait();
         }
@@ -1019,75 +1035,84 @@ public class Sistema implements Initializable {
 
     
         Optional<String> result = dialog.showAndWait();
-        if (result.get().matches("[A-Za-z]+")){
-            
-            b= true;
-        
-            canvas.setOnMouseClicked((MouseEvent event2) -> {
-            double p1 = event2.getX();
-            double p2 = event2.getY();
-            redimensionCanvas(p1,p2);   
-            if(b){
-               
-                double x = event2.getX();
-                double y = event2.getY();
-                double x1 = x - 50;
-                double y1 = y - 25;
-                double x2 = x + 50;
-                double y2 = y - 25;
-                double x3 = x + 50;
-                double y3 = y + 25;
-                double x4 = x - 50;
-                double y4 = y + 25;
-                
-                /***
-                 * por si la figura a crear se crea muy arriba o muy a la izquierda 
-                 * o la combinacion de las dos anteriores
-                 */
-                if(x1<0){
-                    x=50;
-                    x2=x2-x1;
-                    x3=x3-x1;
-                    x4=0;
-                    x1=0;
-                }
-                if(y1<0){
-                    y=25;
-                    y3=y3-y1;
-                    y4=y4-y1;        
-                    y2=0;
-                    y1=0;
-                }
-                
-                Documento documento = new Documento(TipoF.DOCUMENTACION);
-                documento.setVerticeCentro(new Vertice(x,y));
-                documento.getVertices().add(new Vertice(x1,y1));
-                documento.getVertices().add(new Vertice(x2,y2));
-                documento.getVertices().add(new Vertice(x3,y3));
-                documento.getVertices().add(new Vertice(x4,y4));
-                documento.texto = result.get();
-                documento.calcularConexiones();
-                documento.setEstado(true);
-                figuras.add(documento);
-                documento.dibujar(gc);
-                
-                actualizar();
-                
-                
-                    
-                b=false;
-                canvas.setOnMouseClicked(null);
-                
-            
+        if(result.isPresent() && !result.get().equals(" ") && !result.get().equalsIgnoreCase(" ")){
+            if (result.get().matches("[A-Za-z]+")){
 
-            }      
-          
-        });
+                b= true;
+
+                canvas.setOnMouseClicked((MouseEvent event2) -> {
+                double p1 = event2.getX();
+                double p2 = event2.getY();
+                redimensionCanvas(p1,p2);   
+                if(b){
+
+                    double x = event2.getX();
+                    double y = event2.getY();
+                    double x1 = x - 50;
+                    double y1 = y - 25;
+                    double x2 = x + 50;
+                    double y2 = y - 25;
+                    double x3 = x + 50;
+                    double y3 = y + 25;
+                    double x4 = x - 50;
+                    double y4 = y + 25;
+
+                    /***
+                     * por si la figura a crear se crea muy arriba o muy a la izquierda 
+                     * o la combinacion de las dos anteriores
+                     */
+                    if(x1<0){
+                        x=50;
+                        x2=x2-x1;
+                        x3=x3-x1;
+                        x4=0;
+                        x1=0;
+                    }
+                    if(y1<0){
+                        y=25;
+                        y3=y3-y1;
+                        y4=y4-y1;        
+                        y2=0;
+                        y1=0;
+                    }
+
+                    Documento documento = new Documento(TipoF.DOCUMENTACION);
+                    documento.setVerticeCentro(new Vertice(x,y));
+                    documento.getVertices().add(new Vertice(x1,y1));
+                    documento.getVertices().add(new Vertice(x2,y2));
+                    documento.getVertices().add(new Vertice(x3,y3));
+                    documento.getVertices().add(new Vertice(x4,y4));
+                    documento.texto = result.get();
+                    documento.calcularConexiones();
+                    documento.setEstado(true);
+                    figuras.add(documento);
+                    documento.dibujar(gc);
+
+                    actualizar();
+
+
+
+                    b=false;
+                    canvas.setOnMouseClicked(null);
+
+
+
+                }      
+
+            });
+            }else{
+                Alert alert = new Alert(AlertType.WARNING);
+                alert.setTitle("Error");
+                alert.setHeaderText("cuidado");
+                alert.setContentText("El formato del texto ingresado es incorrecto");
+
+                alert.showAndWait();      
+            }
         }else {
             Alert alert = new Alert(AlertType.WARNING);
             alert.setTitle("Error");
             alert.setHeaderText("cuidado");
-            alert.setContentText("El formato del texto ingresado es incorrecto");
+            alert.setContentText("Debes ingresar un texto");
 
             alert.showAndWait();
         }
