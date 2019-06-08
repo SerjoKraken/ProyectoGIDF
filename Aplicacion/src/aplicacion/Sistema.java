@@ -402,27 +402,27 @@ public class Sistema implements Initializable {
         
         
         if(figura.tipo == TipoF.ENTRADA){
-            if(figura.texto.matches("[A-Za-z1-9]+=.+")){
+            if(figura.texto.matches("[A-Za-z0-9]+=.+")){
                 if(!existeVariable(figura.texto.split("=")[0])){
-                    area.appendText(figura.texto.split("=")[0]+"⟵  "+evaluarAritmetica(figura.texto.split("=")[1], variables)+" \n");
-                    variables.add(new Variable(figura.texto.split("=")[0],evaluarAritmetica(figura.texto.split("=")[1], variables)+""));
+                    area.appendText(figura.texto.split("=")[0]+ "⟵  "+ String.valueOf(operarExpresion(figura.texto.split("=")[1], variables))+  "\n");
+                    variables.add(new Variable(figura.texto.split("=")[0] , String.valueOf(operarExpresion(figura.texto.split("=")[1], variables))));
                 }else{
                     for (int i = 0; i < variables.size(); i++) {
                         if(variables.get(i).nombre.equals(figura.texto.split("=")[0])){
-                            variables.get(i).setValor(evaluarAritmetica(figura.texto.split("=")[1], variables)+"");
+                            variables.get(i).setValor(String.valueOf(operarExpresion(figura.texto.split("=")[1], variables)));
                         }
                     }
 
                 }
-            }else if(figura.texto.matches("[A-Za-z1-9]+")){
-                area.appendText("\"el valor de la variable "+figura.texto+" es: "+valorAritmetico(figura.texto, variables)+"\" \n");
+            }else if(figura.texto.matches("[A-Za-z0-9]+")){
+                //validar en el caso de que la variable no exista
+                area.appendText("\"el valor de la variable "+figura.texto+" es: "+ String.valueOf(operarExpresion(figura.texto, variables)) +"\" \n");
             }
         }else if(figura.tipo == TipoF.PROCESO){
             for (int i = 0; i < variables.size(); i++) {
                 if(variables.get(i).nombre.equals(figura.texto.split("=")[0])){
-                    area.appendText(figura.texto.split("=")[0]+"⟵"+evaluarAritmetica(figura.texto.split("=")[1], variables)+" \n");
-                    variables.get(i).setValor(String.valueOf(operarExpresion(figura.texto, variables)));
-                    System.out.println(""+variables.get(i).getValor());
+                    area.appendText(figura.texto.split("=")[0]+"⟵"+ figura.texto.split("=")[1] + "\n");
+                    variables.get(i).setValor(String.valueOf(operarExpresion(figura.texto.split("=")[1], variables)));
                 }
             }
         }
@@ -438,7 +438,9 @@ public class Sistema implements Initializable {
             double x1 = event1.getX();
             double y1 = event1.getY();
             Vertice vertice1;
-            if((vertice1=buscarConexion(x1,y1).getVerticeCentro())!=null){
+            
+            if(buscarConexion(x1,y1)!=null){
+                vertice1=buscarConexion(x1,y1).getVerticeCentro();
                 canvas.setOnMouseClicked(null);
                 canvas.setOnMouseClicked((MouseEvent event2) -> {
                     if(b){
@@ -448,7 +450,8 @@ public class Sistema implements Initializable {
                         double y2 = event2.getY();
                         Vertice vertice2;
                       
-                        if((vertice2 = buscarConexion(x2,y2).getVerticeCentro())!=null){
+                        if(buscarConexion(x2,y2)!=null){
+                            vertice2 = buscarConexion(x2,y2).getVerticeCentro();
                             double puntox2 = vertice2.getX();
                             double puntoy2 = vertice2.getY();
                             Flujo flujo = new Flujo(TipoF.FLUJO);
@@ -1245,22 +1248,22 @@ public class Sistema implements Initializable {
             int index = expresion.indexOf("-");
             return true && evaluarAritmetica(expresion.substring(index+1),variables);
             
-        }else if(expresion.matches("[A-Za-z1-9]+\\*.+")){
+        }else if(expresion.matches("[A-Za-z0-9]+\\*.+")){
             int index = expresion.indexOf("*");
             return true && evaluarAritmetica(expresion.substring(index+1),variables);
         
         
-        }else if(expresion.matches("[A-Za-z1-9]+\\/.+")){
+        }else if(expresion.matches("[A-Za-z0-9]+\\/.+")){
             int index = expresion.indexOf("/");
             return true && evaluarAritmetica(expresion.substring(index+1),variables);
         
         
-        }else if(expresion.matches("[A-Za-z1-9]+\\+.+")){
+        }else if(expresion.matches("[A-Za-z0-9]+\\+.+")){
             int index = expresion.indexOf("+");
             return true && evaluarAritmetica(expresion.substring(index+1),variables);
         
         
-        }else if(expresion.matches("[A-Za-z1-9]+\\-.+")){
+        }else if(expresion.matches("[A-Za-z0-9]+\\-.+")){
             int index = expresion.indexOf("-");
             return true && evaluarAritmetica(expresion.substring(index+1),variables);
         
@@ -1302,7 +1305,7 @@ public class Sistema implements Initializable {
             }
         }
         // se deja esto asi por mientras
-        return "0";
+        return expresion;
     }
     
    /**
@@ -1317,9 +1320,9 @@ public class Sistema implements Initializable {
     * @param variables
     * @return 
     */
-    public double operarExpresion(String expresion, ArrayList<Variable> variables){
+    public String operarExpresion(String expresion, ArrayList<Variable> variables){
         
-        String[] aux1=expresion.split("(\\+|\\-|\\*|\\/|\\(|\\))+");
+        String[] aux1 = expresion.split("(\\+|\\-|\\*|\\/|\\(|\\))+");
         String[] aux2 = expresion.split("[A-Za-z0-9]+");
         
         
@@ -1333,6 +1336,7 @@ public class Sistema implements Initializable {
         }
         for (int i = 0; i < aux1.length; i++) {
             if(!aux1[i].matches("[0-9]+")){
+                System.out.println(""+aux1[i]);
                 aux1[i] = valorAritmetico(aux1[i], variables);
             }
         }
@@ -1361,7 +1365,6 @@ public class Sistema implements Initializable {
                 }
             }
         }
-        System.out.println(""+expresion.matches(".*[A-Za-z]+.*"));
         if(expresion.matches(".*[A-Za-z]+.*")){
             System.out.println("Tenemos un String en la cadena");
             if (expresion.matches(".*[\\/||\\-]+.*")) {
@@ -1384,7 +1387,7 @@ public class Sistema implements Initializable {
                         
                         
                     }
-                    
+                    return expresion;
                 }
                 else{
                     System.out.println("Solo suma de cadenas");
@@ -1418,13 +1421,16 @@ public class Sistema implements Initializable {
             ScriptEngineManager manager = new ScriptEngineManager();
             ScriptEngine engine = manager.getEngineByName("js");
             try {
+                System.out.println(""+expresion);
                 Object operation = engine.eval(expresion);
+                String resultado=String.valueOf(operation);
                 System.out.println("Evaluado operacion 1: " + operation);
+                return String.valueOf(resultado); 
             } catch (ScriptException e) {
                 e.printStackTrace();
             }
         }
-       return 0; 
+        return expresion;
     }
     /**
      * Metodo encargado de evaluar la decision ingresada mediante una expresion
