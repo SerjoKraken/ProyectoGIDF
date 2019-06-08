@@ -417,6 +417,13 @@ public class Sistema implements Initializable {
             }else if(figura.texto.matches("[A-Za-z0-9]+")){
                 //validar en el caso de que la variable no exista
                 area.appendText("\"el valor de la variable "+figura.texto+" es: "+ String.valueOf(operarExpresion(figura.texto, variables)) +"\" \n");
+            }else{
+                Alert alert = new Alert(AlertType.WARNING);
+                alert.setTitle("Error");
+                alert.setHeaderText("Cuidado");
+                alert.setContentText("Esta variable no existe por tanto no tiene un valor almacenado");
+
+                alert.showAndWait();
             }
         }else if(figura.tipo == TipoF.PROCESO){
             for (int i = 0; i < variables.size(); i++) {
@@ -1378,15 +1385,67 @@ public class Sistema implements Initializable {
                 //primero buscar si hay una multiplicacion por un entero a cadena
                 if (expresion.matches(".*[\\*].*")) {
                     System.out.println("Tenemos una multiplicacion");
-                    int k=0;
-                    while(expresion.length()>k){
-                        if (expresion.charAt(k)=='*') {
-                            int mul=expresion.charAt(k+1)-'0';
+                    if (expresion.matches(".*[\\*].*")) {
+                    System.out.println("Tenemos una multiplicacion");
+                    if(expresion.matches(".*[\\+].*")){
+                        System.out.println("Operacion mixta");
+                        System.out.println(""+expresion);
+                        String[] auxMix= expresion.split("[\\+]+");
+                        expresion="";
+                        int k=0;
+                        while( k < auxMix.length) {
+
+                            if(auxMix[k].matches(".*[\\*].*")){
+                                System.out.println("Encontrada la multiplicacion");
+
+                                String[] auxP= auxMix[k].split("[\\*]");
+                                System.out.println("********");
+                                System.out.println(""+auxP[0]);
+                                System.out.println(""+auxP[1]);
+                                System.out.println("*******");
+                                if(auxP[1].matches("[0-9]+")){
+                                    System.out.println("Es un numero");
+                                }else{
+                                    System.out.println("No es numero, multiplicacion no valida");
+                                }
+                                int num=Integer.parseInt(auxP[1]);
+                                String aux="";
+                                for (int l = 0; l < num; l++) {
+                                    aux = aux.concat(auxP[0]);
+                                    
+                                }
+                                k++;
+                                System.out.println(""+aux);
+                                System.out.println("*********");
+                                expresion=expresion.concat(aux);
+                            }
                             
+                            expresion = expresion.concat(auxMix[k]);
+                            k++;
                         }
                         
+                        System.out.println(""+expresion);
+                    }else{
+                        System.out.println("Encontrada la multiplicacion");
+                        String[] cen=expresion.split("[\\*]");
+                        expresion="";
+                        System.out.println(""+cen[0]);
+                        System.out.println(""+cen[1]);
+                        i=0;
+                        int num = Integer.parseInt(cen[1]);
+                        while(i<num){
+                            expresion=expresion.concat(cen[0]);
+                            i++;
                         
+                        }
+                        
+                    System.out.println(""+expresion);
                     }
+                }
+                    
+                        
+                        
+                    
                     return expresion;
                 }
                 else{
