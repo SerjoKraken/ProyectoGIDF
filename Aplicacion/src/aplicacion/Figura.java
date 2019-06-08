@@ -13,6 +13,10 @@ public abstract class Figura {
     protected TipoF tipo;
     String texto;
     boolean estado;
+    protected boolean desicion=false;
+    protected boolean verdadero=false;
+    protected boolean falso=false;
+    protected int verfal=0;
 
     public Figura(TipoF tipo) {
         this.vertices = new ArrayList<>();

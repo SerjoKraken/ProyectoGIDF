@@ -5,6 +5,7 @@
  */
 package aplicacion;
 
+import java.util.ArrayList;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
@@ -14,6 +15,8 @@ import javafx.scene.paint.Color;
  */
 public class Desicion extends Figura{
         
+    private ArrayList<Figura> verdadero= new ArrayList<>();
+    private ArrayList<Figura> falso= new ArrayList<>();
 
     public Desicion(TipoF tipo) {
         super(tipo);
@@ -32,8 +35,8 @@ public class Desicion extends Figura{
         double x4=vertices.get(3).getX();
         double y4=vertices.get(3).getY();
         gc.setStroke(Color.ORANGE);
-        for (double i = 0; i < 50; i+=0.5) {
-            gc.strokeLine(x2+i, y2+i, x1+i, y1+i);
+        for (double i = 0; i < 50; i+=0.1) {
+            gc.strokeLine(x2-i, y2-i, x3-i, y3-i);
         }
         gc.setStroke(Color.BLACK);
         gc.strokeLine(x1, y1, x2, y2);
@@ -51,19 +54,57 @@ public class Desicion extends Figura{
         Vertice aux3 = vertices.get(2);
         Vertice aux4 = vertices.get(3);
         
-       
+        if(conexiones.size()>0){
             conexiones.set(0,aux1);
             conexiones.set(1,aux2);
             conexiones.set(2,aux3);
             conexiones.set(3,aux4);
- 
+        }else{
+            conexiones.add(aux1);
+            conexiones.add(aux2);
+            conexiones.add(aux3);
+            conexiones.add(aux4);
+        }
         
     }
 
     @Override
     public void dibujar(GraphicsContext gc, double x, double y) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        double x1 = x ;
+        double y1 = y - 50;
+        double x2 = x + 50;
+        double y2 = y ;
+        double x3 = x;
+        double y3 = y + 50;
+        double x4 = x - 50;
+        double y4 = y ;
+        
+        verticeCentro.setX(x);
+        verticeCentro.setY(y);
+        vertices.get(0).setX(x1);
+        vertices.get(0).setY(y1);
+        vertices.get(1).setX(x2);
+        vertices.get(1).setY(y2);
+        vertices.get(2).setX(x3);
+        vertices.get(2).setY(y3);
+        vertices.get(3).setX(x4);
+        vertices.get(3).setY(y4);
+        
+        
+        gc.setStroke(Color.ORANGE);
+        for (double i = 0; i > 50; i+=0.1) {
+            gc.strokeLine(x2-i, y2-i, x3-i, y3-i);
+        }
+        gc.setStroke(Color.BLACK);
+        gc.strokeLine(x1, y1, x2, y2);
+        gc.strokeLine(x2, y2, x3, y3);
+        gc.strokeLine(x3, y3, x4, y4);
+        gc.strokeLine(x4, y4, x1, y1);
+        gc.setFill(Color.BLACK);
+        gc.fillText(texto, x1-25,y1+50);
     }
+
+    
 
     
 

@@ -480,6 +480,30 @@ public class Sistema implements Initializable {
                             actualizar();
                             b=false;
                             canvas.setOnMouseClicked(null);
+                        }else{
+                            
+                            System.out.println("hermano te agarraste una desicion");
+                            double puntox2 = vertice2.getX();
+                            double puntoy2 = vertice2.getY();
+                            Flujo flujo = new Flujo(TipoF.FLUJO);
+                            flujo.getVertices().add(new Vertice(puntox1,puntoy1));
+                            flujo.getVertices().add(new Vertice(puntox2,puntoy2));
+                            flujo.setEstado(true);
+                            
+                            agregarFiguras(flujo);
+                            
+                            
+                            flujo.calcularVertices(figuras);
+
+                            if(flujoValido(flujo)){
+                                
+                                figuras.add(flujo);
+                                flujo.dibujar(gc);
+                            }
+                            
+                            actualizar();
+                            b=false;
+                            canvas.setOnMouseClicked(null);
                         }
                         
                     }
@@ -539,9 +563,19 @@ public class Sistema implements Initializable {
     public Figura buscarConexion(double x, double y){
         if(!figuras.isEmpty()) {
             for (Figura figura : figuras) {
-                if(!(figura instanceof Flujo)){
+                if(!(figura instanceof Flujo)&& !(figura instanceof Desicion)){
                     if(x<=figura.getVertices().get(2).getX()){
                         if(x>=figura.getVertices().get(0).getX()){
+                           if(y<=figura.getVertices().get(2).getY()){
+                                if(y>=figura.getVertices().get(0).getY()){
+                                    return figura;
+                                }
+                            } 
+                        }
+                    }
+                }else{
+                    if(x<=figura.getVertices().get(1).getX()){
+                        if(x>=figura.getVertices().get(3).getX()){
                            if(y<=figura.getVertices().get(2).getY()){
                                 if(y>=figura.getVertices().get(0).getY()){
                                     return figura;
@@ -664,11 +698,11 @@ public class Sistema implements Initializable {
                 double y = event2.getY();
                 double x1 = x ;
                 double y1 = y - 50;
-                double x2 = x-50;
+                double x2 = x+50;
                 double y2 = y ;
                 double x3 = x ;
                 double y3 = y+50;
-                double x4 = x + 50;
+                double x4 = x - 50;
                 double y4 = y;
                 
                 
@@ -678,9 +712,10 @@ public class Sistema implements Initializable {
                     desicion.getVertices().add(new Vertice(x2, y2));
                     desicion.getVertices().add(new Vertice(x3, y3));
                     desicion.getVertices().add(new Vertice(x4, y4));
-                    //desicion.calcularConexiones();
+                    desicion.calcularConexiones();
                     desicion.texto = result.get();
                     figuras.add(desicion);
+                    desicion.estado=true;
                     desicion.dibujar(gc);
                 /*if(comprobarPosicion(x1,y1,x2,y2,x3,y3,x4,y4)==true){
                    
@@ -1179,16 +1214,17 @@ public class Sistema implements Initializable {
     
     public boolean flujoValido(Flujo flujo){
         
-        if(flujo.padre.getVerticeCentro().distancia(flujo.hijo.getVerticeCentro())==0){
-            return false;
-        }
-        
-        if(flujo.padre.getTipo() == TipoF.FIN || flujo.hijo.getTipo() == TipoF.INICIO){
-            return false;
-        }
-        for (Figura figura : figuras) {
-            if(figura instanceof Flujo){
-                if((flujo.vertices.get(0).distancia(figura.getVertices().get(0))==0 && flujo.vertices.get(1).distancia(figura.getVertices().get(1))==0) || 
+        if(!(flujo.padre.tipo.DESICION==TipoF.DESICION)){
+            if(flujo.padre.getVerticeCentro().distancia(flujo.hijo.getVerticeCentro())==0){
+                return false;
+            }
+
+            if(flujo.padre.getTipo() == TipoF.FIN || flujo.hijo.getTipo() == TipoF.INICIO){
+                return false;
+            }
+            for (Figura figura : figuras) {
+                if(figura instanceof Flujo){
+                    if((flujo.vertices.get(0).distancia(figura.getVertices().get(0))==0 && flujo.vertices.get(1).distancia(figura.getVertices().get(1))==0) || 
                         (flujo.vertices.get(0).distancia(figura.getVertices().get(1))==0 && flujo.vertices.get(1).distancia(figura.getVertices().get(0))==0)){
                     return false;
                 }if(flujo.padre.getVerticeCentro().distancia(((Flujo) figura).padre.getVerticeCentro())==0
@@ -1196,9 +1232,37 @@ public class Sistema implements Initializable {
                     return false;
                 }
 
+                }
             }
+        }else{
+            
+            if(flujo.padre.getVerticeCentro().distancia(flujo.hijo.getVerticeCentro())==0){
+                return false;
+            }
+
+            if(flujo.padre.getTipo() == TipoF.FIN || flujo.hijo.getTipo() == TipoF.INICIO){
+                return false;
+            }
+            
+            if(flujo.padre.tipo==TipoF.DESICION && flujo.padre.verfal<2){          
+                    flujo.padre.verfal+=1;
+                    return true;  
+            }
+            
+            for (Figura figura : figuras) {
+                if(figura instanceof Flujo){
+                    if((flujo.vertices.get(0).distancia(figura.getVertices().get(0))==0 && flujo.vertices.get(1).distancia(figura.getVertices().get(1))==0) || 
+                        (flujo.vertices.get(0).distancia(figura.getVertices().get(1))==0 && flujo.vertices.get(1).distancia(figura.getVertices().get(0))==0)){
+                        return false;
+                    }if(flujo.padre.getVerticeCentro().distancia(((Flujo) figura).padre.getVerticeCentro())==0
+                        || flujo.hijo.getVerticeCentro().distancia(((Flujo) figura).hijo.getVerticeCentro())==0 ){
+                        return false;
+                    }
+                }
+            }
+            
+            
         }
-        
         
         return true;
     
