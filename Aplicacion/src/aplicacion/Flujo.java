@@ -141,7 +141,22 @@ public class Flujo extends Figura{
 
     @Override
     public void dibujar(GraphicsContext gc, double x, double y) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        double xActual = verticeCentro.getX();
+        double yActual = verticeCentro.getY();
+        
+        verticeCentro.setX(xActual+(x-xActual));
+        verticeCentro.setY(yActual+(y-yActual));
+        
+        padre.setVerticeCentro(new Vertice(padre.getVerticeCentro().getX()+(x-xActual), padre.getVerticeCentro().getY()+(y-yActual)));
+        padre.dibujar(gc, padre.getVerticeCentro().getX(), padre.getVerticeCentro().getY());
+        padre.calcularConexiones();
+        
+        hijo.setVerticeCentro(new Vertice(hijo.getVerticeCentro().getX()+(x-xActual), hijo.getVerticeCentro().getY()+(y-yActual)));
+        hijo.dibujar(gc, hijo.getVerticeCentro().getX(), hijo.getVerticeCentro().getY());
+        hijo.calcularConexiones();
+        
+        
+        
     }
     
 }

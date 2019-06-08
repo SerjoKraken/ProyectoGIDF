@@ -475,28 +475,7 @@ public class Sistema implements Initializable {
                             canvas.setOnMouseClicked(null);
                         }else{
                             
-                            System.out.println("hermano te agarraste una desicion");
-                            double puntox2 = vertice2.getX();
-                            double puntoy2 = vertice2.getY();
-                            Flujo flujo = new Flujo(TipoF.FLUJO);
-                            flujo.getVertices().add(new Vertice(puntox1,puntoy1));
-                            flujo.getVertices().add(new Vertice(puntox2,puntoy2));
-                            flujo.setEstado(true);
                             
-                            agregarFiguras(flujo);
-                            
-                            
-                            flujo.calcularVertices(figuras);
-
-                            if(flujoValido(flujo)){
-                                
-                                figuras.add(flujo);
-                                flujo.dibujar(gc);
-                            }
-                            
-                            actualizar();
-                            b=false;
-                            canvas.setOnMouseClicked(null);
                         }
                         
                     }
@@ -566,11 +545,21 @@ public class Sistema implements Initializable {
                             } 
                         }
                     }
-                }else{
+                }else if(figura instanceof Desicion){
                     if(x<=figura.getVertices().get(1).getX()){
                         if(x>=figura.getVertices().get(3).getX()){
                            if(y<=figura.getVertices().get(2).getY()){
                                 if(y>=figura.getVertices().get(0).getY()){
+                                    return figura;
+                                }
+                            } 
+                        }
+                    }
+                }else if(figura instanceof Flujo){
+                    if(x<=figura.getVertices().get(3).getX()){
+                        if(x>=figura.getVertices().get(2).getX()){
+                           if(y<=figura.getVertices().get(3).getY()){
+                                if(y>=figura.getVertices().get(2).getY()){
                                     return figura;
                                 }
                             } 
