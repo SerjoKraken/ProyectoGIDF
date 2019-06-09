@@ -1,23 +1,25 @@
 
 package aplicacion;
 
+import java.util.ArrayList;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 
 public class FinDecision extends Figura{
 
+    int indexPadre;
+    int indexHijo;
+    
+    Figura padre;
+    Figura hijo;
+    
     public FinDecision(TipoF tipo) {
         super(tipo);
     }
 
     @Override
     public void dibujar(GraphicsContext gc) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void dibujar(GraphicsContext gc, double x, double y) {
         double x1=vertices.get(0).getX();
         double y1=vertices.get(0).getY();
         double x2=vertices.get(1).getX();
@@ -28,35 +30,84 @@ public class FinDecision extends Figura{
         double px2 =vertices.get(3).getX();
         double py2 =vertices.get(3).getY();
         
-        if(esVerdadero && desicionPadre != null){
-            gc.setStroke(Color.DEEPSKYBLUE);
-            gc.setFill(Color.DEEPSKYBLUE);
-            gc.fillText(texto, px2, py2);
-        }else if(!esVerdadero && desicionPadre != null){
-           
-            
-            gc.setStroke(Color.FUCHSIA);
-            gc.setFill(Color.FUCHSIA);
-            gc.fillText(texto, px2, py2);
-        }else{
-            gc.setStroke(Color.BLACK);
-        }
-        
-        double tamanno = 15;
-        double angulo = Math.atan2(y2-y1, x2-x1);
-        double x3 = x2 - tamanno*Math.cos(angulo - Math.PI/6);
-        double y3 = y2 - tamanno*Math.sin(angulo - Math.PI/6);
-        double x4 = x2 - tamanno*Math.cos(angulo + Math.PI/6);
-        double y4 = y2 - tamanno*Math.sin(angulo + Math.PI/6);
+        gc.setStroke(Color.BLACK);
+
         
         gc.strokeLine(x1,y1,x2,y2);
-        gc.strokeLine(x2, y2, x3, y3);
-        gc.strokeLine(x2, y2, x4, y4);
-        
-        for (double i = 0; i < 10; i+=0.5) {
+        gc.setStroke(Color.DEEPSKYBLUE);
+            gc.setFill(Color.DEEPSKYBLUE);
+            gc.fillText(texto, x2, y2);
+
+            for (double i = 0; i < 10; i+=0.5) {
             gc.strokeLine(px1, py1+i, px2, py1+i);
         }
     }
+    
+    public void calcularVertices(ArrayList<Figura> figuras){
+
+        for (int i = 0; i < figuras.size(); i++) {
+            if(!(figuras.get(i) instanceof FinDecision) && figuras.get(i).getVerticeCentro().distancia(padre.verticeCentro)==0){
+                indexPadre=i;
+            }
+            if(!(figuras.get(i) instanceof FinDecision) && figuras.get(i).getVerticeCentro().distancia(hijo.verticeCentro)==0){
+                indexHijo=i;
+            }
+        }
+        padre = figuras.get(indexPadre);
+        hijo = figuras.get(indexHijo);
+
+        Vertice v ;
+        Vertice v2;
+
+        if(figuras.get(indexHijo).getEstado()==true && figuras.get(indexPadre).getEstado()==true && !(figuras.get(indexHijo) instanceof FinDecision) && !(figuras.get(indexPadre) instanceof FinDecision)){
+
+            v = padre.verticeCentro;
+            v2 = hijo.conexiones.get(0);
+
+
+            for (Vertice conexion2 : hijo.getConexiones()) {
+                if(v.distancia(conexion2) < v.distancia(v2)){
+
+                    v2 = conexion2;
+                }
+            }
+
+
+            vertices.set(0, v);
+            vertices.set(1, v2);
+
+            verticeCentro = new Vertice((v.getX()+v2.getX())/2, (v.getY()+v2.getY())/2);
+
+            if(vertices.size()>2){
+                vertices.set(2,new Vertice(verticeCentro.getX()-5, verticeCentro.getY()-5));
+                vertices.set(3,new Vertice(verticeCentro.getX()+5, verticeCentro.getY()+5) );
+            }else{
+                vertices.add(new Vertice(verticeCentro.getX()-5, verticeCentro.getY()-5));
+                vertices.add(new Vertice(verticeCentro.getX()+5, verticeCentro.getY()+5) );
+            }
+        }
+        else{
+            System.out.println("Omitiendo");
+            this.setEstado(false);
+        }
+    }
+
+    @Override
+    public void dibujar(GraphicsContext gc, double x, double y) {
+        double x1=vertices.get(0).getX();
+        double y1=vertices.get(0).getY();
+        double x2=vertices.get(1).getX();
+        double y2=vertices.get(1).getY();
+        
+        
+
+        gc.setStroke(Color.BLACK);
+        
+
+        gc.strokeLine(x1,y1,x2,y2);
+        
+    }
+
 
     @Override
     public void calcularConexiones() {
