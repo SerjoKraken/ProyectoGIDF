@@ -466,6 +466,19 @@ public class Sistema implements Initializable {
                             flujo.getVertices().add(new Vertice(puntox2,puntoy2));
                             flujo.setEstado(true);
                             
+                            if(buscarConexion(x1,y1) instanceof Desicion){
+                                flujo.desicionPadre = (Desicion) buscarConexion(x1,y1);
+                                if (existeTrue(flujo.desicionPadre) == false) {
+                                    flujo.esVerdadero = true;
+                                    flujo.texto = "true";
+                                }else if(existeFalse(flujo.desicionPadre) == false){
+                                    flujo.esVerdadero = false;
+                                    flujo.texto = "false";
+                                }
+                                
+                            }
+                            
+                            
                             agregarFiguras(flujo);
                             
                             
@@ -494,6 +507,27 @@ public class Sistema implements Initializable {
             
         });
            
+    }
+    
+    public boolean existeTrue(Desicion desicion){
+        for (Figura figura : figuras) {
+            if (figura instanceof Flujo) {
+                if (desicion.equals(((Flujo) figura).desicionPadre) && ((Flujo) figura).esVerdadero) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    public boolean existeFalse(Desicion desicion){
+        for (Figura figura : figuras) {
+            if (figura instanceof Flujo) {
+                if (desicion.equals(((Flujo) figura).desicionPadre) && !((Flujo) figura).esVerdadero) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
     
     public void agregarFiguras(Flujo flujo){
@@ -893,12 +927,13 @@ public class Sistema implements Initializable {
                                         figuras.get(i).getVerticeCentro().getY()+5 >= py &&
                                         figuras.get(i).getTipo()==TipoF.FLUJO){
                                             figuras.get(i).setEstado(false);
-                                        }else{
                                             
-                                            if(figuras.get(i).getEstado()!=false){
-                                                
-                                                figuras.get(i).setEstado(true);
-                                            }
+                                        }else if(figuras.get(i).getVertices().get(3).getX()<= px &&
+                                            figuras.get(i).getVertices().get(1).getX()>=px &&
+                                            figuras.get(i).getVertices().get(0).getY()<= py &&
+                                            figuras.get(i).getVertices().get(2).getY()>=py &&
+                                            figuras.get(i).getTipo()==TipoF.DESICION ){
+                                                figuras.get(i).setEstado(false);
                                         }
                                     }
                                 }
@@ -1234,7 +1269,7 @@ public class Sistema implements Initializable {
             }
             
             if(flujo.padre.tipo==TipoF.DESICION && flujo.padre.verfal<2){          
-                    flujo.padre.verfal+=1;
+                    
                     return true;  
             }
             
@@ -1248,6 +1283,10 @@ public class Sistema implements Initializable {
                         return false;
                     }
                 }
+            }
+            
+            if (existeTrue(flujo.desicionPadre) && existeFalse(flujo.desicionPadre)) {
+                return false;
             }
             
             
@@ -1328,7 +1367,7 @@ public class Sistema implements Initializable {
             return true && evaluarAritmetica(expresion.substring(index+1),variables);
         
         
-        }else if(expresion.matches("\\(.+\\)\\*\\(.+\\)")){
+        }else if(expresion.matches("\\(.+\\)\\*.+")){
             int index = expresion.indexOf("*");
             return true && evaluarAritmetica(expresion.substring(index+1),variables);
             
@@ -1348,7 +1387,7 @@ public class Sistema implements Initializable {
         }else{
             return false;
         }
-        }
+    }
         
     
     /**

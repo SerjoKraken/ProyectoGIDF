@@ -7,6 +7,7 @@ package aplicacion;
 
 import java.util.ArrayList;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 /**
  *
@@ -19,6 +20,9 @@ public class Flujo extends Figura{
     
     Figura padre;
     Figura hijo;
+    
+    Desicion desicionPadre = null;
+    boolean esVerdadero = false;
     
     public Flujo( TipoF tipo) {
         super(tipo);
@@ -102,6 +106,8 @@ public class Flujo extends Figura{
 
     @Override
     public void dibujar(GraphicsContext gc) {
+        
+        
         double x1=vertices.get(0).getX();
         double y1=vertices.get(0).getY();
         double x2=vertices.get(1).getX();
@@ -112,7 +118,19 @@ public class Flujo extends Figura{
         double px2 =vertices.get(3).getX();
         double py2 =vertices.get(3).getY();
         
-        
+        if(esVerdadero && desicionPadre != null){
+            gc.setStroke(Color.DEEPSKYBLUE);
+            gc.setFill(Color.DEEPSKYBLUE);
+            gc.fillText(texto, px2, py2);
+        }else if(!esVerdadero && desicionPadre != null){
+           
+            
+            gc.setStroke(Color.FUCHSIA);
+            gc.setFill(Color.FUCHSIA);
+            gc.fillText(texto, px2, py2);
+        }else{
+            gc.setStroke(Color.BLACK);
+        }
         
         double tamanno = 15;
         double angulo = Math.atan2(y2-y1, x2-x1);
