@@ -1438,8 +1438,7 @@ public class Sistema implements Initializable {
                 //primero buscar si hay una multiplicacion por un entero a cadena
                 if (expresion.matches(".*[\\*].*")) {
                     System.out.println("Tenemos una multiplicacion");
-                    if (expresion.matches(".*[\\*].*")) {
-                    System.out.println("Tenemos una multiplicacion");
+                
                     if(expresion.matches(".*[\\+].*")){
                         System.out.println("Operacion mixta");
                         System.out.println(""+expresion);
@@ -1494,14 +1493,9 @@ public class Sistema implements Initializable {
                         
                     System.out.println(""+expresion);
                     }
-                }
-                    
-                        
-                        
-                    
-                    return expresion;
-                }
-                else{
+                
+                return expresion;
+                }else{
                     System.out.println("Solo suma de cadenas");
                     String[] aux3 = expresion.split("[\\+]+");
                     for (int k = 0; k < aux3.length; k++) {
