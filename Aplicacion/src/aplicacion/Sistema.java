@@ -265,72 +265,7 @@ public class Sistema implements Initializable {
     
     @FXML
     private void dibujarFinDecision(ActionEvent event){
-        gc.setStroke(Color.BLACK);
-  
-        b=true;
-        canvas.setOnMouseClicked((MouseEvent event1) -> {
-            double x1 = event1.getX();
-            double y1 = event1.getY();
-           
-            
-            canvas.setOnMouseClicked((MouseEvent event2) -> {
-                if(b){
-
-                    double x2 = event2.getX();
-                    double y2 = event2.getY();
-                    
-                        
-                    FinDecision fin = new FinDecision(TipoF.FIN);
-                    fin.getVertices().add(new Vertice(x1,y1));
-                    fin.getVertices().add(new Vertice(x2,y2));
-                    fin.setEstado(true);
-
-
-
-
-                    actualizar();
-                    b=false;
-                    canvas.setOnMouseClicked(null);
-                    
-                }
-            });
-        });    
-            /*if(buscarConexion(x1,y1)!=null){
-                vertice1=buscarConexion(x1,y1).getVerticeCentro();
-                canvas.setOnMouseClicked(null);
-                canvas.setOnMouseClicked((MouseEvent event2) -> {
-                    if(b){
-                        double puntox1=vertice1.getX();
-                        double puntoy1=vertice1.getY();
-                        double x2 = event2.getX();
-                        double y2 = event2.getY();
-                        Vertice vertice2;
-                      
-                        if(buscarConexion(x2,y2)!=null){
-                            vertice2 = buscarConexion(x2,y2).getVerticeCentro();
-                            double puntox2 = vertice2.getX();
-                            double puntoy2 = vertice2.getY();
-                            FinDecision fin = new FinDecision(TipoF.FIN);
-                            fin.getVertices().add(new Vertice(puntox1,puntoy1));
-                            fin.getVertices().add(new Vertice(puntox2,puntoy2));
-                            fin.setEstado(true);
-                            
-                            
-                            
-                            
-                            actualizar();
-                            b=false;
-                            canvas.setOnMouseClicked(null);
-                        }
-                        
-                    }
-
-
-                });
-            
-            }
-            
-        });*/
+        
     
     }
     
@@ -681,7 +616,7 @@ public class Sistema implements Initializable {
     public Figura buscarConexion(double x, double y){
         if(!figuras.isEmpty()) {
             for (Figura figura : figuras) {
-                if(!(figura instanceof Flujo)&& !(figura instanceof Desicion)){
+                if(!(figura instanceof Flujo)&& !(figura instanceof Desicion) && !(figura instanceof FinDecision)){
                     if(x<=figura.getVertices().get(2).getX()){
                         if(x>=figura.getVertices().get(0).getX()){
                            if(y<=figura.getVertices().get(2).getY()){
@@ -977,8 +912,10 @@ public class Sistema implements Initializable {
      
     }
     private ArrayList<Figura> auxi = new ArrayList<>();
+    
     @FXML
     private void limpiar(ActionEvent event) {
+        
         b=true;
         canvas.setOnMouseClicked((MouseEvent event2)->{
             double px=event2.getX();
@@ -1386,17 +1323,21 @@ public class Sistema implements Initializable {
                 return false;
             }
             
-            if(flujo.padre.tipo==TipoF.DESICION){          
-                if (existeTrue((Desicion) flujo.padre) == false) {
-                    return true;
-                }else if (existeFalse((Desicion) flujo.padre)==false) {
-                    return true;
-                }
-                      
-            }
+            int count = 0;
             for (Figura figura : figuras) {
                 if (figura instanceof Flujo) {
-                    if (flujo.desicionPadre.equals(((Flujo) figura).hijo) && flujo.hijo.equals(((Flujo) figura).desicionPadre)) {
+                    if(flujo.padre.equals(((Flujo) figura).padre)){
+                        count++;
+                    }
+                    if (count>=2) {
+                        return false;
+                    }
+                }
+            }
+            
+            for (Figura figura : figuras) {
+                if (figura instanceof Flujo) {
+                    if (flujo.padre.equals(((Flujo) figura).padre) && flujo.hijo.equals(((Flujo) figura).desicionPadre)) {
                         return false;
                     }
                 }
@@ -1404,14 +1345,26 @@ public class Sistema implements Initializable {
             
             for (Figura figura : figuras) {
                 if(figura instanceof Flujo){
+                    /*
                     if((flujo.vertices.get(0).distancia(figura.getVertices().get(0))==0 && flujo.vertices.get(1).distancia(figura.getVertices().get(1))==0) || 
                         (flujo.vertices.get(0).distancia(figura.getVertices().get(1))==0 && flujo.vertices.get(1).distancia(figura.getVertices().get(0))==0)){
                         return false;
-                    }if(flujo.padre.getVerticeCentro().distancia(((Flujo) figura).padre.getVerticeCentro())==0
+                    }
+                    
+                    if(flujo.padre.getVerticeCentro().distancia(((Flujo) figura).padre.getVerticeCentro())==0
                         || flujo.hijo.getVerticeCentro().distancia(((Flujo) figura).hijo.getVerticeCentro())==0 ){
                         return false;
                     }
+                    */
                 }
+            }
+            if(flujo.padre.tipo==TipoF.DESICION){          
+                if (existeTrue((Desicion) flujo.padre) == false) {
+                    return true;
+                }else if (existeFalse((Desicion) flujo.padre)==false) {
+                    return true;
+                }
+                      
             }
             
             
