@@ -7,6 +7,7 @@ package aplicacion;
 
 import java.util.ArrayList;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 /**
  *
@@ -20,6 +21,9 @@ public class Flujo extends Figura{
     Figura padre;
     Figura hijo;
     
+    
+    boolean esVerdadero = false;
+    
     public Flujo( TipoF tipo) {
         super(tipo);
         
@@ -27,14 +31,14 @@ public class Flujo extends Figura{
     
     public void calcularVertices(ArrayList<Figura> figuras){
         /*hay algun problema que produce que se eliminen todas las figuras*/
-        System.out.println("Comprobando...");
+        /*System.out.println("Comprobando...");
         System.out.println("Padres");
         System.out.println(""+figuras.get(indexPadre));
         System.out.println(""+padre);
         System.out.println("");
         System.out.println("Hijos");
         System.out.println(""+figuras.get(indexHijo));
-        System.out.println(""+hijo);
+        System.out.println(""+hijo);*/
         for (int i = 0; i < figuras.size(); i++) {
             if(!(figuras.get(i) instanceof Flujo) && figuras.get(i).getVerticeCentro().distancia(padre.verticeCentro)==0){
                 indexPadre=i;
@@ -46,9 +50,9 @@ public class Flujo extends Figura{
         padre = figuras.get(indexPadre);
         hijo = figuras.get(indexHijo);
         if (figuras.get(indexPadre).getEstado()!=false) {
-            System.out.println("Existe el padre");
+            //System.out.println("Existe el padre");
         }else{
-            System.out.println("No tiene Padre padre");
+            //System.out.println("No tiene Padre padre");
         }
             
         if(figuras.get(indexHijo).getEstado()!=false){
@@ -58,13 +62,13 @@ public class Flujo extends Figura{
         }
                 
         
-        System.out.println("***");
-        System.out.println(""+figuras.get(indexPadre).tipo);
-        System.out.println(""+figuras.get(indexHijo).tipo);
+        //System.out.println("***");
+        //System.out.println(""+figuras.get(indexPadre).tipo);
+        //System.out.println(""+figuras.get(indexHijo).tipo);
         Vertice v ;
         Vertice v2;
         
-        System.out.println("********************");
+        //System.out.println("********************");
         
 
         if(figuras.get(indexHijo).getEstado()==true && figuras.get(indexPadre).getEstado()==true && !(figuras.get(indexHijo) instanceof Flujo) && !(figuras.get(indexPadre) instanceof Flujo)){
@@ -102,6 +106,8 @@ public class Flujo extends Figura{
 
     @Override
     public void dibujar(GraphicsContext gc) {
+        
+        
         double x1=vertices.get(0).getX();
         double y1=vertices.get(0).getY();
         double x2=vertices.get(1).getX();
@@ -112,7 +118,19 @@ public class Flujo extends Figura{
         double px2 =vertices.get(3).getX();
         double py2 =vertices.get(3).getY();
         
-        
+        if(esVerdadero && desicionPadre != null){
+            gc.setStroke(Color.DEEPSKYBLUE);
+            gc.setFill(Color.DEEPSKYBLUE);
+            gc.fillText(texto, px2, py2);
+        }else if(!esVerdadero && desicionPadre != null){
+           
+            
+            gc.setStroke(Color.FUCHSIA);
+            gc.setFill(Color.FUCHSIA);
+            gc.fillText(texto, px2, py2);
+        }else{
+            gc.setStroke(Color.BLACK);
+        }
         
         double tamanno = 15;
         double angulo = Math.atan2(y2-y1, x2-x1);
