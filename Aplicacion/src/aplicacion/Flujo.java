@@ -30,20 +30,12 @@ public class Flujo extends Figura{
     }
     
     public void calcularVertices(ArrayList<Figura> figuras){
-        /*hay algun problema que produce que se eliminen todas las figuras*/
-        /*System.out.println("Comprobando...");
-        System.out.println("Padres");
-        System.out.println(""+figuras.get(indexPadre));
-        System.out.println(""+padre);
-        System.out.println("");
-        System.out.println("Hijos");
-        System.out.println(""+figuras.get(indexHijo));
-        System.out.println(""+hijo);*/
+        
         for (int i = 0; i < figuras.size(); i++) {
-            if(!(figuras.get(i) instanceof Flujo) && figuras.get(i).getVerticeCentro().distancia(padre.verticeCentro)==0){
+            if(!(figuras.get(i) instanceof Flujo) && !(figuras.get(i) instanceof FinDecision) && figuras.get(i).getVerticeCentro().distancia(padre.verticeCentro)==0){
                 indexPadre=i;
             }
-            if(!(figuras.get(i) instanceof Flujo) && figuras.get(i).getVerticeCentro().distancia(hijo.verticeCentro)==0){
+            if(!(figuras.get(i) instanceof Flujo) && !(figuras.get(i) instanceof FinDecision) && figuras.get(i).getVerticeCentro().distancia(hijo.verticeCentro)==0){
                 indexHijo=i;
             }
         }
