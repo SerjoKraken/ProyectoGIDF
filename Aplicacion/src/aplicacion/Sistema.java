@@ -293,16 +293,14 @@ public class Sistema implements Initializable {
                             fin.getVertices().add(new Vertice(puntox1,puntoy1));
                             fin.getVertices().add(new Vertice(puntox2,puntoy2));
                             fin.setEstado(true);
-              
+                            fin.setVerticeCentro(new Vertice((puntox1+puntox2)/2,(puntoy1+puntoy2)/2));
+                            
 
                             figuras.add(fin);
 
                             agregarFigurasParaDFin(fin);
                             
-                            System.out.println(fin.padre+"aweonaoooooo");
-                            
-                    
-
+                         
                             //if(flujoFinValido(fin)){
                                 
                                 figuras.add(fin);
@@ -315,11 +313,8 @@ public class Sistema implements Initializable {
                         }else{
                             
                             
-                        }
-                        
+                        }    
                     }
-
-
                 });
             
             }
@@ -761,7 +756,7 @@ public class Sistema implements Initializable {
     public Figura buscarConexion(double x, double y){
         if(!figuras.isEmpty()) {
             for (Figura figura : figuras) {
-                if(!(figura instanceof Flujo)&&!(figura instanceof Flujo)&& !(figura instanceof Desicion)){
+                if(!(figura instanceof Flujo) && !(figura instanceof FinDecision) && !(figura instanceof Desicion)){
                     if(x<=figura.getVertices().get(2).getX()){
                         if(x>=figura.getVertices().get(0).getX()){
                            if(y<=figura.getVertices().get(2).getY()){
@@ -1832,7 +1827,7 @@ public class Sistema implements Initializable {
             try {
                 System.out.println(""+expresion);
                 Object operation = engine.eval(expresion);
-                String resultado=String.valueOf(operation);
+                String resultado = String.valueOf(operation);
                 System.out.println("Evaluado operacion 1: " + operation);
                 return String.valueOf(resultado); 
             } catch (ScriptException e) {
