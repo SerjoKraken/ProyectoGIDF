@@ -135,7 +135,7 @@ public class Sistema implements Initializable {
         
         Optional<String> result = dialog.showAndWait();
         if(result.isPresent() && !result.get().equals(" ") && !result.get().equalsIgnoreCase(" ")){
-            if (result.get().matches("[A-Za-z1-9]+=.+")){
+            if (result.get().matches("[A-Za-z1-9]+=.+") && evaluarAritmetica(result.get().split("=")[1],variables)){
 
 
                 if(contar(result.get())>12){
@@ -896,7 +896,7 @@ public class Sistema implements Initializable {
 
         Optional<String> result = dialog.showAndWait();
         if (result.isPresent() && !result.get().equals(" ") && !result.get().equalsIgnoreCase(" ")){
-           
+           if(result.get().matches("[A-Za-z0-9]+[\\>|\\<|\\>=|\\<=|\\==|\\!=]{1}[A-Za-z0-9]+")){
    
             if(contar(result.get())>12){
                 powerUp = 80;
@@ -965,7 +965,15 @@ public class Sistema implements Initializable {
                 canvas.setOnMouseClicked(null);
             }  
         });
-            
+           }else{
+               Alert alert = new Alert(AlertType.WARNING);
+                alert.setTitle("Error");
+                alert.setHeaderText("cuidado");
+                alert.setContentText("El texto ingresado es incorrecto, intente otra vez");
+
+                alert.showAndWait();
+           
+           }
         } else {
             Alert alert = new Alert(AlertType.WARNING);
             alert.setTitle("Error");
@@ -991,7 +999,8 @@ public class Sistema implements Initializable {
         
         
         if(result.isPresent() && !result.get().equals(" ") && !result.get().equalsIgnoreCase(" ")){
-            if (result.get().matches("[A-Za-z]+=.+") || result.get().matches("[A-Za-z]+")){
+      
+            if ((result.get().matches("[A-Za-z]+=.+") && evaluarAritmetica(result.get().split("=")[1],variables)) || ((result.get().matches("[A-Za-z]+") && evaluarAritmetica(result.get(),variables)))){
                     b= true;
                     canvas.setOnMouseClicked((MouseEvent event2) -> {
                     double p1 = event2.getX();
@@ -1319,7 +1328,7 @@ public class Sistema implements Initializable {
     
         Optional<String> result = dialog.showAndWait();
         if(result.isPresent() && !result.get().equals(" ") && !result.get().equalsIgnoreCase(" ")){
-            if (result.get().matches("[A-Za-z]+")){
+            if (result.get().matches("[A-Za-z]+") && evaluarAritmetica(result.get(),variables)){
 
                 b= true;
 
@@ -1628,16 +1637,16 @@ public class Sistema implements Initializable {
             
         }else if(expresion.matches("\\(.+\\)\\/\\(.+\\)")){
             int index = expresion.indexOf("/");
-            return true && evaluarAritmetica(expresion.substring(index+1),variables);
+            return evaluarAritmetica(expresion.substring(index-1),variables) && evaluarAritmetica(expresion.substring(index+1),variables);
             
         }else if(expresion.matches("\\(.+\\)\\+\\(.+\\)")){
             int index = expresion.indexOf("+");
-            return true && evaluarAritmetica(expresion.substring(index+1),variables);
+            return evaluarAritmetica(expresion.substring(index-1),variables) && evaluarAritmetica(expresion.substring(index+1),variables);
             
         }
         else if(expresion.matches("\\(.+\\)-\\(.+\\)")){
             int index = expresion.indexOf("-");
-            return true && evaluarAritmetica(expresion.substring(index+1),variables);
+            return evaluarAritmetica(expresion.substring(index-1),variables) && evaluarAritmetica(expresion.substring(index+1),variables);
             
         }else{
             return false;
