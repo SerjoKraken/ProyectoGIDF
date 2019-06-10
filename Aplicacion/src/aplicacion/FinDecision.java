@@ -31,12 +31,10 @@ public class FinDecision extends Figura{
         
         gc.strokeLine(x1,y1,x2,y2);
         gc.setStroke(Color.DEEPSKYBLUE);
-            gc.setFill(Color.DEEPSKYBLUE);
-            gc.fillText(texto, x2, y2);
+        gc.setFill(Color.DEEPSKYBLUE);
+        gc.fillText(texto, x2, y2);
 
-            for (double i = 0; i < 10; i+=0.5) {
-            gc.strokeLine(px1, py1+i, px2, py1+i);
-        }
+            
     }
     
     public void calcularVertices(ArrayList<Figura> figuras){
@@ -105,10 +103,6 @@ public class FinDecision extends Figura{
     }
 
 
-    @Override
-    public void dibujar(GraphicsContext gc, double x, double y) {
-        
-    }
 
     @Override
     public void calcularConexiones() {
