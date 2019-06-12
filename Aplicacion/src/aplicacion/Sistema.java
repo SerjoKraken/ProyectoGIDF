@@ -390,7 +390,7 @@ public class Sistema implements Initializable {
     
     @FXML
     private void correr(ActionEvent event) throws InterruptedException {
-        
+        area.clear();
         Flujo flujo = null;
         Figura fig = null;
         ArrayList<Figura> corredors = new ArrayList<>(); 
