@@ -51,10 +51,10 @@ public class FinDecision extends Figura{
     public void calcularVertices(ArrayList<Figura> figuras){
 
         for (int i = 0; i < figuras.size(); i++) {
-            if(!(figuras.get(i) instanceof FinDecision) && figuras.get(i).getVerticeCentro().distancia(padre.verticeCentro)==0){
+            if(figuras.get(i).getVerticeCentro().distancia(padre.verticeCentro)==0){
                 indexPadre=i;
             }
-            if(!(figuras.get(i) instanceof FinDecision) && figuras.get(i).getVerticeCentro().distancia(hijo.verticeCentro)==0){
+            if(figuras.get(i).getVerticeCentro().distancia(hijo.verticeCentro)==0){
                 indexHijo=i;
             }
         }
@@ -64,7 +64,7 @@ public class FinDecision extends Figura{
         Vertice v ;
         Vertice v2;
 
-        if(figuras.get(indexHijo).getEstado()==true && figuras.get(indexPadre).getEstado()==true && !(figuras.get(indexHijo) instanceof FinDecision) && !(figuras.get(indexPadre) instanceof FinDecision)){
+        if(figuras.get(indexHijo).getEstado()==true && figuras.get(indexPadre).getEstado()==true){
 
             v = padre.verticeCentro;
             v2 = hijo.verticeCentro;
@@ -91,43 +91,25 @@ public class FinDecision extends Figura{
 
     @Override
     public void dibujar(GraphicsContext gc, double x, double y) {
-        double x1=vertices.get(0).getX();
-        double y1=vertices.get(0).getY();
-        double x2=vertices.get(1).getX();
-        double y2=vertices.get(1).getY();
+        double xActual = verticeCentro.getX();
+        double yActual = verticeCentro.getY();
         
-        double px1 = x-5;
-        double py1 = y-5;
-        double px2 = x+5;
-        double py2 = y+5;
+        verticeCentro.setX(xActual+(x-xActual));
+        verticeCentro.setY(yActual+(y-yActual));
         
+        padre.setVerticeCentro(new Vertice(padre.getVerticeCentro().getX()+(x-xActual), padre.getVerticeCentro().getY()+(y-yActual)));
+        padre.dibujar(gc, padre.getVerticeCentro().getX(), padre.getVerticeCentro().getY());
+        padre.calcularConexiones();
         
-        double centroX = x;
-        double centroY = y;
-        
-        vertices.get(2).setX(px1);
-        vertices.get(2).setY(py1);
-        vertices.get(3).setX(px2);
-        vertices.get(3).setY(py2);
-        
-        verticeCentro.setX(x);
-        verticeCentro.setY(y);
-        
-        
-        gc.setStroke(Color.BLACK);
-        
-        gc.strokeLine(x1,y1,centroX,centroY);
-        gc.strokeLine(centroX,centroY, x2, y2);
-        
-        for (double i = 0; i < 10; i+=0.5) {
-            gc.strokeLine(px1, py1+i, px2, py1+i);
-        }
+        hijo.setVerticeCentro(new Vertice(hijo.getVerticeCentro().getX()+(x-xActual), hijo.getVerticeCentro().getY()+(y-yActual)));
+        hijo.dibujar(gc, hijo.getVerticeCentro().getX(), hijo.getVerticeCentro().getY());
+        hijo.calcularConexiones();
     }
 
 
     @Override
     public void calcularConexiones() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
     }
     
 }
