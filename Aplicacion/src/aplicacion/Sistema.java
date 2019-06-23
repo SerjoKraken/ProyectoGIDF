@@ -165,10 +165,6 @@ public class Sistema implements Initializable {
                     double y3 = y + 25;
                     double x4 = x - 50;
                     double y4 = y +25;
-                    /***
-                     * caso en que el punto se crea muy arriba o si el punto se crea
-                     * muy a la izquierda
-                     */
 
                     if(x1<0){
                         x=50;
@@ -289,7 +285,7 @@ public class Sistema implements Initializable {
                             double puntox2 = vertice2.getX();
                             double puntoy2 = vertice2.getY();
                             
-                            FinDecision fin = new FinDecision(TipoF.FIN);
+                            FinDecision fin = new FinDecision(TipoF.FINDESICION);
                             fin.getVertices().add(new Vertice(puntox1,puntoy1));
                             fin.getVertices().add(new Vertice(puntox2,puntoy2));
                             fin.setEstado(true);
@@ -316,74 +312,8 @@ public class Sistema implements Initializable {
                         }    
                     }
                 });
-            
             }
-           
-            
-            /*canvas.setOnMouseClicked((MouseEvent event2) -> {
-                if(b){
-
-                    double x2 = event2.getX();
-                    double y2 = event2.getY();
-                    
-                        
-                    FinDecision fin = new FinDecision(TipoF.FIN);
-                    fin.getVertices().add(new Vertice(x1,y1));
-                    fin.getVertices().add(new Vertice(x2,y2));
-                    fin.setEstado(true);
-                    fin.dibujar(gc);
-                    
-                    figuras.add(fin);
-                    
-                    agregarFigurasParaDFin(fin);
-
-
-
-                    
-                    //actualizar();
-                    b=false;
-                    canvas.setOnMouseClicked(null);
-                    
-                }
-            });*/
         });    
-            /*if(buscarConexion(x1,y1)!=null){
-                vertice1=buscarConexion(x1,y1).getVerticeCentro();
-                canvas.setOnMouseClicked(null);
-                canvas.setOnMouseClicked((MouseEvent event2) -> {
-                    if(b){
-                        double puntox1=vertice1.getX();
-                        double puntoy1=vertice1.getY();
-                        double x2 = event2.getX();
-                        double y2 = event2.getY();
-                        Vertice vertice2;
-                      
-                        if(buscarConexion(x2,y2)!=null){
-                            vertice2 = buscarConexion(x2,y2).getVerticeCentro();
-                            double puntox2 = vertice2.getX();
-                            double puntoy2 = vertice2.getY();
-                            FinDecision fin = new FinDecision(TipoF.FIN);
-                            fin.getVertices().add(new Vertice(puntox1,puntoy1));
-                            fin.getVertices().add(new Vertice(puntox2,puntoy2));
-                            fin.setEstado(true);
-                            
-                            
-                            
-                            
-                            actualizar();
-                            b=false;
-                            canvas.setOnMouseClicked(null);
-                        }
-                        
-                    }
-
-
-                });
-            
-            }
-            
-        });*/
-    
     }
     
     
@@ -398,7 +328,7 @@ public class Sistema implements Initializable {
         if(b){
             if (!figuras.isEmpty() ){
                 if(buscarInicio() && buscarFin()){
-                    if(estaTodoConectado(figuras)){
+                    
                         //buscar inicio
                         for (Figura figura : figuras) {
                             if(figura.getTipo() == TipoF.INICIO){
@@ -452,9 +382,7 @@ public class Sistema implements Initializable {
                                 System.out.println(fig.texto);
                                 corredors.add(fig);
                             }
-
                             gc.setFill(Color.RED);
-
                             Thread hilo = new Thread(new Runnable() {
                                 @Override
 
@@ -473,15 +401,11 @@ public class Sistema implements Initializable {
                                             } catch (InterruptedException ex) {
                                                 Logger.getLogger(Sistema.class.getName()).log(Level.SEVERE, null, ex);
                                             }
-
                                         }
                                         b=false;
                                         corredors.clear();
                                         variables.clear();
-
                                     }
-
-
                             });
                             hilo.start();
 
@@ -489,15 +413,7 @@ public class Sistema implements Initializable {
                             //hilo.stop();
 
                         }
-                    }else{
-                        Alert alert = new Alert(AlertType.WARNING);
-                        alert.setTitle("Error");
-                        alert.setHeaderText("Cuidado");
-                        alert.setContentText("Debes conectar todo el diagrama");
 
-                        alert.showAndWait();
-                        b=false;
-                    }
                 }else{
                     Alert alert = new Alert(AlertType.WARNING);
                     alert.setTitle("Error");
@@ -921,39 +837,16 @@ public class Sistema implements Initializable {
                 
                 
                 Desicion desicion = new Desicion(TipoF.DESICION);
-                    desicion.setVerticeCentro(new Vertice(x,y));
-                    desicion.getVertices().add(new Vertice(x1, y1));
-                    desicion.getVertices().add(new Vertice(x2, y2));
-                    desicion.getVertices().add(new Vertice(x3, y3));
-                    desicion.getVertices().add(new Vertice(x4, y4));
-                    desicion.calcularConexiones();
-                    desicion.texto = result.get();
-                    figuras.add(desicion);
-                    desicion.estado=true;
-                    desicion.dibujar(gc);
-                /*if(comprobarPosicion(x1,y1,x2,y2,x3,y3,x4,y4)==true){
-                   
-                    //Proceso proceso = new Proceso( TipoF.PROCESO);
-                    
-                    Desicion desicion = new Desicion(TipoF.DESICION);
-                    desicion.setVerticeCentro(new Vertice(x,y));
-                    desicion.getVertices().add(new Vertice(x1, y1));
-                    desicion.getVertices().add(new Vertice(x2, y2));
-                    desicion.getVertices().add(new Vertice(x3, y3));
-                    desicion.getVertices().add(new Vertice(x4, y4));
-                    desicion.calcularConexiones();
-                    desicion.texto = result.get();
-                    figuras.add(desicion);
-                    desicion.dibujar(gc);
-                    
-                }else{
-        
-                    Alert alert = new Alert(AlertType.WARNING);
-                    alert.setTitle("Error");
-                    alert.setHeaderText("Cuidado");
-                    alert.setContentText("Ya se encuentra una figura creada aquÃ­ ");
-                    alert.showAndWait();
-                }*/
+                desicion.setVerticeCentro(new Vertice(x,y));
+                desicion.getVertices().add(new Vertice(x1, y1));
+                desicion.getVertices().add(new Vertice(x2, y2));
+                desicion.getVertices().add(new Vertice(x3, y3));
+                desicion.getVertices().add(new Vertice(x4, y4));
+                desicion.calcularConexiones();
+                desicion.texto = result.get();
+                figuras.add(desicion);
+                desicion.estado=true;
+                desicion.dibujar(gc);
                 actualizar();
                 b=false;
                 powerUp=0;
@@ -1118,7 +1011,7 @@ public class Sistema implements Initializable {
                                     figuras.get(i).getVertices().get(0).getY()<= py &&
                                     figuras.get(i).getVertices().get(2).getY()>=py &&
                                     figuras.get(i).getTipo()==TipoF.DOCUMENTACION){
-                                        figuras.get(i).setEstado(true);
+                                        figuras.get(i).setEstado(false);
                                     }else{
                                     
                                     
@@ -1130,12 +1023,20 @@ public class Sistema implements Initializable {
                                         figuras.get(i).getTipo()==TipoF.FLUJO){
                                             figuras.get(i).setEstado(false);
                                             
-                                        }else if(figuras.get(i).getVertices().get(3).getX()<= px &&
+                                        }else{
+                                            if(figuras.get(i).getVertices().get(3).getX()<= px &&
                                             figuras.get(i).getVertices().get(1).getX()>=px &&
                                             figuras.get(i).getVertices().get(0).getY()<= py &&
                                             figuras.get(i).getVertices().get(2).getY()>=py &&
                                             figuras.get(i).getTipo()==TipoF.DESICION ){
                                                 figuras.get(i).setEstado(false);
+                                            }else if(figuras.get(i).getVertices().get(3).getX()<=px &&
+                                                figuras.get(i).getVertices().get(1).getX()>=px &&
+                                                figuras.get(i).getVertices().get(0).getY()<= py &&
+                                                figuras.get(i).getVertices().get(2).getY()>=py &&
+                                                figuras.get(i).getTipo()==TipoF.FINDESICION ){
+                                                    figuras.get(i).setEstado(false);
+                                            }
                                         }
                                     }
                                 }
@@ -1199,13 +1100,7 @@ public class Sistema implements Initializable {
                 auxi.add(figuras.get(i));
             }
         }
-        for (Figura figura : figuras) {
-            System.out.println("*******************");
-            System.out.println(figura.texto);
-            System.out.println(figura.tipo);
-            System.out.println(figura.desicionPadre);           
-            System.out.println("*******************");
-        }
+
         figuras.clear();
         for (int i = 0; i < auxi.size(); i++) {
             figuras.add(auxi.get(i));
@@ -1915,42 +1810,7 @@ public class Sistema implements Initializable {
         return false;
     }
     
-    public boolean estaTodoConectado(ArrayList<Figura> figuras){
-        int contarFlujo=0;
-        int contarFigura=0;
-        int desidir=0;
-        if(!(figuras.isEmpty())){
-            for (int i = 0; i < figuras.size(); i++) {
-                if (figuras.get(i) instanceof Flujo) {
-                        contarFlujo=contarFlujo+1;
-                    }else{
-                        if(figuras.get(i) instanceof Desicion){
-                            desidir+=1;
-                        }
-                        else{
-                            contarFigura+=1;
-                        }
-                    }
-            }
-            if(desidir>1){
-                desidir=desidir-1;
-                contarFigura=contarFigura+desidir;
-            }
-            if(desidir==0){
-                contarFlujo=contarFlujo+1;
-            }
-            
-            if(contarFlujo==contarFigura){
-                return true;
-            }
-            else{
-                return false;
-            }
-            
-        }else{
-            return false;
-        }
-    }
+
     
     
 }

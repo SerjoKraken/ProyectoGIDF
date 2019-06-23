@@ -32,7 +32,7 @@ public class Flujo extends Figura{
     public void calcularVertices(ArrayList<Figura> figuras){
         
         for (int i = 0; i < figuras.size(); i++) {
-            if(!(figuras.get(i) instanceof Flujo) && !(figuras.get(i) instanceof FinDecision) && figuras.get(i).getVerticeCentro().distancia(padre.verticeCentro)==0){
+            if(!(figuras.get(i) instanceof Flujo) && figuras.get(i).getVerticeCentro().distancia(padre.verticeCentro)==0){
                 indexPadre=i;
             }
             if(!(figuras.get(i) instanceof Flujo) && !(figuras.get(i) instanceof FinDecision) && figuras.get(i).getVerticeCentro().distancia(hijo.verticeCentro)==0){
