@@ -66,15 +66,22 @@ public class Flujo extends Figura{
         if(figuras.get(indexHijo).getEstado()==true && figuras.get(indexPadre).getEstado()==true && !(figuras.get(indexHijo) instanceof Flujo) && !(figuras.get(indexPadre) instanceof Flujo)){
 
             v = padre.verticeCentro;
-            v2 = hijo.conexiones.get(0);
-
-
-            for (Vertice conexion2 : hijo.getConexiones()) {
+            
+            if (!(hijo instanceof Flujo)) {
+                v2 = hijo.conexiones.get(0);
+                for (Vertice conexion2 : hijo.getConexiones()) {
                 if(v.distancia(conexion2) < v.distancia(v2)){
 
                     v2 = conexion2;
                 }
             }
+            }else{
+                v2 = hijo.verticeCentro;
+            }
+            
+
+
+            
 
 
             vertices.set(0, v);
@@ -110,16 +117,18 @@ public class Flujo extends Figura{
         double px2 =vertices.get(3).getX();
         double py2 =vertices.get(3).getY();
         
-        if(esVerdadero && desicionPadre != null){
+        if(esVerdadero && desicionPadre != null && padre instanceof Desicion){
+            
             gc.setStroke(Color.DEEPSKYBLUE);
             gc.setFill(Color.DEEPSKYBLUE);
             gc.fillText(texto, px2, py2);
-        }else if(!esVerdadero && desicionPadre != null){
-           
+            
+        }else if(!esVerdadero && desicionPadre != null && padre instanceof Desicion){
             
             gc.setStroke(Color.FUCHSIA);
             gc.setFill(Color.FUCHSIA);
             gc.fillText(texto, px2, py2);
+            
         }else{
             gc.setStroke(Color.BLACK);
         }
