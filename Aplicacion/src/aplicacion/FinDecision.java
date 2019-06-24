@@ -51,10 +51,10 @@ public class FinDecision extends Figura{
     public void calcularVertices(ArrayList<Figura> figuras){
 
         for (int i = 0; i < figuras.size(); i++) {
-            if(figuras.get(i).getVerticeCentro().distancia(padre.verticeCentro)==0){
+            if(!(figuras.get(i) instanceof Flujo) &&figuras.get(i).getVerticeCentro().distancia(padre.verticeCentro)==0){
                 indexPadre=i;
             }
-            if(figuras.get(i).getVerticeCentro().distancia(hijo.verticeCentro)==0){
+            if(!(figuras.get(i) instanceof Flujo) && figuras.get(i).getVerticeCentro().distancia(hijo.verticeCentro)==0){
                 indexHijo=i;
             }
         }
@@ -67,6 +67,7 @@ public class FinDecision extends Figura{
         if(figuras.get(indexHijo).getEstado()==true && figuras.get(indexPadre).getEstado()==true){
 
             v = padre.verticeCentro;
+            
             v2 = hijo.verticeCentro;
 
 

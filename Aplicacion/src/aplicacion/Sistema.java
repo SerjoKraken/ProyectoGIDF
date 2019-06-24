@@ -629,22 +629,22 @@ public class Sistema implements Initializable {
     public void agregarFigurasParaDFin(FinDecision flujo){
         
         for (int i = 0; i < figuras.size(); i++) {
-            if(!(figuras.get(i) instanceof FinDecision)){
-                if(flujo.getVertices().get(0).distancia(figuras.get(i).getVerticeCentro())==0){
-                    flujo.padre = figuras.get(i);
-                    flujo.indexPadre = i;
-                    break;
-                }
+            
+            if(flujo.getVertices().get(0).distancia(figuras.get(i).getVerticeCentro())==0){
+                flujo.padre = figuras.get(i);
+                flujo.indexPadre = i;
+                break;
             }
+            
         }
         for (int i = 0; i < figuras.size(); i++) {
-            if(!(figuras.get(i) instanceof FinDecision)){
-                if(flujo.getVertices().get(1).distancia(figuras.get(i).getVerticeCentro())==0){
-                    flujo.hijo = figuras.get(i);
-                    flujo.indexHijo = i;
-                    break;
-                }
+            
+            if(flujo.getVertices().get(1).distancia(figuras.get(i).getVerticeCentro())==0){
+                flujo.hijo = figuras.get(i);
+                flujo.indexHijo = i;
+                break;
             }
+            
         }
     }
     
@@ -1030,11 +1030,11 @@ public class Sistema implements Initializable {
                                             figuras.get(i).getVertices().get(2).getY()>=py &&
                                             figuras.get(i).getTipo()==TipoF.DESICION ){
                                                 figuras.get(i).setEstado(false);
-                                            }else if(figuras.get(i).getVertices().get(3).getX()<=px &&
-                                                figuras.get(i).getVertices().get(1).getX()>=px &&
-                                                figuras.get(i).getVertices().get(0).getY()<= py &&
-                                                figuras.get(i).getVertices().get(2).getY()>=py &&
-                                                figuras.get(i).getTipo()==TipoF.FINDESICION ){
+                                            }else if(figuras.get(i).getVerticeCentro().getX()-5 <= px &&
+                                            figuras.get(i).getVerticeCentro().getX()+5 >= px &&
+                                            figuras.get(i).getVerticeCentro().getY()-5 <= py &&
+                                            figuras.get(i).getVerticeCentro().getY()+5 >= py &&
+                                            figuras.get(i).getTipo()==TipoF.FINDESICION ){
                                                     figuras.get(i).setEstado(false);
                                             }
                                         }
@@ -1088,7 +1088,7 @@ public class Sistema implements Initializable {
             
         }
         for (Figura figura : figuras) {
-            if(!(figura instanceof Flujo) && figura.getEstado()!=false){
+            if(!(figura instanceof Flujo) && !(figura instanceof FinDecision) && figura.getEstado()!=false){
             //if(!(figura instanceof Flujo )&& figura.getEstado()!=false){
                 
                 figura.dibujar(gc);
