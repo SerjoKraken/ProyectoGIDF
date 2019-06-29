@@ -73,6 +73,15 @@ public class Sistema implements Initializable {
     private Button b8;
     
     @FXML
+    private Button b9;
+    
+    @FXML
+    private Button b10;
+    
+    @FXML
+    private Button b11;
+    
+    @FXML
     private Canvas canvas;
     
     @FXML
@@ -87,7 +96,7 @@ public class Sistema implements Initializable {
     private Figura f;
     public double powerUp=0;
     boolean b = false;
-    
+    boolean run=false;
     ArrayList<Variable> variables = new ArrayList<>();
     
     @FXML
@@ -96,7 +105,7 @@ public class Sistema implements Initializable {
         canvas.setOnMousePressed(e1->{
             aux = buscarConexion(e1.getX(), e1.getY());
             canvas.setOnMouseDragged(e2->{ 
-                if(aux!=null && moviendo){
+                if(aux!=null && moviendo && run==false && corriendo==false){
                     //System.out.println("Manteniendo");
                     redimensionCanvas(e2.getX(), e2.getY());
                    
@@ -127,99 +136,99 @@ public class Sistema implements Initializable {
     @FXML
     private void dibujarProceso(ActionEvent event) throws IOException {
         
-        
-        TextInputDialog dialog = new TextInputDialog("");
-        dialog.setTitle("Crear proceso");
-        dialog.setContentText("Introduzca el texto:");
-        
-        
-        Optional<String> result = dialog.showAndWait();
-        if(result.isPresent() && !result.get().equals(" ") && !result.get().equalsIgnoreCase(" ")){
-            if (result.get().matches("[A-Za-z1-9]+=.+") && evaluarAritmetica(result.get().split("=")[1],variables)){
+        if(run==false && corriendo==false){
+            TextInputDialog dialog = new TextInputDialog("");
+            dialog.setTitle("Crear proceso");
+            dialog.setContentText("Introduzca el texto:");
 
 
-                if(contar(result.get())>12){
-                    powerUp = 80;
-                    boolean a = true;
-                }
-
-                b=true;
-                canvas.setOnMouseClicked((MouseEvent event2) -> {
-                double p1 = event2.getX();
-                double p2 = event2.getY();
-
-                redimensionCanvas(p1,p2);
+            Optional<String> result = dialog.showAndWait();
+            if(result.isPresent() && !result.get().equals(" ") && !result.get().equalsIgnoreCase(" ")){
+                if (result.get().matches("[A-Za-z1-9]+=.+") && evaluarAritmetica(result.get().split("=")[1],variables)){
 
 
-                if(b){
-
-
-
-                    double x = event2.getX();
-                    double y = event2.getY();
-                    double x1 = x - 50;
-                    double y1 = y - 25;
-                    double x2 = x + 50+powerUp;
-                    double y2 = y - 25;
-                    double x3 = x + 50+powerUp;
-                    double y3 = y + 25;
-                    double x4 = x - 50;
-                    double y4 = y +25;
-
-                    if(x1<0){
-                        x=50;
-                        x2=x2-x1;
-                        x3=x3-x1;
-                        x1=0;
-                        x4=0;
+                    if(contar(result.get())>12){
+                        powerUp = 80;
+                        boolean a = true;
                     }
 
-                    if(y1<0){
-                        y=25;
-                        y3=y3-y1;
-                        y4=y4-y1;
-                        y1=0;
-                        y2=0;
-                    }
+                    b=true;
+                    canvas.setOnMouseClicked((MouseEvent event2) -> {
+                    double p1 = event2.getX();
+                    double p2 = event2.getY();
+
+                    redimensionCanvas(p1,p2);
 
 
-                    Proceso proceso = new Proceso( TipoF.PROCESO);
-                    proceso.setVerticeCentro(new Vertice(x,y));
-                    proceso.getVertices().add(new Vertice(x1, y1));
-                    proceso.getVertices().add(new Vertice(x2, y2));
-                    proceso.getVertices().add(new Vertice(x3, y3));
-                    proceso.getVertices().add(new Vertice(x4, y4));
-                    proceso.calcularConexiones();
-                    proceso.texto = result.get();
-                    proceso.setEstado(true);
-                    figuras.add(proceso);
-                    proceso.dibujar(gc);
+                    if(b){
 
 
-                    actualizar();
-                    b=false;
 
-                    powerUp=0;
-                    canvas.setOnMouseClicked(null);
-                }  
-            });
-            }else{
+                        double x = event2.getX();
+                        double y = event2.getY();
+                        double x1 = x - 50;
+                        double y1 = y - 25;
+                        double x2 = x + 50+powerUp;
+                        double y2 = y - 25;
+                        double x3 = x + 50+powerUp;
+                        double y3 = y + 25;
+                        double x4 = x - 50;
+                        double y4 = y +25;
+
+                        if(x1<0){
+                            x=50;
+                            x2=x2-x1;
+                            x3=x3-x1;
+                            x1=0;
+                            x4=0;
+                        }
+
+                        if(y1<0){
+                            y=25;
+                            y3=y3-y1;
+                            y4=y4-y1;
+                            y1=0;
+                            y2=0;
+                        }
+
+
+                        Proceso proceso = new Proceso( TipoF.PROCESO);
+                        proceso.setVerticeCentro(new Vertice(x,y));
+                        proceso.getVertices().add(new Vertice(x1, y1));
+                        proceso.getVertices().add(new Vertice(x2, y2));
+                        proceso.getVertices().add(new Vertice(x3, y3));
+                        proceso.getVertices().add(new Vertice(x4, y4));
+                        proceso.calcularConexiones();
+                        proceso.texto = result.get();
+                        proceso.setEstado(true);
+                        figuras.add(proceso);
+                        proceso.dibujar(gc);
+
+
+                        actualizar();
+                        b=false;
+
+                        powerUp=0;
+                        canvas.setOnMouseClicked(null);
+                    }  
+                });
+                }else{
+                    Alert alert = new Alert(AlertType.WARNING);
+                    alert.setTitle("Error");
+                    alert.setHeaderText("cuidado");
+                    alert.setContentText("El formato del texto ingresado es incorrecto");
+
+                    alert.showAndWait();
+                }    
+            } else {
                 Alert alert = new Alert(AlertType.WARNING);
                 alert.setTitle("Error");
                 alert.setHeaderText("cuidado");
-                alert.setContentText("El formato del texto ingresado es incorrecto");
+                alert.setContentText("Debes ingresar un texto");
 
                 alert.showAndWait();
-            }    
-        } else {
-            Alert alert = new Alert(AlertType.WARNING);
-            alert.setTitle("Error");
-            alert.setHeaderText("cuidado");
-            alert.setContentText("Debes ingresar un texto");
-
-            alert.showAndWait();
+            }
         }
-
         
         
 
@@ -273,7 +282,7 @@ public class Sistema implements Initializable {
                 vertice1=buscarConexion(x1,y1).getVerticeCentro();
                 canvas.setOnMouseClicked(null);
                 canvas.setOnMouseClicked((MouseEvent event2) -> {
-                    if(b){
+                    if(b && run==false && corriendo==false){
                         double puntox1=vertice1.getX();
                         double puntoy1=vertice1.getY();
                         double x2 = event2.getX();
@@ -325,7 +334,7 @@ public class Sistema implements Initializable {
         Figura fig = null;
         ArrayList<Figura> corredors = new ArrayList<>(); 
         b=true;
-        if(b){
+        if(b && run==false && corriendo==false){
             if (!figuras.isEmpty() ){
                 if(buscarInicio() && buscarFin()){
                     
@@ -390,11 +399,12 @@ public class Sistema implements Initializable {
 
 
                                         for (Figura corredor : corredors) {
+                                            run=true;
                                             if (corredor.tipo!=TipoF.FIN && corredor.tipo!=TipoF.INICIO){
                                                 agregarVariable(corredor);
                                             } 
                                             gc.fillOval(corredor.verticeCentro.getX()-80, corredor.verticeCentro.getY(), 20, 20);
-
+                                            
                                             try {
                                                 Thread.sleep(3000);
                                                 actualizar();
@@ -405,10 +415,12 @@ public class Sistema implements Initializable {
                                         b=false;
                                         corredors.clear();
                                         variables.clear();
+                                        area.clear();
+                                        run=false;
                                     }
                             });
                             hilo.start();
-
+                            run=false;
 
                             //hilo.stop();
 
@@ -434,6 +446,7 @@ public class Sistema implements Initializable {
             }
         }
         b=false;
+        run=false;
     }
     
     private boolean existeVariable(String nombre){
@@ -503,7 +516,7 @@ public class Sistema implements Initializable {
                 vertice1=buscarConexion(x1,y1).getVerticeCentro();
                 canvas.setOnMouseClicked(null);
                 canvas.setOnMouseClicked((MouseEvent event2) -> {
-                    if(b){
+                    if(b && run==false && corriendo==false){
                         double puntox1=vertice1.getX();
                         double puntoy1=vertice1.getY();
                         double x2 = event2.getX();
@@ -799,176 +812,175 @@ public class Sistema implements Initializable {
     
         @FXML
     private void dibujarDesicion(ActionEvent event) throws IOException {
-        
-        TextInputDialog dialog = new TextInputDialog("");
-        dialog.setTitle("Crear proceso");
-        dialog.setContentText("Introduzca el texto:");
+        if(run==false && corriendo==false){
+            TextInputDialog dialog = new TextInputDialog("");
+            dialog.setTitle("Crear proceso");
+            dialog.setContentText("Introduzca el texto:");
 
 
-        Optional<String> result = dialog.showAndWait();
-        if (result.isPresent() && !result.get().equals(" ") && !result.get().equalsIgnoreCase(" ")){
-           if(result.get().matches("[A-Za-z0-9]+[\\>|\\<|\\>=|\\<=|\\==|\\!=]{1}[A-Za-z0-9]+")){
-   
-            if(contar(result.get())>12){
-                powerUp = 80;
-                boolean a= true;
-            }
-            
-            b=true;
-            canvas.setOnMouseClicked((MouseEvent event2) -> {
-            double p1 = event2.getX();
-            double p2 = event2.getY();
-            
-            redimensionCanvas(p1,p2);
-            
-            
-            if(b){
-                
-                double x = event2.getX();
-                double y = event2.getY();
-                double x1 = x ;
-                double y1 = y - 50;
-                double x2 = x+50;
-                double y2 = y ;
-                double x3 = x ;
-                double y3 = y+50;
-                double x4 = x - 50;
-                double y4 = y;
-                
-                
-                Desicion desicion = new Desicion(TipoF.DESICION);
-                desicion.setVerticeCentro(new Vertice(x,y));
-                desicion.getVertices().add(new Vertice(x1, y1));
-                desicion.getVertices().add(new Vertice(x2, y2));
-                desicion.getVertices().add(new Vertice(x3, y3));
-                desicion.getVertices().add(new Vertice(x4, y4));
-                desicion.calcularConexiones();
-                desicion.texto = result.get();
-                figuras.add(desicion);
-                desicion.estado=true;
-                desicion.dibujar(gc);
-                actualizar();
-                b=false;
-                powerUp=0;
-                canvas.setOnMouseClicked(null);
-            }  
-        });
-           }else{
-               Alert alert = new Alert(AlertType.WARNING);
+            Optional<String> result = dialog.showAndWait();
+            if (result.isPresent() && !result.get().equals(" ") && !result.get().equalsIgnoreCase(" ")){
+               if(result.get().matches("[A-Za-z0-9]+[\\>|\\<|\\>=|\\<=|\\==|\\!=]{1}[A-Za-z0-9]+")){
+
+                if(contar(result.get())>12){
+                    powerUp = 80;
+                    boolean a= true;
+                }
+
+                b=true;
+                canvas.setOnMouseClicked((MouseEvent event2) -> {
+                double p1 = event2.getX();
+                double p2 = event2.getY();
+
+                redimensionCanvas(p1,p2);
+
+
+                if(b){
+
+                    double x = event2.getX();
+                    double y = event2.getY();
+                    double x1 = x ;
+                    double y1 = y - 50;
+                    double x2 = x+50;
+                    double y2 = y ;
+                    double x3 = x ;
+                    double y3 = y+50;
+                    double x4 = x - 50;
+                    double y4 = y;
+
+
+                    Desicion desicion = new Desicion(TipoF.DESICION);
+                    desicion.setVerticeCentro(new Vertice(x,y));
+                    desicion.getVertices().add(new Vertice(x1, y1));
+                    desicion.getVertices().add(new Vertice(x2, y2));
+                    desicion.getVertices().add(new Vertice(x3, y3));
+                    desicion.getVertices().add(new Vertice(x4, y4));
+                    desicion.calcularConexiones();
+                    desicion.texto = result.get();
+                    figuras.add(desicion);
+                    desicion.estado=true;
+                    desicion.dibujar(gc);
+                    actualizar();
+                    b=false;
+                    powerUp=0;
+                    canvas.setOnMouseClicked(null);
+                }  
+            });
+               }else{
+                   Alert alert = new Alert(AlertType.WARNING);
+                    alert.setTitle("Error");
+                    alert.setHeaderText("cuidado");
+                    alert.setContentText("El texto ingresado es incorrecto, intente otra vez");
+
+                    alert.showAndWait();
+
+               }
+            } else {
+                Alert alert = new Alert(AlertType.WARNING);
                 alert.setTitle("Error");
                 alert.setHeaderText("cuidado");
-                alert.setContentText("El texto ingresado es incorrecto, intente otra vez");
+                alert.setContentText("Debes ingresar un texto");
 
                 alert.showAndWait();
-           
-           }
-        } else {
-            Alert alert = new Alert(AlertType.WARNING);
-            alert.setTitle("Error");
-            alert.setHeaderText("cuidado");
-            alert.setContentText("Debes ingresar un texto");
-
-            alert.showAndWait();
+            }
         }
-        
     }
     
     
     @FXML
     private void dibujarEntrada(ActionEvent event) throws IOException {
         
-        
-        TextInputDialog dialog = new TextInputDialog("");
-        dialog.setTitle("Crear Entrada");
-        dialog.setContentText("Introduzca el texto:");
+        if(run==false && corriendo==false){
+            TextInputDialog dialog = new TextInputDialog("");
+            dialog.setTitle("Crear Entrada");
+            dialog.setContentText("Introduzca el texto:");
 
-        
-        Optional<String> result = dialog.showAndWait();
-        
-        
-        if(result.isPresent() && !result.get().equals(" ") && !result.get().equalsIgnoreCase(" ")){
-      
-            if ((result.get().matches("[A-Za-z]+=.+") && evaluarAritmetica(result.get().split("=")[1],variables)) || ((result.get().matches("[A-Za-z]+") && evaluarAritmetica(result.get(),variables)))){
-                    b= true;
-                    canvas.setOnMouseClicked((MouseEvent event2) -> {
-                    double p1 = event2.getX();
-                    double p2 = event2.getY();
-                    redimensionCanvas(p1,p2);
-                    if(b){  
-                        double x = event2.getX();
-                        double y = event2.getY();
-                        double x1 = x - 33;
-                        double y1 = y - 25;
-                        double x2 = x + 67;
-                        double y2 = y - 25;
-                        double x3 = x + 33;
-                        double y3 = y + 25;
-                        double x4 = x - 67;
-                        double y4 = y + 25;
-                        /***
-                         * por si la figura se sale por la izquierda y
-                         * por si la figura se sale por la parte superior
-                         */
-                        if(x4<0){
-                            x=55;
-                            x1=x1-x4;
-                            x2=x2-x4;
-                            x3=x3-x4;
-                            x4=0;
-                        }
-                        if(y1<0){
-                            y=25;
-                            y3=y3-y1;
-                            y4=y3;
-                            y2=0;
-                            y1=0;
-                        }
 
-                        Entrada entrada = new Entrada(TipoF.ENTRADA);
-                        entrada.setVerticeCentro(new Vertice(x,y));
-                        entrada.getVertices().add(new Vertice(x1,y1));
-                        entrada.getVertices().add(new Vertice(x2,y2));
-                        entrada.getVertices().add(new Vertice(x3,y3));
-                        entrada.getVertices().add(new Vertice(x4,y4));
-                        entrada.calcularConexiones();
-                        entrada.texto = result.get();
-                        entrada.setEstado(true);
-                        figuras.add(entrada);
-                        entrada.dibujar(gc);
+            Optional<String> result = dialog.showAndWait();
 
-                        actualizar();
 
-                        b=false;
-                        canvas.setOnMouseClicked(null);
+            if(result.isPresent() && !result.get().equals(" ") && !result.get().equalsIgnoreCase(" ")){
 
-                    }       
-                });
+                if ((result.get().matches("[A-Za-z]+=.+") && evaluarAritmetica(result.get().split("=")[1],variables)) || ((result.get().matches("[A-Za-z]+") && evaluarAritmetica(result.get(),variables)))){
+                        b= true;
+                        canvas.setOnMouseClicked((MouseEvent event2) -> {
+                        double p1 = event2.getX();
+                        double p2 = event2.getY();
+                        redimensionCanvas(p1,p2);
+                        if(b){  
+                            double x = event2.getX();
+                            double y = event2.getY();
+                            double x1 = x - 33;
+                            double y1 = y - 25;
+                            double x2 = x + 67;
+                            double y2 = y - 25;
+                            double x3 = x + 33;
+                            double y3 = y + 25;
+                            double x4 = x - 67;
+                            double y4 = y + 25;
+                            /***
+                             * por si la figura se sale por la izquierda y
+                             * por si la figura se sale por la parte superior
+                             */
+                            if(x4<0){
+                                x=55;
+                                x1=x1-x4;
+                                x2=x2-x4;
+                                x3=x3-x4;
+                                x4=0;
+                            }
+                            if(y1<0){
+                                y=25;
+                                y3=y3-y1;
+                                y4=y3;
+                                y2=0;
+                                y1=0;
+                            }
 
-            }else {
+                            Entrada entrada = new Entrada(TipoF.ENTRADA);
+                            entrada.setVerticeCentro(new Vertice(x,y));
+                            entrada.getVertices().add(new Vertice(x1,y1));
+                            entrada.getVertices().add(new Vertice(x2,y2));
+                            entrada.getVertices().add(new Vertice(x3,y3));
+                            entrada.getVertices().add(new Vertice(x4,y4));
+                            entrada.calcularConexiones();
+                            entrada.texto = result.get();
+                            entrada.setEstado(true);
+                            figuras.add(entrada);
+                            entrada.dibujar(gc);
+
+                            actualizar();
+
+                            b=false;
+                            canvas.setOnMouseClicked(null);
+
+                        }       
+                    });
+
+                }else {
+                    Alert alert = new Alert(AlertType.WARNING);
+                    alert.setTitle("Error");
+                    alert.setHeaderText("cuidado");
+                    alert.setContentText("El texto ingresado es incorrecto debe ser del estilo 'algo' = 'algo' o solamente 'algo'");
+
+                    alert.showAndWait();
+                }
+            }else{
                 Alert alert = new Alert(AlertType.WARNING);
                 alert.setTitle("Error");
                 alert.setHeaderText("cuidado");
-                alert.setContentText("El texto ingresado es incorrecto debe ser del estilo 'algo' = 'algo' o solamente 'algo'");
+                alert.setContentText("Debes ingresar un texto");
 
                 alert.showAndWait();
             }
-        }else{
-            Alert alert = new Alert(AlertType.WARNING);
-            alert.setTitle("Error");
-            alert.setHeaderText("cuidado");
-            alert.setContentText("Debes ingresar un texto");
 
-            alert.showAndWait();
-        }
-        
-        
-     
+        }     
     }
     private ArrayList<Figura> auxi = new ArrayList<>();
     
     @FXML
     private void limpiar(ActionEvent event) {
-        
+        if(  run==false && corriendo==false){
         b=true;
         canvas.setOnMouseClicked((MouseEvent event2)->{
             double px=event2.getX();
@@ -1065,9 +1077,12 @@ public class Sistema implements Initializable {
                 alert.showAndWait();
             }
         
+            
+        
         
           
-    });
+            });
+        }
     }
     private void actualizar(){
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
@@ -1118,7 +1133,7 @@ public class Sistema implements Initializable {
             double p2 = event2.getY();
             if(existeInicio()==false || existeFin()==false){
                 redimensionCanvas(p1,p2);    
-                if(b){
+                if(b && run==false && corriendo==false){
                     double x = event2.getX();
                     double y = event2.getY();
                     double x1 = x - 50;
@@ -1210,112 +1225,104 @@ public class Sistema implements Initializable {
     
     @FXML
     private void dibujarDocumento(ActionEvent event) throws IOException {
-        
-        TextInputDialog dialog = new TextInputDialog("");
-        dialog.setTitle("Crear documento");
-        dialog.setContentText("Introduzca el texto:");
-
-    
-        Optional<String> result = dialog.showAndWait();
-        if(result.isPresent() && !result.get().equals(" ") && !result.get().equalsIgnoreCase(" ")){
-            if (result.get().matches("[A-Za-z]+") && evaluarAritmetica(result.get(),variables)){
-
-                b= true;
-
-                canvas.setOnMouseClicked((MouseEvent event2) -> {
-                double p1 = event2.getX();
-                double p2 = event2.getY();
-                redimensionCanvas(p1,p2);   
-                if(b){
-
-                    double x = event2.getX();
-                    double y = event2.getY();
-                    double x1 = x - 50;
-                    double y1 = y - 25;
-                    double x2 = x + 50;
-                    double y2 = y - 25;
-                    double x3 = x + 50;
-                    double y3 = y + 25;
-                    double x4 = x - 50;
-                    double y4 = y + 25;
-
-                    /***
-                     * por si la figura a crear se crea muy arriba o muy a la izquierda 
-                     * o la combinacion de las dos anteriores
-                     */
-                    if(x1<0){
-                        x=50;
-                        x2=x2-x1;
-                        x3=x3-x1;
-                        x4=0;
-                        x1=0;
-                    }
-                    if(y1<0){
-                        y=25;
-                        y3=y3-y1;
-                        y4=y4-y1;        
-                        y2=0;
-                        y1=0;
-                    }
-
-                    Documento documento = new Documento(TipoF.DOCUMENTACION);
-                    documento.setVerticeCentro(new Vertice(x,y));
-                    documento.getVertices().add(new Vertice(x1,y1));
-                    documento.getVertices().add(new Vertice(x2,y2));
-                    documento.getVertices().add(new Vertice(x3,y3));
-                    documento.getVertices().add(new Vertice(x4,y4));
-                    documento.texto = result.get();
-                    documento.calcularConexiones();
-                    documento.setEstado(true);
-                    figuras.add(documento);
-                    documento.dibujar(gc);
-
-                    actualizar();
+        if(run==false && corriendo==false){
+            TextInputDialog dialog = new TextInputDialog("");
+            dialog.setTitle("Crear documento");
+            dialog.setContentText("Introduzca el texto:");
 
 
+            Optional<String> result = dialog.showAndWait();
+            if(result.isPresent() && !result.get().equals(" ") && !result.get().equalsIgnoreCase(" ")){
+                if (result.get().matches("[A-Za-z]+") && evaluarAritmetica(result.get(),variables)){
 
-                    b=false;
-                    canvas.setOnMouseClicked(null);
+                    b= true;
+
+                    canvas.setOnMouseClicked((MouseEvent event2) -> {
+                    double p1 = event2.getX();
+                    double p2 = event2.getY();
+                    redimensionCanvas(p1,p2);   
+                    if(b){
+
+                        double x = event2.getX();
+                        double y = event2.getY();
+                        double x1 = x - 50;
+                        double y1 = y - 25;
+                        double x2 = x + 50;
+                        double y2 = y - 25;
+                        double x3 = x + 50;
+                        double y3 = y + 25;
+                        double x4 = x - 50;
+                        double y4 = y + 25;
+
+                        /***
+                         * por si la figura a crear se crea muy arriba o muy a la izquierda 
+                         * o la combinacion de las dos anteriores
+                         */
+                        if(x1<0){
+                            x=50;
+                            x2=x2-x1;
+                            x3=x3-x1;
+                            x4=0;
+                            x1=0;
+                        }
+                        if(y1<0){
+                            y=25;
+                            y3=y3-y1;
+                            y4=y4-y1;        
+                            y2=0;
+                            y1=0;
+                        }
+
+                        Documento documento = new Documento(TipoF.DOCUMENTACION);
+                        documento.setVerticeCentro(new Vertice(x,y));
+                        documento.getVertices().add(new Vertice(x1,y1));
+                        documento.getVertices().add(new Vertice(x2,y2));
+                        documento.getVertices().add(new Vertice(x3,y3));
+                        documento.getVertices().add(new Vertice(x4,y4));
+                        documento.texto = result.get();
+                        documento.calcularConexiones();
+                        documento.setEstado(true);
+                        figuras.add(documento);
+                        documento.dibujar(gc);
+
+                        actualizar();
 
 
 
-                }      
+                        b=false;
+                        canvas.setOnMouseClicked(null);
 
-            });
-            }else{
+
+
+                    }      
+
+                });
+                }else{
+                    Alert alert = new Alert(AlertType.WARNING);
+                    alert.setTitle("Error");
+                    alert.setHeaderText("cuidado");
+                    alert.setContentText("El formato del texto ingresado es incorrecto");
+
+                    alert.showAndWait();      
+                }
+            }else {
                 Alert alert = new Alert(AlertType.WARNING);
                 alert.setTitle("Error");
                 alert.setHeaderText("cuidado");
-                alert.setContentText("El formato del texto ingresado es incorrecto");
+                alert.setContentText("Debes ingresar un texto");
 
-                alert.showAndWait();      
+                alert.showAndWait();
             }
-        }else {
-            Alert alert = new Alert(AlertType.WARNING);
-            alert.setTitle("Error");
-            alert.setHeaderText("cuidado");
-            alert.setContentText("Debes ingresar un texto");
-
-            alert.showAndWait();
         }
-        
     }
     
     boolean moviendo = false;
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        
         mover();
-        
-        
-        
         gc = canvas.getGraphicsContext2D();
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-
-        
         ap.setBackground(Background.EMPTY);
-        
-        
     }    
     
     
@@ -1809,8 +1816,119 @@ public class Sistema implements Initializable {
         System.out.println("No entra");
         return false;
     }
+    /**
+     Recordatorio para mi mismo
+     * esta parte esta siendo construida
+     * deberia poder comenzar como un correr comun y corriente solo
+     * con la diferencia que dentro de uno se llamararia a la otra para 
+     * pausar el hilo, (dentro del ciclo llamar y pausar) esta pausaria 
+     * hasta que se pulse otra vez en el boton de avanzar, hice un  boton de mas
+     * y una funcion de mas por si acaso
+     */
+    private int cuentaPasos=0;
+    public boolean corriendo=false;
+    @FXML
+    public void correrP(){
+        b=true;
+        corriendo=true;
+        ArrayList<Figura>corredores = crearCorredores();
+        if(b && corriendo==true && run==false){
+            
+                /*Crear lista en otro metodo para no interferir cada vez en este otro metodo*/
+                /*Tenemos la lista de los "Corredores creada"*/
+                /*Entero cuentaPasos que va a servir de indice*/
+                actualizar();
+                gc.fillOval(corredores.get(cuentaPasos).verticeCentro.getX()-80, corredores.get(cuentaPasos).verticeCentro.getY(), 20, 20);
+                if (corredores.get(cuentaPasos).tipo!=TipoF.FIN && corredores.get(cuentaPasos).tipo!=TipoF.INICIO){
+                    agregarVariable(corredores.get(cuentaPasos));
+                } 
+                cuentaPasos+=1;
+                /*Aviso de que el correr pausado termino, se deja tambien presente 
+                que si esta corriendo el pausado no se pueden hacer cambios o activar
+                otros botones*/
+                if(cuentaPasos==corredores.size()){
+                    /*Se completo se deja un aviso de que se pueden utilizar los botones
+                    y que esto ya termino*/
+                    cuentaPasos=0;
+                    
+                    Alert alert = new Alert(AlertType.INFORMATION);
+                    alert.setTitle("Termino de Correr");
+                    alert.setHeaderText("Hemos terminado");
+                    alert.setContentText("Ya puede modificar el diagrama");
+                    alert.showAndWait();
+                    corriendo=false;
+                    actualizar();
+                    area.clear();
+                    variables.clear();
+                    
+                }
+            }
+        }
     
+    public ArrayList crearCorredores(){
+        Flujo flujo = null;
+        Figura fig = null;
+        System.out.println("hola");
+        ArrayList<Figura> corredors = new ArrayList<>();
+        if (!figuras.isEmpty() ){
+                if(buscarInicio() && buscarFin()){
+                    
+                        //buscar inicio
+                        for (Figura figura : figuras) {
+                            if(figura.getTipo() == TipoF.INICIO){
+                                fig = figura;
+                            }
+                        }
+                        // buscarFlujo que tenga el inicio
+                        for (Figura figura : figuras) {
+                            if(figura instanceof Flujo){
+                                if(((Flujo) figura).padre.equals(fig)){
+                                    flujo = (Flujo) figura;
+                                }
+                            }
+                        }
+                        if(!flujo.equals(null)){
+                            System.out.println(fig.texto);
+                            corredors.add(fig);
 
-    
-    
+
+                            //actualizar();
+                            boolean terminar = true;
+                            while(terminar && fig != null && fig.getTipo() != TipoF.FIN ){
+                                fig = figuras.get(flujo.indexHijo);
+                                /*
+                                for (Figura figura : figuras) {
+                                    if(figura instanceof Flujo){
+                                        if(((Flujo) figura).padre.equals(fig)){
+                                            flujo = (Flujo) figura;
+                                        }
+                                    }
+                                }*/
+                                for (int i = 0; i < figuras.size(); i++) {
+                                    if (figuras.get(i) instanceof Flujo) {
+                                        if (((Flujo)figuras.get(i)).padre.equals(fig)) {
+                                            flujo = (Flujo)figuras.get(i);
+                                            break;
+                                        }
+                                        if (i>=figuras.size()-1) {
+                                        terminar = false;
+                                        }
+                                    }
+                                }
+                                if(fig.tipo != TipoF.FIN){
+                                   System.out.println(fig.texto);
+                                   corredors.add(fig);
+                                }
+                            }
+                            if(fig == null){
+                                System.out.println("Mala construccion");
+                            }else if(fig.getTipo() == TipoF.FIN){
+                                System.out.println(fig.texto);
+                                corredors.add(fig);
+                            }
+                        }
+                }
+        }
+        return corredors;
+    }
 }

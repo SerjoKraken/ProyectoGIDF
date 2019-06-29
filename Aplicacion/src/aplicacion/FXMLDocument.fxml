@@ -10,9 +10,9 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane id="AnchorPane" fx:id="ap" prefHeight="780.0" prefWidth="1266.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="aplicacion.Sistema">
+<AnchorPane id="AnchorPane" fx:id="ap" prefHeight="780.0" prefWidth="1266.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="aplicacion.Sistema">
     <children>
-      <ScrollPane layoutX="232.0" layoutY="64.0" prefHeight="712.0" prefWidth="1035.0">
+      <ScrollPane layoutX="232.0" layoutY="64.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="712.0" prefWidth="1035.0">
          <content>
             <Canvas fx:id="canvas" height="709.0" onMouseDragged="#mover" width="1031.0" />
          </content>
@@ -107,6 +107,9 @@
                </graphic>
             </Button>
             <Button fx:id="b8" layoutX="998.0" layoutY="22.0" mnemonicParsing="false" onAction="#dibujarFinDecision" text="finalizar Decision" />
+            <Button fx:id="b9" layoutX="702.0" layoutY="22.0" mnemonicParsing="false" onAction="#correrP" text="Correr Pausado" />
+            
+            
          </children>
       </Pane>
       
