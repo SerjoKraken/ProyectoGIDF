@@ -17,9 +17,14 @@ public class Desicion extends Figura{
         
     private ArrayList<Figura> verdadero= new ArrayList<>();
     private ArrayList<Figura> falso= new ArrayList<>();
+    Color color = Color.ORANGE;
 
     public Desicion(TipoF tipo) {
         super(tipo);
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
     }
 
 
@@ -34,7 +39,7 @@ public class Desicion extends Figura{
         double y3=vertices.get(2).getY();
         double x4=vertices.get(3).getX();
         double y4=vertices.get(3).getY();
-        gc.setStroke(Color.ORANGE);
+        gc.setStroke(color);
         for (double i = 0; i < 50; i+=0.1) {
             gc.strokeLine(x2-i, y2-i, x3-i, y3-i);
         }
@@ -85,7 +90,7 @@ public class Desicion extends Figura{
         vertices.get(3).setY(y4);
         
         
-        gc.setStroke(Color.ORANGE);
+        gc.setStroke(color);
         for (double i = 0; i > 50; i+=0.1) {
             gc.strokeLine(x2-i, y2-i, x3-i, y3-i);
         }

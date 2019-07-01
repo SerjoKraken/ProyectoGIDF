@@ -46,6 +46,10 @@ public abstract class Figura {
     public boolean getEstado(){
         return estado;
     }
+
+    public void setTexto(String texto) {
+        this.texto = texto;
+    }
     
 
     

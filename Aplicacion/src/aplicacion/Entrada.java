@@ -13,9 +13,13 @@ import javafx.scene.paint.Color;
  * @author Serjo
  */
 public class Entrada extends Figura{
-    
+    Color color = Color.YELLOW;
     public Entrada( TipoF tipo) {
         super(tipo);
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
     }
 
     @Override
@@ -28,7 +32,7 @@ public class Entrada extends Figura{
         double y3=vertices.get(2).getY();
         double x4=vertices.get(3).getX();
         double y4=vertices.get(3).getY();
-        gc.setStroke(Color.YELLOW);
+        gc.setStroke(color);
         for (double i = 0; i < 100; i+=0.5) {
             gc.strokeLine(x2-i, y2, x3-i, y3);
         }
@@ -89,7 +93,7 @@ public class Entrada extends Figura{
         
         calcularConexiones();
 
-        gc.setStroke(Color.YELLOW);
+        gc.setStroke(color);
         for (double i = 0; i < 100; i+=0.5) {
             gc.strokeLine(x2-i, y2, x3-i, y3);
         }
