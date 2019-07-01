@@ -168,34 +168,43 @@ public class Sistema implements Initializable {
                     && buscarConexion(x1,y1).tipo!=TipoF.ITERACION && buscarConexion(x1,y1).tipo!=TipoF.FLUJO 
                     && buscarConexion(x1,y1).tipo!=TipoF.FINDESICION){
                 Alert alert = new Alert(AlertType.CONFIRMATION);
-                alert.setTitle("Confirmation Dialog with Custom Actions");
-                alert.setHeaderText("Look, a Confirmation Dialog with Custom Actions");
-                alert.setContentText("Choose your option.");
+                alert.setTitle("Editar");
+   
+                alert.setContentText("Escoge una opción.");
 
                 ButtonType buttonTypeOne = new ButtonType("Color");
                 ButtonType buttonTypeTwo = new ButtonType("Modificar contenido");
                 ButtonType buttonTypeThree = new ButtonType("Modificar tipo");
-                ButtonType buttonTypeCancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+                ButtonType buttonTypeCancel = new ButtonType("Cancelar", ButtonBar.ButtonData.CANCEL_CLOSE);
 
                 alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo, buttonTypeThree, buttonTypeCancel);
 
                 Optional<ButtonType> result = alert.showAndWait();
                 
                 if (result.get() == buttonTypeOne){
-                    
                     for (int i = 0; i < figuras.size(); i++) {
-                        if(buscarConexion(x1,y1)==figuras.get(i)){
-                            ((Proceso)figuras.get(i)).setColor(Color.BLUE);
-                            actualizar();
+                        if(buscarConexion(x1,y1).tipo==figuras.get(i).tipo){
+                            if(buscarConexion(x1,y1).tipo==TipoF.PROCESO){
+                                ((Proceso)figuras.get(i)).setColor(Color.BLUEVIOLET);
+                                actualizar();
+                            }else if(buscarConexion(x1,y1).tipo==TipoF.DOCUMENTACION){
+                                ((Documento)figuras.get(i)).setColor(Color.CYAN);
+                                actualizar();
+                            }else if(buscarConexion(x1,y1).tipo==TipoF.ENTRADA){
+                                ((Entrada)figuras.get(i)).setColor(Color.GOLDENROD);
+                                actualizar();
+                            }
+                            
                         }
-                    }
-                     
+                    }                 
                 } else if (result.get() == buttonTypeTwo) {
                     if(buscarConexion(x1,y1).tipo==TipoF.PROCESO){
                         TextInputDialog dialog = new TextInputDialog("");
                         dialog.setTitle("Modificar texto");
                         dialog.setContentText("Introduzca el texto:");
+                        
                         Optional<String> resultmodtext = dialog.showAndWait();
+                        
                         if(resultmodtext.isPresent() && !result.get().equals(" ") && !resultmodtext.get().equalsIgnoreCase(" ")){
                             if (resultmodtext.get().matches("[A-Za-z1-9]+=.+") && evaluarAritmetica(resultmodtext.get().split("=")[1],variables)){
                                 for (int i = 0; i < figuras.size(); i++) {
@@ -213,13 +222,13 @@ public class Sistema implements Initializable {
 
                             alert.showAndWait();
                         }
-                    }else if(buscarConexion(x1,y1).tipo==TipoF.DESICION){
+                    }else if(buscarConexion(x1,y1).tipo==TipoF.DOCUMENTACION){
                         TextInputDialog dialog = new TextInputDialog("");
                         dialog.setTitle("Modificar texto");
                         dialog.setContentText("Introduzca el texto:");
                         Optional<String> resultmodtext = dialog.showAndWait();
                         if(resultmodtext.isPresent() && !result.get().equals(" ") && !resultmodtext.get().equalsIgnoreCase(" ")){
-                            if (resultmodtext.get().matches("[A-Za-z1-9]+=.+") && evaluarAritmetica(resultmodtext.get().split("=")[1],variables)){
+                            if (resultmodtext.get().matches("[A-Za-z]+") && evaluarAritmetica(resultmodtext.get(),variables)){
                                 for (int i = 0; i < figuras.size(); i++) {
                                     if(buscarConexion(x1,y1)==figuras.get(i)){
                                         figuras.get(i).setTexto(resultmodtext.get());
@@ -239,68 +248,66 @@ public class Sistema implements Initializable {
                         TextInputDialog dialog = new TextInputDialog("");
                         dialog.setTitle("Modificar texto");
                         dialog.setContentText("Introduzca el texto:");
-                        Optional<String> resultmodtext = dialog.showAndWait();
-                        if(resultmodtext.isPresent() && !result.get().equals(" ") && !resultmodtext.get().equalsIgnoreCase(" ")){
-                            if (resultmodtext.get().matches("[A-Za-z1-9]+=.+") && evaluarAritmetica(resultmodtext.get().split("=")[1],variables)){
-                                for (int i = 0; i < figuras.size(); i++) {
-                                    if(buscarConexion(x1,y1)==figuras.get(i)){
-                                        figuras.get(i).setTexto(resultmodtext.get());
-                                        actualizar();
-                                    }
-                                }
-                            }
-                        }else{
-                            Alert alert1 = new Alert(AlertType.WARNING);
-                            alert1.setTitle("Error");
-                            alert1.setHeaderText("cuidado");
-                            alert1.setContentText("El formato del texto ingresado es incorrecto");
-
-                            alert.showAndWait();
-                        }
-                    } else if (buscarConexion(x1,y1).tipo==TipoF.PROCESO){
-                        TextInputDialog dialog = new TextInputDialog("");
-                        dialog.setTitle("Modificar texto");
-                        dialog.setContentText("Introduzca el texto:");
-                        Optional<String> resultmodtext = dialog.showAndWait();
-                        if(resultmodtext.isPresent() && !result.get().equals(" ") && !resultmodtext.get().equalsIgnoreCase(" ")){
-                            if (resultmodtext.get().matches("[A-Za-z1-9]+=.+") && evaluarAritmetica(resultmodtext.get().split("=")[1],variables)){
-                                for (int i = 0; i < figuras.size(); i++) {
-                                    if(buscarConexion(x1,y1)==figuras.get(i)){
-                                        figuras.get(i).setTexto(resultmodtext.get());
-                                        actualizar();
-                                    }
-                                }
-                            }
-                        }else{
-                            Alert alert1 = new Alert(AlertType.WARNING);
-                            alert1.setTitle("Error");
-                            alert1.setHeaderText("cuidado");
-                            alert1.setContentText("El formato del texto ingresado es incorrecto");
-
-                            alert.showAndWait();
-                        }
-                    }else{
                         
+                        Optional<String> resultmodtext = dialog.showAndWait();
+                        if(resultmodtext.isPresent() && !result.get().equals(" ") && !resultmodtext.get().equalsIgnoreCase(" ")){
+                            if ((resultmodtext.get().matches("[A-Za-z]+=.+") && evaluarAritmetica(resultmodtext.get().split("=")[1],variables)) || ((resultmodtext.get().matches("[A-Za-z]+") && evaluarAritmetica(resultmodtext.get(),variables)))){
+                                for (int i = 0; i < figuras.size(); i++) {
+                                    if(buscarConexion(x1,y1)==figuras.get(i)){
+                                        figuras.get(i).setTexto(resultmodtext.get());
+                                        actualizar();
+                                    }
+                                }
+                            }
+                        }else{
+                            Alert alert1 = new Alert(AlertType.WARNING);
+                            alert1.setTitle("Error");
+                            alert1.setHeaderText("cuidado");
+                            alert1.setContentText("El formato del texto ingresado es incorrecto");
+
+                            alert.showAndWait();
+                        }
                     }
                     
                 } else if (result.get() == buttonTypeThree) {
-                    List<String> choices = new ArrayList<>();
-                    choices.add("a");
-                    choices.add("b");
-                    choices.add("c");
+                    if(buscarConexion(x1,y1).tipo==TipoF.PROCESO){
+                        List<String> choices = new ArrayList<>();
+                        choices.add("Documento");
+                        choices.add("Entrada");
 
-                    ChoiceDialog<String> dialog = new ChoiceDialog<>("b", choices);
-                    dialog.setTitle("Choice Dialog");
-                    dialog.setHeaderText("Look, a Choice Dialog");
-                    dialog.setContentText("Choose your letter:");
 
-                    // Traditional way to get the response value.
-                    Optional<String> result1 = dialog.showAndWait();
-                    if (result.isPresent()){
-                        System.out.println("Your choice: " + result1.get());
+                        ChoiceDialog<String> dialog = new ChoiceDialog<>("Documento", choices);
+                        dialog.setTitle("Modificar");
+                        dialog.setContentText("Escoge el tipo de figura:");
+
+                        Optional<String> result1 = dialog.showAndWait();
+
+                        
+                        
+                    }else if(buscarConexion(x1,y1).tipo==TipoF.DOCUMENTACION){
+                        List<String> choices = new ArrayList<>();
+                        choices.add("Proceso");
+                        choices.add("Entrada");
+
+                        ChoiceDialog<String> dialog = new ChoiceDialog<>("Proceso", choices);
+                        dialog.setTitle("Modificar");
+                        dialog.setContentText("Escoge el tipo de figura:");
+
+                        // Traditional way to get the response value.
+                        Optional<String> result1 = dialog.showAndWait();
+
+                    }else if(buscarConexion(x1,y1).tipo==TipoF.ENTRADA){
+                        List<String> choices = new ArrayList<>();
+                        choices.add("Documento");
+                        choices.add("Proceso");
+
+                        ChoiceDialog<String> dialog = new ChoiceDialog<>("Documento", choices);
+                        dialog.setTitle("Modificar");
+                        dialog.setContentText("Escoge el tipo de figura:");
+
+                        Optional<String> result1 = dialog.showAndWait();
+
                     }
-
-                    
                 }
 
                 canvas.setOnMouseClicked(null);
@@ -308,9 +315,8 @@ public class Sistema implements Initializable {
             }else if(buscarConexion(x1,y1)!=null && buscarConexion(x1,y1).tipo==TipoF.FIN || buscarConexion(x1,y1).tipo==TipoF.INICIO){
                 if(buscarConexion(x1,y1).tipo==TipoF.FIN){
                     Alert alert = new Alert(AlertType.CONFIRMATION);
-                    alert.setTitle("Confirmation Dialog with Custom Actions");
-                    alert.setHeaderText("Look, a Confirmation Dialog with Custom Actions");
-                    alert.setContentText("Choose your option.");
+                    alert.setTitle("Editar");
+                    alert.setContentText("Escoge una opcion.");
 
                     ButtonType buttonTypeOne = new ButtonType("Color");
 
@@ -320,14 +326,24 @@ public class Sistema implements Initializable {
 
                     Optional<ButtonType> result = alert.showAndWait();
                     if (result.get() == buttonTypeOne){
-                        // ... user chose "One"
+                        for (int i = 0; i < figuras.size(); i++) {
+                        if(buscarConexion(x1,y1).tipo==figuras.get(i).tipo){
+                            if(buscarConexion(x1,y1).tipo==TipoF.FIN){
+                                ((Inicio)figuras.get(i)).setColor(Color.BURLYWOOD);
+                                actualizar();
+                            } else if (buscarConexion(x1,y1).tipo==TipoF.INICIO){
+                                ((Inicio)figuras.get(i)).setColor(Color.BURLYWOOD);
+                                actualizar();
+                            }
+                            
+                        }
+                    }  
                     } 
 
                 }else{
                     Alert alert = new Alert(AlertType.CONFIRMATION);
-                    alert.setTitle("Confirmation Dialog with Custom Actions");
-                    alert.setHeaderText("Look, a Confirmation Dialog with Custom Actions");
-                    alert.setContentText("Choose your option.");
+                    alert.setTitle("Editar");
+                    alert.setContentText("Escoge una opcion.");
 
                     ButtonType buttonTypeOne = new ButtonType("Color");
                     ButtonType buttonTypeTwo = new ButtonType("Modificar contenido");
@@ -337,8 +353,15 @@ public class Sistema implements Initializable {
 
                     Optional<ButtonType> result = alert.showAndWait();
                     if (result.get() == buttonTypeOne){
-                        // ... user chose "One"
-                    } else if (result.get() == buttonTypeTwo) {
+                        for (int i = 0; i < figuras.size(); i++) {
+                            if(buscarConexion(x1,y1).tipo==figuras.get(i).tipo){
+                                if(buscarConexion(x1,y1).tipo==TipoF.PROCESO){
+                                    ((Proceso)figuras.get(i)).setColor(Color.BLUEVIOLET);
+                                    actualizar();
+                                }
+                            }
+                        }  
+                    }else if (result.get() == buttonTypeTwo) {
                         // ... user chose "Two"
                     } 
                 }
@@ -350,9 +373,8 @@ public class Sistema implements Initializable {
 
             }else if(buscarConexion(x1,y1)!=null && buscarConexion(x1,y1).tipo==TipoF.ITERACION || buscarConexion(x1,y1).tipo==TipoF.DESICION){
                 Alert alert = new Alert(AlertType.CONFIRMATION);
-                alert.setTitle("Confirmation Dialog with Custom Actions");
-                alert.setHeaderText("Look, a Confirmation Dialog with Custom Actions");
-                alert.setContentText("Choose your option.");
+                alert.setTitle("Editar");
+                alert.setContentText("Escoge una opcion.");
 
                 ButtonType buttonTypeOne = new ButtonType("Color");
                 ButtonType buttonTypeTwo = new ButtonType("Modificar contenido");
@@ -364,6 +386,14 @@ public class Sistema implements Initializable {
                 Optional<ButtonType> result = alert.showAndWait();
                 
                 if (result.get() == buttonTypeOne){
+                    for (int i = 0; i < figuras.size(); i++) {
+                        if(buscarConexion(x1,y1).tipo==figuras.get(i).tipo){
+                            if(buscarConexion(x1,y1).tipo==TipoF.DESICION){
+                                ((Desicion)figuras.get(i)).setColor(Color.MISTYROSE);
+                                actualizar();
+                            }
+                        }
+                    }  
                     
                 } else if (result.get() == buttonTypeTwo) {
                     if(buscarConexion(x1,y1).tipo==TipoF.DESICION){
@@ -372,7 +402,7 @@ public class Sistema implements Initializable {
                         dialog.setContentText("Introduzca el texto:");
                         Optional<String> resultmodtext = dialog.showAndWait();
                         if(resultmodtext.isPresent() && !result.get().equals(" ") && !resultmodtext.get().equalsIgnoreCase(" ")){
-                            if (resultmodtext.get().matches("[A-Za-z1-9]+=.+") && evaluarAritmetica(resultmodtext.get().split("=")[1],variables)){
+                            if (resultmodtext.get().matches("[A-Za-z0-9]+[\\>|\\<|\\>=|\\<=|\\==|\\!=]{1}[A-Za-z0-9]+")){
                                 for (int i = 0; i < figuras.size(); i++) {
                                     if(buscarConexion(x1,y1)==figuras.get(i)){
                                         figuras.get(i).setTexto(resultmodtext.get());
