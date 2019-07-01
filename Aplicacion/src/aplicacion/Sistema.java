@@ -4,10 +4,16 @@ package aplicacion;
 
 
 
+import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URL;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -15,22 +21,31 @@ import java.util.logging.Logger;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import javax.imageio.ImageIO;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
@@ -82,6 +97,14 @@ public class Sistema implements Initializable {
     private Button b11;
     
     @FXML
+    private Button jpg;
+    @FXML
+    private Button png;
+    @FXML
+    private Button pdf;
+    @FXML
+    private Button edit;
+    @FXML
     private Canvas canvas;
     
     @FXML
@@ -129,6 +152,279 @@ public class Sistema implements Initializable {
 
             });
         });
+               
+        
+    }
+    
+    @FXML
+    public void editar()  {
+        b=true;
+        canvas.setOnMouseClicked((MouseEvent event1) -> {
+            double x1 = event1.getX();
+            double y1 = event1.getY();
+            
+            if(buscarConexion(x1,y1)!=null && buscarConexion(x1,y1).tipo!=TipoF.INICIO && 
+                    buscarConexion(x1,y1).tipo!=TipoF.FIN && buscarConexion(x1,y1).tipo!=TipoF.DESICION 
+                    && buscarConexion(x1,y1).tipo!=TipoF.ITERACION && buscarConexion(x1,y1).tipo!=TipoF.FLUJO 
+                    && buscarConexion(x1,y1).tipo!=TipoF.FINDESICION){
+                Alert alert = new Alert(AlertType.CONFIRMATION);
+                alert.setTitle("Confirmation Dialog with Custom Actions");
+                alert.setHeaderText("Look, a Confirmation Dialog with Custom Actions");
+                alert.setContentText("Choose your option.");
+
+                ButtonType buttonTypeOne = new ButtonType("Color");
+                ButtonType buttonTypeTwo = new ButtonType("Modificar contenido");
+                ButtonType buttonTypeThree = new ButtonType("Modificar tipo");
+                ButtonType buttonTypeCancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+                alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo, buttonTypeThree, buttonTypeCancel);
+
+                Optional<ButtonType> result = alert.showAndWait();
+                
+                if (result.get() == buttonTypeOne){
+                    
+                    for (int i = 0; i < figuras.size(); i++) {
+                        if(buscarConexion(x1,y1)==figuras.get(i)){
+                            ((Proceso)figuras.get(i)).setColor(Color.BLUE);
+                            actualizar();
+                        }
+                    }
+                     
+                } else if (result.get() == buttonTypeTwo) {
+                    if(buscarConexion(x1,y1).tipo==TipoF.PROCESO){
+                        TextInputDialog dialog = new TextInputDialog("");
+                        dialog.setTitle("Modificar texto");
+                        dialog.setContentText("Introduzca el texto:");
+                        Optional<String> resultmodtext = dialog.showAndWait();
+                        if(resultmodtext.isPresent() && !result.get().equals(" ") && !resultmodtext.get().equalsIgnoreCase(" ")){
+                            if (resultmodtext.get().matches("[A-Za-z1-9]+=.+") && evaluarAritmetica(resultmodtext.get().split("=")[1],variables)){
+                                for (int i = 0; i < figuras.size(); i++) {
+                                    if(buscarConexion(x1,y1)==figuras.get(i)){
+                                        figuras.get(i).setTexto(resultmodtext.get());
+                                        actualizar();
+                                    }
+                                }
+                            }
+                        }else{
+                            Alert alert1 = new Alert(AlertType.WARNING);
+                            alert1.setTitle("Error");
+                            alert1.setHeaderText("cuidado");
+                            alert1.setContentText("El formato del texto ingresado es incorrecto");
+
+                            alert.showAndWait();
+                        }
+                    }else if(buscarConexion(x1,y1).tipo==TipoF.DESICION){
+                        TextInputDialog dialog = new TextInputDialog("");
+                        dialog.setTitle("Modificar texto");
+                        dialog.setContentText("Introduzca el texto:");
+                        Optional<String> resultmodtext = dialog.showAndWait();
+                        if(resultmodtext.isPresent() && !result.get().equals(" ") && !resultmodtext.get().equalsIgnoreCase(" ")){
+                            if (resultmodtext.get().matches("[A-Za-z1-9]+=.+") && evaluarAritmetica(resultmodtext.get().split("=")[1],variables)){
+                                for (int i = 0; i < figuras.size(); i++) {
+                                    if(buscarConexion(x1,y1)==figuras.get(i)){
+                                        figuras.get(i).setTexto(resultmodtext.get());
+                                        actualizar();
+                                    }
+                                }
+                            }
+                        }else{
+                            Alert alert1 = new Alert(AlertType.WARNING);
+                            alert1.setTitle("Error");
+                            alert1.setHeaderText("cuidado");
+                            alert1.setContentText("El formato del texto ingresado es incorrecto");
+
+                            alert.showAndWait();
+                        }
+                    }else if(buscarConexion(x1,y1).tipo==TipoF.ENTRADA){
+                        TextInputDialog dialog = new TextInputDialog("");
+                        dialog.setTitle("Modificar texto");
+                        dialog.setContentText("Introduzca el texto:");
+                        Optional<String> resultmodtext = dialog.showAndWait();
+                        if(resultmodtext.isPresent() && !result.get().equals(" ") && !resultmodtext.get().equalsIgnoreCase(" ")){
+                            if (resultmodtext.get().matches("[A-Za-z1-9]+=.+") && evaluarAritmetica(resultmodtext.get().split("=")[1],variables)){
+                                for (int i = 0; i < figuras.size(); i++) {
+                                    if(buscarConexion(x1,y1)==figuras.get(i)){
+                                        figuras.get(i).setTexto(resultmodtext.get());
+                                        actualizar();
+                                    }
+                                }
+                            }
+                        }else{
+                            Alert alert1 = new Alert(AlertType.WARNING);
+                            alert1.setTitle("Error");
+                            alert1.setHeaderText("cuidado");
+                            alert1.setContentText("El formato del texto ingresado es incorrecto");
+
+                            alert.showAndWait();
+                        }
+                    } else if (buscarConexion(x1,y1).tipo==TipoF.PROCESO){
+                        TextInputDialog dialog = new TextInputDialog("");
+                        dialog.setTitle("Modificar texto");
+                        dialog.setContentText("Introduzca el texto:");
+                        Optional<String> resultmodtext = dialog.showAndWait();
+                        if(resultmodtext.isPresent() && !result.get().equals(" ") && !resultmodtext.get().equalsIgnoreCase(" ")){
+                            if (resultmodtext.get().matches("[A-Za-z1-9]+=.+") && evaluarAritmetica(resultmodtext.get().split("=")[1],variables)){
+                                for (int i = 0; i < figuras.size(); i++) {
+                                    if(buscarConexion(x1,y1)==figuras.get(i)){
+                                        figuras.get(i).setTexto(resultmodtext.get());
+                                        actualizar();
+                                    }
+                                }
+                            }
+                        }else{
+                            Alert alert1 = new Alert(AlertType.WARNING);
+                            alert1.setTitle("Error");
+                            alert1.setHeaderText("cuidado");
+                            alert1.setContentText("El formato del texto ingresado es incorrecto");
+
+                            alert.showAndWait();
+                        }
+                    }else{
+                        
+                    }
+                    
+                } else if (result.get() == buttonTypeThree) {
+                    List<String> choices = new ArrayList<>();
+                    choices.add("a");
+                    choices.add("b");
+                    choices.add("c");
+
+                    ChoiceDialog<String> dialog = new ChoiceDialog<>("b", choices);
+                    dialog.setTitle("Choice Dialog");
+                    dialog.setHeaderText("Look, a Choice Dialog");
+                    dialog.setContentText("Choose your letter:");
+
+                    // Traditional way to get the response value.
+                    Optional<String> result1 = dialog.showAndWait();
+                    if (result.isPresent()){
+                        System.out.println("Your choice: " + result1.get());
+                    }
+
+                    
+                }
+
+                canvas.setOnMouseClicked(null);
+                
+            }else if(buscarConexion(x1,y1)!=null && buscarConexion(x1,y1).tipo==TipoF.FIN || buscarConexion(x1,y1).tipo==TipoF.INICIO){
+                if(buscarConexion(x1,y1).tipo==TipoF.FIN){
+                    Alert alert = new Alert(AlertType.CONFIRMATION);
+                    alert.setTitle("Confirmation Dialog with Custom Actions");
+                    alert.setHeaderText("Look, a Confirmation Dialog with Custom Actions");
+                    alert.setContentText("Choose your option.");
+
+                    ButtonType buttonTypeOne = new ButtonType("Color");
+
+                    ButtonType buttonTypeCancel = new ButtonType("Cancelar", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+                    alert.getButtonTypes().setAll(buttonTypeOne,buttonTypeCancel);
+
+                    Optional<ButtonType> result = alert.showAndWait();
+                    if (result.get() == buttonTypeOne){
+                        // ... user chose "One"
+                    } 
+
+                }else{
+                    Alert alert = new Alert(AlertType.CONFIRMATION);
+                    alert.setTitle("Confirmation Dialog with Custom Actions");
+                    alert.setHeaderText("Look, a Confirmation Dialog with Custom Actions");
+                    alert.setContentText("Choose your option.");
+
+                    ButtonType buttonTypeOne = new ButtonType("Color");
+                    ButtonType buttonTypeTwo = new ButtonType("Modificar contenido");
+                    ButtonType buttonTypeCancel = new ButtonType("Cancelar", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+                    alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo, buttonTypeCancel);
+
+                    Optional<ButtonType> result = alert.showAndWait();
+                    if (result.get() == buttonTypeOne){
+                        // ... user chose "One"
+                    } else if (result.get() == buttonTypeTwo) {
+                        // ... user chose "Two"
+                    } 
+                }
+                
+                canvas.setOnMouseClicked(null);
+                
+                
+                
+
+            }else if(buscarConexion(x1,y1)!=null && buscarConexion(x1,y1).tipo==TipoF.ITERACION || buscarConexion(x1,y1).tipo==TipoF.DESICION){
+                Alert alert = new Alert(AlertType.CONFIRMATION);
+                alert.setTitle("Confirmation Dialog with Custom Actions");
+                alert.setHeaderText("Look, a Confirmation Dialog with Custom Actions");
+                alert.setContentText("Choose your option.");
+
+                ButtonType buttonTypeOne = new ButtonType("Color");
+                ButtonType buttonTypeTwo = new ButtonType("Modificar contenido");
+
+                ButtonType buttonTypeCancel = new ButtonType("Cancelar", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+                alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo,buttonTypeCancel);
+
+                Optional<ButtonType> result = alert.showAndWait();
+                
+                if (result.get() == buttonTypeOne){
+                    
+                } else if (result.get() == buttonTypeTwo) {
+                    if(buscarConexion(x1,y1).tipo==TipoF.DESICION){
+                        TextInputDialog dialog = new TextInputDialog("");
+                        dialog.setTitle("Modificar texto");
+                        dialog.setContentText("Introduzca el texto:");
+                        Optional<String> resultmodtext = dialog.showAndWait();
+                        if(resultmodtext.isPresent() && !result.get().equals(" ") && !resultmodtext.get().equalsIgnoreCase(" ")){
+                            if (resultmodtext.get().matches("[A-Za-z1-9]+=.+") && evaluarAritmetica(resultmodtext.get().split("=")[1],variables)){
+                                for (int i = 0; i < figuras.size(); i++) {
+                                    if(buscarConexion(x1,y1)==figuras.get(i)){
+                                        figuras.get(i).setTexto(resultmodtext.get());
+                                        actualizar();
+                                    }
+                                }
+                            }
+                        }else{
+                            Alert alert1 = new Alert(AlertType.WARNING);
+                            alert1.setTitle("Error");
+                            alert1.setHeaderText("cuidado");
+                            alert1.setContentText("El formato del texto ingresado es incorrecto");
+
+                            alert.showAndWait();
+                        }
+                    }else if(buscarConexion(x1,y1).tipo==TipoF.ITERACION){
+                        TextInputDialog dialog = new TextInputDialog("");
+                        dialog.setTitle("Modificar texto");
+                        dialog.setContentText("Introduzca el texto:");
+                        Optional<String> resultmodtext = dialog.showAndWait();
+                        if(resultmodtext.isPresent() && !result.get().equals(" ") && !resultmodtext.get().equalsIgnoreCase(" ")){
+                            if (resultmodtext.get().matches("[A-Za-z1-9]+=.+") && evaluarAritmetica(resultmodtext.get().split("=")[1],variables)){
+                                for (int i = 0; i < figuras.size(); i++) {
+                                    if(buscarConexion(x1,y1)==figuras.get(i)){
+                                        figuras.get(i).setTexto(resultmodtext.get());
+                                        actualizar();
+                                    }
+                                }
+                            }
+                        }else{
+                            Alert alert1 = new Alert(AlertType.WARNING);
+                            alert1.setTitle("Error");
+                            alert1.setHeaderText("cuidado");
+                            alert1.setContentText("El formato del texto ingresado es incorrecto");
+
+                            alert.showAndWait();
+                        }
+                    }
+                } 
+                
+                canvas.setOnMouseClicked(null);
+
+            }else{
+                Alert alert = new Alert(AlertType.WARNING);
+                alert.setTitle("Error");
+                alert.setHeaderText("cuidado");
+                alert.setContentText("El formato del texto ingresado es incorrecto");
+            }
+            
+            canvas.setOnMouseClicked(null);
+        });
+           
                
         
     }
@@ -1931,4 +2227,95 @@ public class Sistema implements Initializable {
         }
         return corredors;
     }
+    
+    @FXML
+    public void exportImage() throws IOException {
+        FileChooser fileChooser = new FileChooser();
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("png files (.png)", ".png");
+        fileChooser.getExtensionFilters().add(extFilter);
+        final Stage stage = new Stage();
+        File file = fileChooser.showSaveDialog(stage);
+        WritableImage writableImage = canvas.snapshot(new SnapshotParameters(), null);
+        canvas.snapshot(null, writableImage);
+        RenderedImage renderedImage = SwingFXUtils.fromFXImage(writableImage, null);
+        try{
+            ImageIO.write(renderedImage, "png", file);
+        }catch( IllegalArgumentException r){
+            
+        } 
+        }
+    
+    @FXML
+    public void exportImageJpg() throws IOException {
+        FileChooser fileChooser = new FileChooser();
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("jpg files (.jpg)", ".jpg");
+        fileChooser.getExtensionFilters().add(extFilter);
+        final Stage stage = new Stage();
+        File file = fileChooser.showSaveDialog(stage);
+        WritableImage writableImage = canvas.snapshot(new SnapshotParameters(), null);
+        canvas.snapshot(null, writableImage);
+        RenderedImage renderedImage = SwingFXUtils.fromFXImage(writableImage, null);
+        try{
+            ImageIO.write(renderedImage, "jpg", file);
+        }catch( IllegalArgumentException r){
+            
+        }  
+        BufferedImage bufferedImage;
+		
+	try {
+			
+	  //read image file
+	  bufferedImage = ImageIO.read(new File("c:\\javanullpointer.png"));
+
+	  // create a blank, RGB, same width and height, and a white background
+	  BufferedImage newBufferedImage = new BufferedImage(bufferedImage.getWidth(),
+			bufferedImage.getHeight(), BufferedImage.TYPE_INT_RGB);
+	  newBufferedImage.createGraphics().drawImage(bufferedImage, 0, 0, null);
+
+	  // write to jpeg file
+	  ImageIO.write(newBufferedImage, "jpg", new File("c:\\javanullpointer.jpg"));
+
+	  System.out.println("Done");
+			
+	} catch (IOException e) {
+
+	  e.printStackTrace();
+
+	}
+
+        }
+    
+    @FXML
+    private void exportPDF() throws IOException{
+        FileChooser fileChooser = new FileChooser();
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("pdf files (.pdf)", ".pdf");
+        fileChooser.getExtensionFilters().add(extFilter);
+        final Stage stage = new Stage();
+        File file = fileChooser.showSaveDialog(stage);
+        OutputStream archivo = null;
+        try {
+            archivo = new FileOutputStream(file);
+        }catch(Exception e){
+        }
+
+        WritableImage writableImage = canvas.snapshot(new SnapshotParameters(), null);
+        canvas.snapshot(null, writableImage);
+        File file2 = new File("chart.png");
+        RenderedImage renderedImage = SwingFXUtils.fromFXImage(writableImage, null);
+        try {
+           ImageIO.write(renderedImage, "png", file2); 
+        }catch( IllegalArgumentException r){
+            
+        }
+        try {
+           ImageIO.write(renderedImage, "png", file2); 
+        }catch( IllegalArgumentException r){
+        }
+        try{
+            
+        }catch(Exception e){
+        }
+
+    }
+    
 }
