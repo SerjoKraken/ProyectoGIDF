@@ -4,6 +4,10 @@ package aplicacion;
 
 
 
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.pdf.PdfWriter;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
@@ -2328,20 +2332,26 @@ public class Sistema implements Initializable {
         try {
            ImageIO.write(renderedImage, "png", file2); 
         }catch( IllegalArgumentException r){
-            
+
         }
         
-        try {
+        try{
             
-            //Aqui falta la codificacion de la imagen
-            //tomar ancho y alto de la imagen a crear
-           //float ancho=(float)()
+            com.itextpdf.text.Rectangle rectangle = new com.itextpdf.text.Rectangle( 1920 , 1080);
+            Document doc = new Document(rectangle);
+            PdfWriter.getInstance(doc, archivo);
+            Image img = Image.getInstance("chart.png");
+            img.setBorderColor(BaseColor.BLACK);           
+            doc.setMargins(0, 1920, 0, 1080);
+            doc.open();
+            doc.add(img);
+            doc.close();
+            file2.delete();
+        }catch(Exception e){
 
-
-           
         }
-        catch( IllegalArgumentException r){
-        }
+        
+        
 
     }
     @FXML
