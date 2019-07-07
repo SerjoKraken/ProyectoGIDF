@@ -4,6 +4,7 @@ package aplicacion;
 
 
 
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.File;
@@ -11,6 +12,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -22,6 +24,7 @@ import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.SnapshotParameters;
@@ -47,6 +50,7 @@ import javax.imageio.ImageIO;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
+
 
 
 
@@ -93,6 +97,9 @@ public class Sistema implements Initializable {
     
     @FXML
     private Button b11;
+    
+    @FXML
+    private Button b12;
     
     @FXML
     private Button jpg;
@@ -146,7 +153,7 @@ public class Sistema implements Initializable {
                 
                 aux=null;
 
-                
+
 
             });
         });
@@ -166,43 +173,34 @@ public class Sistema implements Initializable {
                     && buscarConexion(x1,y1).tipo!=TipoF.ITERACION && buscarConexion(x1,y1).tipo!=TipoF.FLUJO 
                     && buscarConexion(x1,y1).tipo!=TipoF.FINDESICION){
                 Alert alert = new Alert(AlertType.CONFIRMATION);
-                alert.setTitle("Editar");
-   
-                alert.setContentText("Escoge una opción.");
+                alert.setTitle("Confirmation Dialog with Custom Actions");
+                alert.setHeaderText("Look, a Confirmation Dialog with Custom Actions");
+                alert.setContentText("Choose your option.");
 
                 ButtonType buttonTypeOne = new ButtonType("Color");
                 ButtonType buttonTypeTwo = new ButtonType("Modificar contenido");
                 ButtonType buttonTypeThree = new ButtonType("Modificar tipo");
-                ButtonType buttonTypeCancel = new ButtonType("Cancelar", ButtonBar.ButtonData.CANCEL_CLOSE);
+                ButtonType buttonTypeCancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
 
                 alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo, buttonTypeThree, buttonTypeCancel);
 
                 Optional<ButtonType> result = alert.showAndWait();
                 
                 if (result.get() == buttonTypeOne){
+                    
                     for (int i = 0; i < figuras.size(); i++) {
-                        if(buscarConexion(x1,y1).tipo==figuras.get(i).tipo){
-                            if(buscarConexion(x1,y1).tipo==TipoF.PROCESO){
-                                ((Proceso)figuras.get(i)).setColor(Color.BLUEVIOLET);
-                                actualizar();
-                            }else if(buscarConexion(x1,y1).tipo==TipoF.DOCUMENTACION){
-                                ((Documento)figuras.get(i)).setColor(Color.CYAN);
-                                actualizar();
-                            }else if(buscarConexion(x1,y1).tipo==TipoF.ENTRADA){
-                                ((Entrada)figuras.get(i)).setColor(Color.GOLDENROD);
-                                actualizar();
-                            }
-                            
+                        if(buscarConexion(x1,y1)==figuras.get(i)){
+                            ((Proceso)figuras.get(i)).setColor(Color.BLUE);
+                            actualizar();
                         }
-                    }                 
+                    }
+                     
                 } else if (result.get() == buttonTypeTwo) {
                     if(buscarConexion(x1,y1).tipo==TipoF.PROCESO){
                         TextInputDialog dialog = new TextInputDialog("");
                         dialog.setTitle("Modificar texto");
                         dialog.setContentText("Introduzca el texto:");
-                        
                         Optional<String> resultmodtext = dialog.showAndWait();
-                        
                         if(resultmodtext.isPresent() && !result.get().equals(" ") && !resultmodtext.get().equalsIgnoreCase(" ")){
                             if (resultmodtext.get().matches("[A-Za-z1-9]+=.+") && evaluarAritmetica(resultmodtext.get().split("=")[1],variables)){
                                 for (int i = 0; i < figuras.size(); i++) {
@@ -220,13 +218,13 @@ public class Sistema implements Initializable {
 
                             alert.showAndWait();
                         }
-                    }else if(buscarConexion(x1,y1).tipo==TipoF.DOCUMENTACION){
+                    }else if(buscarConexion(x1,y1).tipo==TipoF.DESICION){
                         TextInputDialog dialog = new TextInputDialog("");
                         dialog.setTitle("Modificar texto");
                         dialog.setContentText("Introduzca el texto:");
                         Optional<String> resultmodtext = dialog.showAndWait();
                         if(resultmodtext.isPresent() && !result.get().equals(" ") && !resultmodtext.get().equalsIgnoreCase(" ")){
-                            if (resultmodtext.get().matches("[A-Za-z]+") && evaluarAritmetica(resultmodtext.get(),variables)){
+                            if (resultmodtext.get().matches("[A-Za-z1-9]+=.+") && evaluarAritmetica(resultmodtext.get().split("=")[1],variables)){
                                 for (int i = 0; i < figuras.size(); i++) {
                                     if(buscarConexion(x1,y1)==figuras.get(i)){
                                         figuras.get(i).setTexto(resultmodtext.get());
@@ -246,10 +244,9 @@ public class Sistema implements Initializable {
                         TextInputDialog dialog = new TextInputDialog("");
                         dialog.setTitle("Modificar texto");
                         dialog.setContentText("Introduzca el texto:");
-                        
                         Optional<String> resultmodtext = dialog.showAndWait();
                         if(resultmodtext.isPresent() && !result.get().equals(" ") && !resultmodtext.get().equalsIgnoreCase(" ")){
-                            if ((resultmodtext.get().matches("[A-Za-z]+=.+") && evaluarAritmetica(resultmodtext.get().split("=")[1],variables)) || ((resultmodtext.get().matches("[A-Za-z]+") && evaluarAritmetica(resultmodtext.get(),variables)))){
+                            if (resultmodtext.get().matches("[A-Za-z1-9]+=.+") && evaluarAritmetica(resultmodtext.get().split("=")[1],variables)){
                                 for (int i = 0; i < figuras.size(); i++) {
                                     if(buscarConexion(x1,y1)==figuras.get(i)){
                                         figuras.get(i).setTexto(resultmodtext.get());
@@ -265,47 +262,50 @@ public class Sistema implements Initializable {
 
                             alert.showAndWait();
                         }
+                    } else if (buscarConexion(x1,y1).tipo==TipoF.PROCESO){
+                        TextInputDialog dialog = new TextInputDialog("");
+                        dialog.setTitle("Modificar texto");
+                        dialog.setContentText("Introduzca el texto:");
+                        Optional<String> resultmodtext = dialog.showAndWait();
+                        if(resultmodtext.isPresent() && !result.get().equals(" ") && !resultmodtext.get().equalsIgnoreCase(" ")){
+                            if (resultmodtext.get().matches("[A-Za-z1-9]+=.+") && evaluarAritmetica(resultmodtext.get().split("=")[1],variables)){
+                                for (int i = 0; i < figuras.size(); i++) {
+                                    if(buscarConexion(x1,y1)==figuras.get(i)){
+                                        figuras.get(i).setTexto(resultmodtext.get());
+                                        actualizar();
+                                    }
+                                }
+                            }
+                        }else{
+                            Alert alert1 = new Alert(AlertType.WARNING);
+                            alert1.setTitle("Error");
+                            alert1.setHeaderText("cuidado");
+                            alert1.setContentText("El formato del texto ingresado es incorrecto");
+
+                            alert.showAndWait();
+                        }
+                    }else{
+                        
                     }
                     
                 } else if (result.get() == buttonTypeThree) {
-                    if(buscarConexion(x1,y1).tipo==TipoF.PROCESO){
-                        List<String> choices = new ArrayList<>();
-                        choices.add("Documento");
-                        choices.add("Entrada");
+                    List<String> choices = new ArrayList<>();
+                    choices.add("a");
+                    choices.add("b");
+                    choices.add("c");
 
+                    ChoiceDialog<String> dialog = new ChoiceDialog<>("b", choices);
+                    dialog.setTitle("Choice Dialog");
+                    dialog.setHeaderText("Look, a Choice Dialog");
+                    dialog.setContentText("Choose your letter:");
 
-                        ChoiceDialog<String> dialog = new ChoiceDialog<>("Documento", choices);
-                        dialog.setTitle("Modificar");
-                        dialog.setContentText("Escoge el tipo de figura:");
-
-                        Optional<String> result1 = dialog.showAndWait();
-
-                        
-                        
-                    }else if(buscarConexion(x1,y1).tipo==TipoF.DOCUMENTACION){
-                        List<String> choices = new ArrayList<>();
-                        choices.add("Proceso");
-                        choices.add("Entrada");
-
-                        ChoiceDialog<String> dialog = new ChoiceDialog<>("Proceso", choices);
-                        dialog.setTitle("Modificar");
-                        dialog.setContentText("Escoge el tipo de figura:");
-
-                        // Traditional way to get the response value.
-                        Optional<String> result1 = dialog.showAndWait();
-
-                    }else if(buscarConexion(x1,y1).tipo==TipoF.ENTRADA){
-                        List<String> choices = new ArrayList<>();
-                        choices.add("Documento");
-                        choices.add("Proceso");
-
-                        ChoiceDialog<String> dialog = new ChoiceDialog<>("Documento", choices);
-                        dialog.setTitle("Modificar");
-                        dialog.setContentText("Escoge el tipo de figura:");
-
-                        Optional<String> result1 = dialog.showAndWait();
-
+                    // Traditional way to get the response value.
+                    Optional<String> result1 = dialog.showAndWait();
+                    if (result.isPresent()){
+                        System.out.println("Your choice: " + result1.get());
                     }
+
+                    
                 }
 
                 canvas.setOnMouseClicked(null);
@@ -313,8 +313,9 @@ public class Sistema implements Initializable {
             }else if(buscarConexion(x1,y1)!=null && buscarConexion(x1,y1).tipo==TipoF.FIN || buscarConexion(x1,y1).tipo==TipoF.INICIO){
                 if(buscarConexion(x1,y1).tipo==TipoF.FIN){
                     Alert alert = new Alert(AlertType.CONFIRMATION);
-                    alert.setTitle("Editar");
-                    alert.setContentText("Escoge una opcion.");
+                    alert.setTitle("Confirmation Dialog with Custom Actions");
+                    alert.setHeaderText("Look, a Confirmation Dialog with Custom Actions");
+                    alert.setContentText("Choose your option.");
 
                     ButtonType buttonTypeOne = new ButtonType("Color");
 
@@ -324,24 +325,14 @@ public class Sistema implements Initializable {
 
                     Optional<ButtonType> result = alert.showAndWait();
                     if (result.get() == buttonTypeOne){
-                        for (int i = 0; i < figuras.size(); i++) {
-                        if(buscarConexion(x1,y1).tipo==figuras.get(i).tipo){
-                            if(buscarConexion(x1,y1).tipo==TipoF.FIN){
-                                ((Inicio)figuras.get(i)).setColor(Color.BURLYWOOD);
-                                actualizar();
-                            } else if (buscarConexion(x1,y1).tipo==TipoF.INICIO){
-                                ((Inicio)figuras.get(i)).setColor(Color.BURLYWOOD);
-                                actualizar();
-                            }
-                            
-                        }
-                    }  
+                        // ... user chose "One"
                     } 
 
                 }else{
                     Alert alert = new Alert(AlertType.CONFIRMATION);
-                    alert.setTitle("Editar");
-                    alert.setContentText("Escoge una opcion.");
+                    alert.setTitle("Confirmation Dialog with Custom Actions");
+                    alert.setHeaderText("Look, a Confirmation Dialog with Custom Actions");
+                    alert.setContentText("Choose your option.");
 
                     ButtonType buttonTypeOne = new ButtonType("Color");
                     ButtonType buttonTypeTwo = new ButtonType("Modificar contenido");
@@ -351,15 +342,8 @@ public class Sistema implements Initializable {
 
                     Optional<ButtonType> result = alert.showAndWait();
                     if (result.get() == buttonTypeOne){
-                        for (int i = 0; i < figuras.size(); i++) {
-                            if(buscarConexion(x1,y1).tipo==figuras.get(i).tipo){
-                                if(buscarConexion(x1,y1).tipo==TipoF.PROCESO){
-                                    ((Proceso)figuras.get(i)).setColor(Color.BLUEVIOLET);
-                                    actualizar();
-                                }
-                            }
-                        }  
-                    }else if (result.get() == buttonTypeTwo) {
+                        // ... user chose "One"
+                    } else if (result.get() == buttonTypeTwo) {
                         // ... user chose "Two"
                     } 
                 }
@@ -371,8 +355,9 @@ public class Sistema implements Initializable {
 
             }else if(buscarConexion(x1,y1)!=null && buscarConexion(x1,y1).tipo==TipoF.ITERACION || buscarConexion(x1,y1).tipo==TipoF.DESICION){
                 Alert alert = new Alert(AlertType.CONFIRMATION);
-                alert.setTitle("Editar");
-                alert.setContentText("Escoge una opcion.");
+                alert.setTitle("Confirmation Dialog with Custom Actions");
+                alert.setHeaderText("Look, a Confirmation Dialog with Custom Actions");
+                alert.setContentText("Choose your option.");
 
                 ButtonType buttonTypeOne = new ButtonType("Color");
                 ButtonType buttonTypeTwo = new ButtonType("Modificar contenido");
@@ -384,14 +369,6 @@ public class Sistema implements Initializable {
                 Optional<ButtonType> result = alert.showAndWait();
                 
                 if (result.get() == buttonTypeOne){
-                    for (int i = 0; i < figuras.size(); i++) {
-                        if(buscarConexion(x1,y1).tipo==figuras.get(i).tipo){
-                            if(buscarConexion(x1,y1).tipo==TipoF.DESICION){
-                                ((Desicion)figuras.get(i)).setColor(Color.MISTYROSE);
-                                actualizar();
-                            }
-                        }
-                    }  
                     
                 } else if (result.get() == buttonTypeTwo) {
                     if(buscarConexion(x1,y1).tipo==TipoF.DESICION){
@@ -400,7 +377,7 @@ public class Sistema implements Initializable {
                         dialog.setContentText("Introduzca el texto:");
                         Optional<String> resultmodtext = dialog.showAndWait();
                         if(resultmodtext.isPresent() && !result.get().equals(" ") && !resultmodtext.get().equalsIgnoreCase(" ")){
-                            if (resultmodtext.get().matches("[A-Za-z0-9]+[\\>|\\<|\\>=|\\<=|\\==|\\!=]{1}[A-Za-z0-9]+")){
+                            if (resultmodtext.get().matches("[A-Za-z1-9]+=.+") && evaluarAritmetica(resultmodtext.get().split("=")[1],variables)){
                                 for (int i = 0; i < figuras.size(); i++) {
                                     if(buscarConexion(x1,y1)==figuras.get(i)){
                                         figuras.get(i).setTexto(resultmodtext.get());
@@ -630,11 +607,11 @@ public class Sistema implements Initializable {
                             agregarFigurasParaDFin(fin);
                             
                          
-                            if(flujoFinValido(fin)){
+                            //if(flujoFinValido(fin)){
                                 
                                 figuras.add(fin);
                                 fin.dibujar(gc);
-                            }
+                            //}
                             
                             actualizar();
                             b=false;
@@ -700,13 +677,7 @@ public class Sistema implements Initializable {
                                             break;
                                         }
                                         if (i>=figuras.size()-1) {
-                                            if (buscarFlujoFin(fig)!=null) {
-                                                flujo = (Flujo) buscarFlujoFin(fig);
-                                                break;
-                                            }else{
-                                                terminar = false;
-                                                System.out.println("");
-                                            }
+                                        terminar = false;
                                         }
                                     }
                                 }
@@ -1015,7 +986,7 @@ public class Sistema implements Initializable {
     public Figura buscarConexion(double x, double y){
         if(!figuras.isEmpty()) {
             for (Figura figura : figuras) {
-                if(!(figura instanceof Flujo) && !(figura instanceof FinDecision) && !(figura instanceof Desicion)){
+                if(!(figura instanceof Flujo) && !(figura instanceof FinDecision) && !(figura instanceof Desicion) && !(figura instanceof Ciclo)){
                     if(x<=figura.getVertices().get(2).getX()){
                         if(x>=figura.getVertices().get(0).getX()){
                            if(y<=figura.getVertices().get(2).getY()){
@@ -1033,6 +1004,16 @@ public class Sistema implements Initializable {
                                     return figura;
                                 }
                             } 
+                        }
+                    }
+                }else if(figura instanceof Ciclo){
+                    if(x<=figura.getVertices().get(1).getX()){
+                        if(x>=figura.getVertices().get(3).getX()){
+                            if(y<=figura.getVertices().get(2).getY()){
+                                if(y>=figura.getVertices().get(0).getY()){
+                                    return figura;
+                                }
+                            }
                         }
                     }
                 }else if(figura instanceof Flujo){
@@ -1372,12 +1353,20 @@ public class Sistema implements Initializable {
                                             figuras.get(i).getVertices().get(2).getY()>=py &&
                                             figuras.get(i).getTipo()==TipoF.DESICION ){
                                                 figuras.get(i).setEstado(false);
-                                            }else if(figuras.get(i).getVerticeCentro().getX()-5 <= px &&
-                                            figuras.get(i).getVerticeCentro().getX()+5 >= px &&
-                                            figuras.get(i).getVerticeCentro().getY()-5 <= py &&
-                                            figuras.get(i).getVerticeCentro().getY()+5 >= py &&
-                                            figuras.get(i).getTipo()==TipoF.FINDESICION ){
-                                                    figuras.get(i).setEstado(false);
+                                            }else{
+                                                if(figuras.get(i).getVerticeCentro().getX()-5 <= px &&
+                                               figuras.get(i).getVerticeCentro().getX()+5 >= px &&
+                                               figuras.get(i).getVerticeCentro().getY()-5 <= py &&
+                                               figuras.get(i).getVerticeCentro().getY()+5 >= py &&
+                                               figuras.get(i).getTipo()==TipoF.FINDESICION ){
+                                                       figuras.get(i).setEstado(false);
+                                               }else if(figuras.get(i).getVerticeCentro().getX()-5<= px &&
+                                                       figuras.get(i).getVerticeCentro().getX()+5>= px &&
+                                                       figuras.get(i).getVerticeCentro().getY()-5<=py &&
+                                                       figuras.get(i).getVerticeCentro().getY()+5>=py &&
+                                                       figuras.get(i).getTipo()==TipoF.CICLO){
+                                                       figuras.get(i).setEstado(false);
+                                               }
                                             }
                                         }
                                     }
@@ -1705,7 +1694,17 @@ public class Sistema implements Initializable {
                 return false;
             }
             
-           
+            int count = 0;
+            for (Figura figura : figuras) {
+                if (figura instanceof Flujo) {
+                    if(flujo.padre.equals(((Flujo) figura).padre)){
+                        count++;
+                    }
+                    if (count>=2) {
+                        return false;
+                    }
+                }
+            }
             
             for (Figura figura : figuras) {
                 if (figura instanceof Flujo) {
@@ -1717,12 +1716,6 @@ public class Sistema implements Initializable {
             
             for (Figura figura : figuras) {
                 if(figura instanceof Flujo){
-                    if (flujo.padre.equals(((Flujo) figura).hijo) && flujo.hijo.equals(((Flujo) figura).padre)) {
-                        return false;
-                    }
-                    if (flujo.padre.equals(((Flujo) figura).padre) && flujo.hijo.equals(((Flujo) figura).hijo)) {
-                        return false;
-                    }
                     /*
                     if((flujo.vertices.get(0).distancia(figura.getVertices().get(0))==0 && flujo.vertices.get(1).distancia(figura.getVertices().get(1))==0) || 
                         (flujo.vertices.get(0).distancia(figura.getVertices().get(1))==0 && flujo.vertices.get(1).distancia(figura.getVertices().get(0))==0)){
@@ -1773,9 +1766,6 @@ public class Sistema implements Initializable {
                     }
                 
                     if (flujo.padre.equals(((FinDecision ) figura).hijo) && flujo.hijo.equals(((FinDecision) figura).padre)) {
-                        return false;
-                    }
-                    if (flujo.padre.equals(((FinDecision ) figura).padre) && flujo.hijo.equals(((FinDecision) figura).hijo)) {
                         return false;
                     }
                 
@@ -2161,7 +2151,7 @@ public class Sistema implements Initializable {
         b=true;
         corriendo=true;
         ArrayList<Figura>corredores = crearCorredores();
-        if(b && corriendo==true && run==false && !corredores.isEmpty()){
+        if(b && corriendo==true && run==false){
             
                 /*Crear lista en otro metodo para no interferir cada vez en este otro metodo*/
                 /*Tenemos la lista de los "Corredores creada"*/
@@ -2197,10 +2187,9 @@ public class Sistema implements Initializable {
     public ArrayList crearCorredores(){
         Flujo flujo = null;
         Figura fig = null;
-        ArrayList<Figura> corredors = new ArrayList<>(); 
-        b=true;
-        
-            if (!figuras.isEmpty() ){
+        System.out.println("hola");
+        ArrayList<Figura> corredors = new ArrayList<>();
+        if (!figuras.isEmpty() ){
                 if(buscarInicio() && buscarFin()){
                     
                         //buscar inicio
@@ -2217,14 +2206,14 @@ public class Sistema implements Initializable {
                                 }
                             }
                         }
-                        if(flujo != null){
+                        if(!flujo.equals(null)){
                             System.out.println(fig.texto);
                             corredors.add(fig);
 
 
                             //actualizar();
                             boolean terminar = true;
-                            while(flujo!=null && terminar && fig != null && fig.getTipo() != TipoF.FIN ){
+                            while(terminar && fig != null && fig.getTipo() != TipoF.FIN ){
                                 fig = figuras.get(flujo.indexHijo);
                                 /*
                                 for (Figura figura : figuras) {
@@ -2241,13 +2230,7 @@ public class Sistema implements Initializable {
                                             break;
                                         }
                                         if (i>=figuras.size()-1) {
-                                            if (buscarFlujoFin(fig)!=null) {
-                                                flujo = (Flujo) buscarFlujoFin(fig);
-                                                break;
-                                            }else{
-                                                terminar = false;
-                                                System.out.println("");
-                                            }
+                                        terminar = false;
                                         }
                                     }
                                 }
@@ -2263,9 +2246,8 @@ public class Sistema implements Initializable {
                                 corredors.add(fig);
                             }
                         }
-                    }   
                 }
-            
+        }
         return corredors;
     }
     
@@ -2348,50 +2330,94 @@ public class Sistema implements Initializable {
         }catch( IllegalArgumentException r){
             
         }
+        
         try {
-           ImageIO.write(renderedImage, "png", file2); 
-        }catch( IllegalArgumentException r){
-        }
-        try{
             
-        }catch(Exception e){
+            //Aqui falta la codificacion de la imagen
+            //tomar ancho y alto de la imagen a crear
+           //float ancho=(float)()
+
+
+           
+        }
+        catch( IllegalArgumentException r){
         }
 
     }
-    
-    
-    public Figura buscarFlujoFin(Figura figura){
-        Figura aux = figura;
-        boolean terminar = false;
-        while(!terminar){
-            System.out.println("hola");
-            for (int i = 0; i < figuras.size(); i++) {
-                if (figuras.get(i) instanceof FinDecision) {
-                    if (((FinDecision)figuras.get(i)).padre.equals(aux) || ((FinDecision)figuras.get(i)).hijo.equals(aux)) {
-                        aux = figuras.get(i);
-                    }
-                }else if (figuras.get(i) instanceof Flujo) {
-                    if (((Flujo)figuras.get(i)).padre.equals(aux)) {
-                        aux = figuras.get(i);
-                        terminar = true;
-                    }
-                    
+    @FXML
+    private void dibujarCiclo(ActionEvent event) throws IOException {
+        if(run==false && corriendo==false){
+            TextInputDialog dialog = new TextInputDialog("");
+            dialog.setTitle("Crear Ciclo");
+            dialog.setContentText("Introduzca el texto:");
+
+
+            Optional<String> result = dialog.showAndWait();
+            if (result.isPresent() && !result.get().equals(" ") && !result.get().equalsIgnoreCase(" ")){
+               if(result.get().matches("[A-Za-z0-9]+[\\>|\\<|\\>=|\\<=|\\==|\\!=]{1}[A-Za-z0-9]+")){
+
+                if(contar(result.get())>12){
+                    powerUp = 80;
+                    boolean a= true;
                 }
-                if (i>= figuras.size()-1) {
-                    terminar = true;
-                }
+
+                b=true;
+                canvas.setOnMouseClicked((MouseEvent event2) -> {
+                double p1 = event2.getX();
+                double p2 = event2.getY();
+
+                redimensionCanvas(p1,p2);
+
+
+                if(b){
+
+                    double x = event2.getX();
+                    double y = event2.getY();
+                    double x1 = x ;
+                    double y1 = y - 50;
+                    double x2 = x+50;
+                    double y2 = y ;
+                    double x3 = x ;
+                    double y3 = y+50;
+                    double x4 = x - 50;
+                    double y4 = y;
+
+
+                    Ciclo ciclo = new Ciclo(TipoF.CICLO);
+                    ciclo.setVerticeCentro(new Vertice(x,y));
+                    ciclo.getVertices().add(new Vertice(x1, y1));
+                    ciclo.getVertices().add(new Vertice(x2, y2));
+                    ciclo.getVertices().add(new Vertice(x3, y3));
+                    ciclo.getVertices().add(new Vertice(x4, y4));
+                    ciclo.calcularConexiones();
+                    ciclo.texto = result.get();
+                    figuras.add(ciclo);
+                    ciclo.estado=true;
+                    ciclo.dibujar(gc);
+                    actualizar();
+                    b=false;
+                    powerUp=0;
+                    canvas.setOnMouseClicked(null);
+                }  
+            });
+               }else{
+                   Alert alert = new Alert(AlertType.WARNING);
+                    alert.setTitle("Error");
+                    alert.setHeaderText("cuidado");
+                    alert.setContentText("El texto ingresado es incorrecto, intente otra vez");
+
+                    alert.showAndWait();
+
+               }
+            } else {
+                Alert alert = new Alert(AlertType.WARNING);
+                alert.setTitle("Error");
+                alert.setHeaderText("cuidado");
+                alert.setContentText("Debes ingresar un texto");
+
+                alert.showAndWait();
             }
         }
-        if (aux instanceof Flujo) {
-            return aux;
-        }else{
-            return null;
-        }
-        
-    }
-    
-    public boolean buscarFlujoFinValido(Figura figura){
-        return false;
     }
     
 }
