@@ -112,7 +112,8 @@
             <Button fx:id="pdf" layoutX="900.0" layoutY="22.0" mnemonicParsing="false" onAction="#exportPDF" text="pdf" />
             <Button fx:id="jpg" layoutX="759.0" layoutY="22.0" mnemonicParsing="false" onAction="#exportImageJpg" text="jpg" />
             <Button fx:id="edit" layoutX="684.0" layoutY="22.0" mnemonicParsing="false" onAction="#editar" text="editar" />
-            <Button fx:id="b12" layoutX="419.0" layoutY="22.0" mnemonicParsing="false" onAction="#dibujarCiclo" text="Ciclo" />
+            <Button fx:id="b12" layoutX="488.0" layoutY="22.0" mnemonicParsing="false" onAction="#dibujarCiclo" text="Ciclo" />
+            <Button fx:id="codigo" layoutX="310.0" layoutY="22.0" mnemonicParsing="false" onAction="#generarpseudocodigo" text="generar psudocodigo" />
             
             
          </children>

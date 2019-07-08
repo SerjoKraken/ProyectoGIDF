@@ -11,8 +11,10 @@ import com.itextpdf.text.pdf.PdfWriter;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
@@ -65,7 +67,8 @@ public class Sistema implements Initializable {
     
     @FXML
     private Button correr;
-    
+    @FXML
+    private Button codigo;
     @FXML
     private Button b1;
     
@@ -130,7 +133,7 @@ public class Sistema implements Initializable {
     boolean b = false;
     boolean run=false;
     ArrayList<Variable> variables = new ArrayList<>();
-    
+    String texto="";
     @FXML
     public void mover()  {
         
@@ -242,28 +245,34 @@ public class Sistema implements Initializable {
 
                             alert.showAndWait();
                         }
-                    }else if(buscarConexion(x1,y1).tipo==TipoF.ENTRADA){
-                        TextInputDialog dialog = new TextInputDialog(buscarConexion(x1,y1).texto);
-                        dialog.setTitle("Modificar texto");
-                        dialog.setContentText("Introduzca el texto:");
-                        Optional<String> resultmodtext = dialog.showAndWait();
-                        if(resultmodtext.isPresent() && !result.get().equals(" ") && !resultmodtext.get().equalsIgnoreCase(" ")){
-                            if (resultmodtext.get().matches("[A-Za-z1-9]+=.+") && evaluarAritmetica(resultmodtext.get().split("=")[1],variables)){
-                                for (int i = 0; i < figuras.size(); i++) {
-                                    if(buscarConexion(x1,y1)==figuras.get(i)){
-                                        figuras.get(i).setTexto(resultmodtext.get());
-                                        actualizar();
+                    }else if(buscarConexion(x1,y1).tipo==TipoF.ENTRADA || buscarConexion(x1,y1).tipo==TipoF.SALIDA){
+                        if(buscarConexion(x1,y1).tipo==TipoF.ENTRADA){
+                            TextInputDialog dialog = new TextInputDialog(buscarConexion(x1,y1).texto);
+                            dialog.setTitle("Modificar texto");
+                            dialog.setContentText("Introduzca el texto:");
+                            Optional<String> resultmodtext = dialog.showAndWait();
+                            if(resultmodtext.isPresent() && !resultmodtext.get().equals(" ") && !resultmodtext.get().equalsIgnoreCase(" ")){
+                                if ((resultmodtext.get().matches("[A-Za-z]+=.+") && 
+                                        evaluarAritmetica(resultmodtext.get().split("=")[1],variables)) || 
+                                        ((resultmodtext.get().matches("[A-Za-z]+") && evaluarAritmetica(resultmodtext.get(),variables)))){
+                                    for (int i = 0; i < figuras.size(); i++) {
+                                        if(buscarConexion(x1,y1)==figuras.get(i)){
+                                            figuras.get(i).setTexto(resultmodtext.get());
+                                            actualizar();
+                                        }
                                     }
                                 }
-                            }
-                        }else{
-                            Alert alert1 = new Alert(AlertType.WARNING);
-                            alert1.setTitle("Error");
-                            alert1.setHeaderText("cuidado");
-                            alert1.setContentText("El formato del texto ingresado es incorrecto");
+                            }else{
+                                Alert alert1 = new Alert(AlertType.WARNING);
+                                alert1.setTitle("Error");
+                                alert1.setHeaderText("cuidado");
+                                alert1.setContentText("El formato del texto ingresado es incorrecto");
 
-                            alert.showAndWait();
+                                alert.showAndWait();
+
+                            }
                         }
+                        
                     } else if (buscarConexion(x1,y1).tipo==TipoF.PROCESO){
                         TextInputDialog dialog = new TextInputDialog(buscarConexion(x1,y1).texto);
                         dialog.setTitle("Modificar texto");
@@ -1156,7 +1165,7 @@ public class Sistema implements Initializable {
     
     @FXML
     private void correr(ActionEvent event) throws InterruptedException {
-        
+        texto="";
         Flujo flujo = null;
         Figura fig = null;
         ArrayList<Figura> corredors = new ArrayList<>(); 
@@ -1218,17 +1227,44 @@ public class Sistema implements Initializable {
                                 System.out.println(fig.texto);
                                 corredors.add(fig);
                             }
+                            for(Figura corredor:corredors){
+                                int condicion=0;
+                                int ciclo=0;
+                                if (corredor.tipo!=TipoF.FIN && corredor.tipo!=TipoF.INICIO){
+                                    agregarVariable(corredor);
+                                                
+                                } 
+                                if(corredor.tipo==TipoF.INICIO){
+                                    texto=("Inicio codigo\n");
+                                }else if(corredor.tipo==TipoF.FIN){
+                                    texto=texto+("Fin codigo");                                  
+                                }else if(corredor.tipo==TipoF.DOCUMENTACION){
+                                    texto=texto+" print"+corredor.texto+(";\n");
+                                }else if(corredor.tipo==TipoF.ENTRADA){
+                                    texto=texto+" "+corredor.texto+(";\n");
+                                }else if(corredor.tipo==TipoF.PROCESO){
+                                    texto=texto+" "+corredor.texto+(";\n");
+                                }else if(corredor.tipo==TipoF.SALIDA){
+                                    texto=texto+" "+corredor.texto+(";\n");
+                                }else if(corredor.tipo==TipoF.CONDICION){
+                                    texto=texto+" if "+corredor.texto+(";\n");
+                                }else if(corredor.tipo==TipoF.SALIDA){
+                                    texto=texto+" while "+corredor.texto+(";\n");
+                                }
+                            }
                             gc.setFill(Color.RED);
                             Thread hilo = new Thread(new Runnable() {
                                 @Override
-
+                                
                                 public void run() {
 
 
                                         for (Figura corredor : corredors) {
+                                            
                                             run=true;
                                             if (corredor.tipo!=TipoF.FIN && corredor.tipo!=TipoF.INICIO){
                                                 agregarVariable(corredor);
+                                                
                                             } 
                                             gc.fillOval(corredor.verticeCentro.getX()-80, corredor.verticeCentro.getY(), 20, 20);
                                             
@@ -1248,7 +1284,7 @@ public class Sistema implements Initializable {
                             });
                             hilo.start();
                             run=false;
-
+                            
                             //hilo.stop();
 
                         }
@@ -2951,5 +2987,24 @@ public class Sistema implements Initializable {
             }
         }
     }
+    @FXML
+    private void generarpseudocodigo(ActionEvent event) {
+        try {
+            String ruta = "filename.txt";
+            File file = new File(ruta);
+            // Si el archivo no existe es creado
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            FileWriter fw = new FileWriter(file);
+            BufferedWriter bw = new BufferedWriter(fw);
+            bw.write(texto);
+            
+            bw.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    } 
+    
     
 }
