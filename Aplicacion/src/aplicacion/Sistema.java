@@ -910,7 +910,7 @@ public class Sistema implements Initializable {
                 Optional<ButtonType> result = alert.showAndWait();
                 
                 if (result.get() == buttonTypeOne){
-                    
+                    figura = buscarConexion(x1, y1);
                 } else if (result.get() == buttonTypeTwo) {
                     if(buscarConexion(x1,y1).tipo==TipoF.DESICION){
                         TextInputDialog dialog = new TextInputDialog(buscarConexion(x1,y1).texto);
@@ -1218,7 +1218,13 @@ public class Sistema implements Initializable {
                                             break;
                                         }
                                         if (i>=figuras.size()-1) {
-                                        terminar = false;
+                                             if (buscarFlujoFin(fig)!=null) { 
+                                                flujo = (Flujo) buscarFlujoFin(fig); 
+                                                break; 
+                                            }else{ 
+                                                terminar = false; 
+                                                System.out.println(""); 
+                                            } 
                                         }
                                     }
                                 }
@@ -1928,10 +1934,10 @@ public class Sistema implements Initializable {
                                                figuras.get(i).getVerticeCentro().getY()+5 >= py &&
                                                figuras.get(i).getTipo()==TipoF.FINDESICION ){
                                                        figuras.get(i).setEstado(false);
-                                               }else if(figuras.get(i).getVerticeCentro().getX()-5<= px &&
-                                                       figuras.get(i).getVerticeCentro().getX()+5>= px &&
-                                                       figuras.get(i).getVerticeCentro().getY()-5<=py &&
-                                                       figuras.get(i).getVerticeCentro().getY()+5>=py &&
+                                               }else if(figuras.get(i).getVertices().get(3).getX()<= px &&
+                                                figuras.get(i).getVertices().get(1).getX()>=px &&
+                                                figuras.get(i).getVertices().get(0).getY()<= py &&
+                                                figuras.get(i).getVertices().get(2).getY()>=py &&
                                                        figuras.get(i).getTipo()==TipoF.CICLO){
                                                        figuras.get(i).setEstado(false);
                                                }
