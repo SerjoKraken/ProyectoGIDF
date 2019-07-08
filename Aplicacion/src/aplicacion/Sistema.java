@@ -47,6 +47,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceDialog;
+import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextInputDialog;
@@ -66,6 +67,10 @@ import javax.script.ScriptException;
 
 
 public class Sistema implements Initializable {
+    static Color[] color = {Color.RED, Color.AQUAMARINE,Color.CHARTREUSE,Color.YELLOW,Color.ORANGE,Color.GREENYELLOW};
+    
+    @FXML
+    private ColorPicker cp = new ColorPicker();
     
     @FXML
     private Label label;
@@ -173,6 +178,7 @@ public class Sistema implements Initializable {
         
     }
     
+    Figura figura = null;
     @FXML
     public void editar()  {
         b=true;
@@ -195,16 +201,11 @@ public class Sistema implements Initializable {
                 ButtonType buttonTypeCancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
 
                 alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo, buttonTypeThree, buttonTypeCancel);
-                Optional<ButtonType> result = alert.showAndWait();               
+                Optional<ButtonType> result = alert.showAndWait();
+                
                 if (result.get() == buttonTypeOne){
-                    
-                    for (int i = 0; i < figuras.size(); i++) {
-                        if(buscarConexion(x1,y1)==figuras.get(i)){
-                            ((Proceso)figuras.get(i)).setColor(Color.BLUE);
-                            actualizar();
-                        }
-                    }
-                     
+                    figura = buscarConexion(x1, y1);
+      
                 } else if (result.get() == buttonTypeTwo) {
                     if(buscarConexion(x1,y1).tipo==TipoF.PROCESO){
                         TextInputDialog dialog = new TextInputDialog(buscarConexion(x1,y1).texto);
@@ -2206,9 +2207,16 @@ public class Sistema implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         mover();
+        
         gc = canvas.getGraphicsContext2D();
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         ap.setBackground(Background.EMPTY);
+        cp.setValue(Color.BLUE);
+        cp.setEditable(true);
+        
+        
+        
+        
     }    
     
     
@@ -3069,6 +3077,36 @@ public class Sistema implements Initializable {
             e.printStackTrace();
         }
     } 
+    boolean cambioColor = false;
+    @FXML
+    public void cambiarColor(ActionEvent a){
+        
+        
+        System.out.println(cp.getValue().toString());
+        System.out.println(cp.editableProperty());
+        if (figura!=null) {
+            if (figura instanceof Inicio) {
+                color[1] = cp.getValue();
+            }else if(figura instanceof Proceso){
+                color[0] = cp.getValue();
+            }else if(figura instanceof Desicion){
+                color[4] = cp.getValue();
+            }else if(figura instanceof Ciclo){
+                color[5] = cp.getValue();
+            }else if(figura instanceof Documento){
+                color[2] = cp.getValue();
+            }else if(figura instanceof Entrada){
+                color[3] = cp.getValue();
+            }
+
+        }
+        actualizar();
+    }
+        
+        
+        
+        
+
+    }
     
-    
-}
+

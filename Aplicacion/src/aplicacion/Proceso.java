@@ -14,15 +14,13 @@ import javafx.scene.paint.Color;
  * @author Serjo
  */
 public class Proceso extends Figura{
-    Color color = Color.RED;
+    
     public Proceso(TipoF tipo) {
         super(tipo);
         
     }
 
-    public void setColor(Color color) {
-        this.color = color;
-    }
+    
 
     
     @Override
@@ -38,7 +36,7 @@ public class Proceso extends Figura{
         
         
         for (int i = 0; i < 50; i++) {
-            gc.setStroke(color);
+            gc.setStroke(Sistema.color[0]);
             gc.strokeLine(x1, y1+i, x2, y2+i);
             gc.strokeLine(x2, y2, x3, y3);
             gc.strokeLine(x3, y3, x4, y4);
@@ -100,7 +98,7 @@ public class Proceso extends Figura{
         
         
         for (int i = 0; i < 50; i++) {
-            gc.setStroke(color);
+            gc.setStroke(Sistema.color[0]);
             gc.strokeLine(x1, y1+i, x2, y2+i);
             gc.strokeLine(x2, y2, x3, y3);
             gc.strokeLine(x3, y3, x4, y4);
