@@ -15,7 +15,7 @@ import javafx.scene.shape.ArcType;
  */
 
 public class Documento extends Figura{
-    Color color = Color.CHARTREUSE;
+    Color color = Sistema.color[2];
     public Documento(TipoF tipo) {
         super(tipo);
     }

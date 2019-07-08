@@ -13,7 +13,7 @@ import javafx.scene.paint.Color;
  * @author Serjo
  */
 public class Entrada extends Figura{
-    Color color = Color.YELLOW;
+    Color color = Sistema.color[3];
     public Entrada( TipoF tipo) {
         super(tipo);
     }

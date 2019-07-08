@@ -14,7 +14,7 @@ import javafx.scene.paint.Color;
  * @author Serjo
  */
 public class Proceso extends Figura{
-    Color color = Color.RED;
+    Color color = Sistema.color[0];
     public Proceso(TipoF tipo) {
         super(tipo);
         

@@ -16,7 +16,7 @@ import javafx.scene.paint.Color;
 public class Ciclo  extends Figura{
     private ArrayList<Figura> verdadero= new ArrayList<>();
     private ArrayList<Figura> falso= new ArrayList<>();
-    Color color = Color.GREENYELLOW;
+    Color color = Sistema.color[5];
 
     public Ciclo(TipoF tipo) {
         super(tipo);

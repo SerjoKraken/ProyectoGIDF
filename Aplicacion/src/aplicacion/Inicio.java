@@ -14,7 +14,7 @@ import javafx.scene.shape.ArcType;
  * @author Serjo
  */
 public class Inicio extends Figura{
-    Color color = Color.AQUAMARINE;
+    Color color = Sistema.color[1];
     public Inicio(TipoF tipo) {
         super(tipo);
     }

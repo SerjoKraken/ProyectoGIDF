@@ -66,7 +66,7 @@ import javax.script.ScriptException;
 
 
 public class Sistema implements Initializable {
-    
+    static Color[] color = {Color.RED, Color.AQUAMARINE,Color.CHARTREUSE,Color.YELLOW,Color.ORANGE,Color.GREENYELLOW};
     @FXML
     private Label label;
     
@@ -3025,6 +3025,24 @@ public class Sistema implements Initializable {
             e.printStackTrace();
         }
     } 
-    
+    @FXML
+    public void cambiarColor(ActionEvent event){
+        ColorPicker cp = colorP;
+        Color sc = cp.getValue();
+        System.out.println(sc.toString());
+        canvas.setOnMouseClicked((MouseEvent event1) -> {
+                double x1 = event1.getX();
+                double y1 = event1.getY();
+                if(buscarConexion(x1,y1)!=null){
+                    for (int i = 0; i < figuras.size(); i++) {
+                            if(buscarConexion(x1,y1).tipo==TipoF.PROCESO){
+                                color[0]=sc;
+                            }
+
+                    }
+                }
+                });
+
+    }
     
 }

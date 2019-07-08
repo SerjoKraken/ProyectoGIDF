@@ -17,7 +17,7 @@ public class Desicion extends Figura{
         
     private ArrayList<Figura> verdadero= new ArrayList<>();
     private ArrayList<Figura> falso= new ArrayList<>();
-    Color color = Color.ORANGE;
+    Color color = Sistema.color[4];
 
     public Desicion(TipoF tipo) {
         super(tipo);
