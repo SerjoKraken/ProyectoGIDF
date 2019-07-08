@@ -849,7 +849,7 @@ public class Sistema implements Initializable {
 
                     Optional<ButtonType> result = alert.showAndWait();
                     if (result.get() == buttonTypeOne){
-                        // ... user chose "One"
+                        figura = buscarConexion(x1, y1);
                     } 
                 }else if (buscarConexion(x1,y1).tipo==TipoF.INICIO){
                     Alert alert = new Alert(AlertType.CONFIRMATION);
@@ -864,7 +864,7 @@ public class Sistema implements Initializable {
 
                     Optional<ButtonType> result = alert.showAndWait();
                     if (result.get() == buttonTypeOne){
-                        // ... user chose "One"
+                        figura = buscarConexion(x1, y1);
                     } else if (result.get() == buttonTypeTwo) {
                         TextInputDialog dialog = new TextInputDialog(buscarConexion(x1,y1).texto);
                         dialog.setTitle("Modificar texto");
