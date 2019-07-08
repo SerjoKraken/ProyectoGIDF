@@ -15,14 +15,12 @@ import javafx.scene.shape.ArcType;
  */
 
 public class Documento extends Figura{
-    Color color = Sistema.color[2];
+    
     public Documento(TipoF tipo) {
         super(tipo);
     }
 
-    public void setColor(Color color) {
-        this.color = color;
-    }
+    
 
     
     @Override
@@ -38,7 +36,7 @@ public class Documento extends Figura{
         double x4=vertices.get(3).getX();
         double y4=vertices.get(3).getY();
         
-        gc.setStroke(color);
+        gc.setStroke(Sistema.color[2]);
         for (double i = 0; i < 50; i+=0.5) {
             gc.strokeLine(x1+i, y1+i*0.9, x2, y2);
             gc.strokeLine(x1+i, y1, x1, y1+50);
@@ -105,7 +103,7 @@ public class Documento extends Figura{
         vertices.get(3).setY(y4);
         calcularConexiones();
         
-        gc.setStroke(color);
+        gc.setStroke(Sistema.color[2]);
         for (double i = 0; i < 50; i+=0.5) {
             gc.strokeLine(x1+i, y1+i*0.9, x2, y2);
             gc.strokeLine(x1+i, y1, x1, y1+50);

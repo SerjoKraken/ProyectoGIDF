@@ -14,14 +14,12 @@ import javafx.scene.shape.ArcType;
  * @author Serjo
  */
 public class Inicio extends Figura{
-    Color color = Sistema.color[1];
+    
     public Inicio(TipoF tipo) {
         super(tipo);
     }
 
-    public void setColor(Color color) {
-        this.color = color;
-    }
+    
 
     @Override
     public void dibujar(GraphicsContext gc) {
@@ -33,7 +31,7 @@ public class Inicio extends Figura{
         double y3=vertices.get(2).getY();
         double x4=vertices.get(3).getX();
         double y4=vertices.get(3).getY();
-        gc.setStroke(color);
+        gc.setStroke(Sistema.color[1]);
         for (double i = 0; i < 50; i+=0.5) {
             gc.strokeLine(x1, y1+i, x2, y2+i);
             gc.strokeArc(x1-19+i, y1, 37, 50, 90, 180, ArcType.OPEN);
@@ -96,7 +94,7 @@ public class Inicio extends Figura{
         
         calcularConexiones();
         
-        gc.setStroke(color);
+        gc.setStroke(Sistema.color[1]);
         for (double i = 0; i < 50; i+=0.5) {
             gc.strokeLine(x1, y1+i, x2, y2+i);
             gc.strokeArc(x1-19+i, y1, 37, 50, 90, 180, ArcType.OPEN);

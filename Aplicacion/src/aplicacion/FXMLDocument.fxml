@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane id="AnchorPane" fx:id="ap" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="aplicacion.Sistema">
+<AnchorPane id="AnchorPane" fx:id="ap" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="aplicacion.Sistema">
     <children>
       <ScrollPane layoutX="232.0" layoutY="64.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="712.0" prefWidth="1035.0">
          <content>
@@ -114,7 +114,7 @@
             <Button fx:id="jpg" layoutX="759.0" layoutY="22.0" mnemonicParsing="false" onAction="#exportImageJpg" text="jpg" />
             <Button fx:id="edit" layoutX="684.0" layoutY="22.0" mnemonicParsing="false" onAction="#editar" text="editar" />
             <Button fx:id="b12" layoutX="419.0" layoutY="22.0" mnemonicParsing="false" onAction="#dibujarCiclo" text="Ciclo" />
-            <ColorPicker fx:id="colorP" layoutX="232.0" layoutY="22.0" onAction="#cambiarColor" prefHeight="25.0" prefWidth="140.0" />
+            <ColorPicker fx:id="cp" layoutX="232.0" layoutY="22.0" onAction="#cambiarColor" prefHeight="25.0" prefWidth="140.0" />
             
             
          </children>
