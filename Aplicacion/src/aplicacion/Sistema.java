@@ -47,6 +47,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceDialog;
+import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextInputDialog;
@@ -66,6 +67,10 @@ import javax.script.ScriptException;
 
 
 public class Sistema implements Initializable {
+    static Color[] color = {Color.RED, Color.AQUAMARINE,Color.CHARTREUSE,Color.YELLOW,Color.ORANGE,Color.GREENYELLOW};
+    
+    @FXML
+    private ColorPicker cp = new ColorPicker();
     
     @FXML
     private Label label;
@@ -173,6 +178,7 @@ public class Sistema implements Initializable {
         
     }
     
+    Figura figura = null;
     @FXML
     public void editar()  {
         b=true;
@@ -195,16 +201,11 @@ public class Sistema implements Initializable {
                 ButtonType buttonTypeCancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
 
                 alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo, buttonTypeThree, buttonTypeCancel);
-                Optional<ButtonType> result = alert.showAndWait();               
+                Optional<ButtonType> result = alert.showAndWait();
+                
                 if (result.get() == buttonTypeOne){
-                    
-                    for (int i = 0; i < figuras.size(); i++) {
-                        if(buscarConexion(x1,y1)==figuras.get(i)){
-                            ((Proceso)figuras.get(i)).setColor(Color.BLUE);
-                            actualizar();
-                        }
-                    }
-                     
+                    figura = buscarConexion(x1, y1);
+      
                 } else if (result.get() == buttonTypeTwo) {
                     if(buscarConexion(x1,y1).tipo==TipoF.PROCESO){
                         TextInputDialog dialog = new TextInputDialog(buscarConexion(x1,y1).texto);
@@ -1147,11 +1148,11 @@ public class Sistema implements Initializable {
                             agregarFigurasParaDFin(fin);
                             
                          
-                            //if(flujoFinValido(fin)){
+                            if(flujoFinValido(fin)){
                                 
                                 figuras.add(fin);
                                 fin.dibujar(gc);
-                            //}
+                            }
                             
                             actualizar();
                             b=false;
@@ -2206,9 +2207,16 @@ public class Sistema implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         mover();
+        
         gc = canvas.getGraphicsContext2D();
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         ap.setBackground(Background.EMPTY);
+        cp.setValue(Color.BLUE);
+        cp.setEditable(true);
+        
+        
+        
+        
     }    
     
     
@@ -2283,6 +2291,12 @@ public class Sistema implements Initializable {
             
             for (Figura figura : figuras) {
                 if(figura instanceof Flujo){
+                    if (flujo.padre.equals(((Flujo) figura).hijo) && flujo.hijo.equals(((Flujo) figura).padre)) { 
+                        return false; 
+                    } 
+                    if (flujo.padre.equals(((Flujo) figura).padre) && flujo.hijo.equals(((Flujo) figura).hijo)) { 
+                        return false; 
+                    } 
                     /*
                     if((flujo.vertices.get(0).distancia(figura.getVertices().get(0))==0 && flujo.vertices.get(1).distancia(figura.getVertices().get(1))==0) || 
                         (flujo.vertices.get(0).distancia(figura.getVertices().get(1))==0 && flujo.vertices.get(1).distancia(figura.getVertices().get(0))==0)){
@@ -2335,7 +2349,9 @@ public class Sistema implements Initializable {
                     if (flujo.padre.equals(((FinDecision ) figura).hijo) && flujo.hijo.equals(((FinDecision) figura).padre)) {
                         return false;
                     }
-                
+                    if (flujo.padre.equals(((FinDecision ) figura).padre) && flujo.hijo.equals(((FinDecision) figura).hijo)) { 
+                        return false; 
+                    }
                 }
             }
             
@@ -2773,14 +2789,14 @@ public class Sistema implements Initializable {
                                 }
                             }
                         }
-                        if(!flujo.equals(null)){
+                        if(flujo != null){
                             System.out.println(fig.texto);
                             corredors.add(fig);
 
 
                             //actualizar();
                             boolean terminar = true;
-                            while(terminar && fig != null && fig.getTipo() != TipoF.FIN ){
+                            while(flujo != null && terminar && fig != null && fig.getTipo() != TipoF.FIN ){
                                 fig = figuras.get(flujo.indexHijo);
                                 /*
                                 for (Figura figura : figuras) {
@@ -3007,6 +3023,42 @@ public class Sistema implements Initializable {
             }
         }
     }
+    
+    
+    public Figura buscarFlujoFin(Figura figura){ 
+        Figura aux = figura; 
+        boolean terminar = false; 
+        while(!terminar){ 
+            System.out.println("hola"); 
+            for (int i = 0; i < figuras.size(); i++) { 
+                if (figuras.get(i) instanceof FinDecision) { 
+                    if (((FinDecision)figuras.get(i)).padre.equals(aux) || ((FinDecision)figuras.get(i)).hijo.equals(aux)) { 
+                        aux = figuras.get(i); 
+                    } 
+                }else if (figuras.get(i) instanceof Flujo) { 
+                    if (((Flujo)figuras.get(i)).padre.equals(aux)) { 
+                        aux = figuras.get(i); 
+                        terminar = true; 
+                    } 
+                     
+                } 
+                if (i>= figuras.size()-1) { 
+                    terminar = true; 
+                } 
+            } 
+        } 
+        if (aux instanceof Flujo) { 
+            return aux; 
+        }else{ 
+            return null; 
+        } 
+         
+    } 
+     
+    public boolean buscarFlujoFinValido(Figura figura){ 
+        return false; 
+    }
+    
     @FXML
     private void generarpseudocodigo(ActionEvent event) {
         try {
@@ -3025,6 +3077,36 @@ public class Sistema implements Initializable {
             e.printStackTrace();
         }
     } 
+    boolean cambioColor = false;
+    @FXML
+    public void cambiarColor(ActionEvent a){
+        
+        
+        System.out.println(cp.getValue().toString());
+        System.out.println(cp.editableProperty());
+        if (figura!=null) {
+            if (figura instanceof Inicio) {
+                color[1] = cp.getValue();
+            }else if(figura instanceof Proceso){
+                color[0] = cp.getValue();
+            }else if(figura instanceof Desicion){
+                color[4] = cp.getValue();
+            }else if(figura instanceof Ciclo){
+                color[5] = cp.getValue();
+            }else if(figura instanceof Documento){
+                color[2] = cp.getValue();
+            }else if(figura instanceof Entrada){
+                color[3] = cp.getValue();
+            }
+
+        }
+        actualizar();
+    }
+        
+        
+        
+        
+
+    }
     
-    
-}
+
