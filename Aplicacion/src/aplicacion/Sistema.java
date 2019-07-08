@@ -4,6 +4,11 @@ package aplicacion;
 
 
 
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.pdf.PdfWriter;
+import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
@@ -126,6 +131,8 @@ public class Sistema implements Initializable {
     boolean b = false;
     boolean run=false;
     ArrayList<Variable> variables = new ArrayList<>();
+    
+    
     
     @FXML
     public void mover()  {
@@ -1729,7 +1736,7 @@ public class Sistema implements Initializable {
                     */
                 }
             }
-            if(flujo.padre.tipo==TipoF.DESICION){          
+            if(flujo.padre.tipo==TipoF.DESICION ){          
                 if (existeTrue((Desicion) flujo.padre) == false) {
                     return true;
                 }else if (existeFalse((Desicion) flujo.padre)==false) {
@@ -2270,6 +2277,7 @@ public class Sistema implements Initializable {
     
     @FXML
     public void exportImageJpg() throws IOException {
+        
         FileChooser fileChooser = new FileChooser();
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("jpg files (.jpg)", ".jpg");
         fileChooser.getExtensionFilters().add(extFilter);
@@ -2277,34 +2285,46 @@ public class Sistema implements Initializable {
         File file = fileChooser.showSaveDialog(stage);
         WritableImage writableImage = canvas.snapshot(new SnapshotParameters(), null);
         canvas.snapshot(null, writableImage);
-        RenderedImage renderedImage = SwingFXUtils.fromFXImage(writableImage, null);
+        BufferedImage image = SwingFXUtils.fromFXImage(writableImage, null);
+        BufferedImage imageRGB = new BufferedImage(
+        image.getWidth(), 
+        image.getHeight(), 
+        BufferedImage.OPAQUE); 
+
+        Graphics2D graphics = imageRGB.createGraphics();
+
+        graphics.drawImage(image, 0, 0, null);
         try{
-            ImageIO.write(renderedImage, "jpg", file);
-        }catch( IllegalArgumentException r){
+            ImageIO.write(imageRGB, "jpg", file);
             
+        }catch( IllegalArgumentException r){
+            System.out.println(r);
         }  
+        /**
         BufferedImage bufferedImage;
+            try {                   
+                //read image file
+                bufferedImage = ImageIO.read(file);
+
+                // create a blank, RGB, same width and height, and a white background
+                BufferedImage newBufferedImage = new BufferedImage(bufferedImage.getWidth(),
+                              bufferedImage.getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
+
+                newBufferedImage.createGraphics().drawImage(bufferedImage, 0, 0, java.awt.Color.WHITE, null);
+
+                // write to jpeg file
+                ImageIO.write(newBufferedImage, "jpg", new File("c:\\javanullpointer.jpg"));
+
+                System.out.println("Done");
+
+              } catch (IOException e) {
+                  System.out.println(e.getMessage());
+                e.printStackTrace();
+
+              }
+        **/
 		
-	try {
-			
-	  //read image file
-	  bufferedImage = ImageIO.read(new File("c:\\javanullpointer.png"));
-
-	  // create a blank, RGB, same width and height, and a white background
-	  BufferedImage newBufferedImage = new BufferedImage(bufferedImage.getWidth(),
-			bufferedImage.getHeight(), BufferedImage.TYPE_INT_RGB);
-	  newBufferedImage.createGraphics().drawImage(bufferedImage, 0, 0, null);
-
-	  // write to jpeg file
-	  ImageIO.write(newBufferedImage, "jpg", new File("c:\\javanullpointer.jpg"));
-
-	  System.out.println("Done");
-			
-	} catch (IOException e) {
-
-	  e.printStackTrace();
-
-	}
+	
 
         }
     
@@ -2328,20 +2348,28 @@ public class Sistema implements Initializable {
         try {
            ImageIO.write(renderedImage, "png", file2); 
         }catch( IllegalArgumentException r){
-            
+
         }
         
-        try {
+        try{
+            int ancho = (int) canvas.getWidth();
+            int alto = (int) canvas.getHeight();
             
-            //Aqui falta la codificacion de la imagen
-            //tomar ancho y alto de la imagen a crear
-           //float ancho=(float)()
+            com.itextpdf.text.Rectangle rectangle = new com.itextpdf.text.Rectangle( ancho , alto);
+            Document doc = new Document(rectangle);
+            PdfWriter.getInstance(doc, archivo);
+            Image img = Image.getInstance("chart.png");
+            img.setBorderColor(BaseColor.BLACK);           
+            doc.setMargins(10, ancho, 10, alto);
+            doc.open();
+            doc.add(img);
+            doc.close();
+            file2.delete();
+        }catch(Exception e){
 
-
-           
         }
-        catch( IllegalArgumentException r){
-        }
+        
+        
 
     }
     @FXML
