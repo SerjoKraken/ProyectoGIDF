@@ -1168,6 +1168,40 @@ public class Sistema implements Initializable {
     }
     
     
+    private void agregarVariablePreEjecucion(Figura figura){
+        if(figura.tipo == TipoF.ENTRADA){
+            if(figura.texto.matches("[A-Za-z0-9]+=.+")){
+                if(!existeVariable(figura.texto.split("=")[0])){
+                    //area.appendText(figura.texto.split("=")[0]+ "⟵  "+ String.valueOf(operarExpresion(figura.texto.split("=")[1], variables))+  "\n");
+                    variables.add(new Variable(figura.texto.split("=")[0] , String.valueOf(operarExpresion(figura.texto.split("=")[1], variables))));
+                }else{
+                    for (int i = 0; i < variables.size(); i++) {
+                        if(variables.get(i).nombre.equals(figura.texto.split("=")[0])){
+                            variables.get(i).setValor(String.valueOf(operarExpresion(figura.texto.split("=")[1], variables)));
+                        }
+                    }
+
+                }
+            }else if(figura.texto.matches("[A-Za-z0-9]+")){
+                //validar en el caso de que la variable no exista
+                //area.appendText("\"el valor de la variable "+figura.texto+" es: "+ String.valueOf(operarExpresion(figura.texto, variables)) +"\" \n");
+            }else{
+                Alert alert = new Alert(AlertType.WARNING);
+                alert.setTitle("Error");
+                alert.setHeaderText("Cuidado");
+                alert.setContentText("Esta variable no existe por tanto no tiene un valor almacenado");
+
+                alert.showAndWait();
+            }
+        }else if(figura.tipo == TipoF.PROCESO){
+            for (int i = 0; i < variables.size(); i++) {
+                if(variables.get(i).nombre.equals(figura.texto.split("=")[0])){
+                    //area.appendText(figura.texto.split("=")[0]+"⟵"+ figura.texto.split("=")[1] + "\n");
+                    variables.get(i).setValor(String.valueOf(operarExpresion(figura.texto.split("=")[1], variables)));
+                }
+            }
+        }
+    }
     
     @FXML
     private void correr(ActionEvent event) throws InterruptedException {
@@ -1194,7 +1228,7 @@ public class Sistema implements Initializable {
                                 }
                             }
                         }
-                        if(!flujo.equals(null)){
+                        if(flujo != null){
                             System.out.println(fig.texto);
                             corredors.add(fig);
 
@@ -1203,6 +1237,10 @@ public class Sistema implements Initializable {
                             boolean terminar = true;
                             while(terminar && fig != null && fig.getTipo() != TipoF.FIN ){
                                 fig = figuras.get(flujo.indexHijo);
+                                agregarVariablePreEjecucion(fig);
+                                
+                                
+                                
                                 /*
                                 for (Figura figura : figuras) {
                                     if(figura instanceof Flujo){
@@ -1211,9 +1249,79 @@ public class Sistema implements Initializable {
                                         }
                                     }
                                 }*/
-                                for (int i = 0; i < figuras.size(); i++) {
+                                
+                                
+                                if (fig instanceof Desicion) {
+                                    
+                                    System.out.println(decidirDesicion(((Desicion) fig).texto, variables));
+                                    System.out.println(decidirDesicion(((Desicion) fig).texto, variables));
+                                    System.out.println(decidirDesicion(((Desicion) fig).texto, variables));
+                                    
+                                    for (int i = 0; i < figuras.size(); i++) {
+                                        if (figuras.get(i) instanceof Flujo) {
+                                            if (decidirDesicion(((Desicion) fig).texto, variables)) {
+                                                
+                                                if (((Flujo)figuras.get(i)).padre.esVerdadero && ((Flujo)figuras.get(i)).padre.equals(fig) && ((Flujo)figuras.get(i)).texto.equals("true")) {
+                                                    flujo = (Flujo)figuras.get(i);
+                                                    break;
+                                                }
+                                            }else{
+                                                
+                                                if (((Flujo)figuras.get(i)).padre.equals(fig) && !((Flujo)figuras.get(i)).padre.esVerdadero && ((Flujo)figuras.get(i)).texto.equals("false") ) {
+                                                    flujo = (Flujo)figuras.get(i);
+                                                    break;
+                                                }
+                                            }
+                                            
+                                            if (i>=figuras.size()-1) {
+                                                if (buscarFlujoFin(fig)!=null) { 
+                                                    flujo = (Flujo) buscarFlujoFin(fig); 
+                                                    break; 
+                                                }else{ 
+                                                    terminar = false; 
+                                                    System.out.println(""); 
+                                            } 
+                                        }
+                                        }
+                                    }
+                                }else{
+                                    for (int i = 0; i < figuras.size(); i++) {
+                                        if (figuras.get(i) instanceof Flujo) {
+                                            if (((Flujo)figuras.get(i)).padre.equals(fig)) {
+                                                flujo = (Flujo)figuras.get(i);
+                                                break;
+                                            }
+                                            if (i>=figuras.size()-1) {
+                                                if (buscarFlujoFin(fig)!=null) { 
+                                                    flujo = (Flujo) buscarFlujoFin(fig); 
+                                                    break; 
+                                            }else{ 
+                                                terminar = false; 
+                                                System.out.println(""); 
+                                            } 
+                                        }
+                                        }
+                                    }
+                                
+                                }
+                                
+                                
+                                /*for (int i = 0; i < figuras.size(); i++) {
                                     if (figuras.get(i) instanceof Flujo) {
-                                        if (((Flujo)figuras.get(i)).padre.equals(fig)) {
+                                        
+                                        if (fig instanceof Desicion) {
+                                            if (decidirDesicion(((Desicion) fig).texto, variables) && ((Flujo)figuras.get(i)).padre.equals(fig)) {
+                                                if (((Flujo)figuras.get(i)).padre.esVerdadero) {
+                                                    flujo = (Flujo)figuras.get(i);
+                                                    break;
+                                                }
+                                            }else if (!((Flujo)figuras.get(i)).padre.esVerdadero) {
+                                                flujo = (Flujo)figuras.get(i);
+                                                    break;
+                                            }
+                                            
+                                        }
+                                        else if (((Flujo)figuras.get(i)).padre.equals(fig)) {
                                             flujo = (Flujo)figuras.get(i);
                                             break;
                                         }
@@ -1227,7 +1335,7 @@ public class Sistema implements Initializable {
                                             } 
                                         }
                                     }
-                                }
+                                }*/
                                 if(fig.tipo != TipoF.FIN){
                                    System.out.println(fig.texto);
                                    corredors.add(fig);
@@ -1239,7 +1347,8 @@ public class Sistema implements Initializable {
                                 System.out.println(fig.texto);
                                 corredors.add(fig);
                             }
-                            for(Figura corredor:corredors){
+                            
+                            /*for(Figura corredor:corredors){
                                 int condicion=0;
                                 int ciclo=0;
                                 if (corredor.tipo!=TipoF.FIN && corredor.tipo!=TipoF.INICIO){
@@ -1263,8 +1372,8 @@ public class Sistema implements Initializable {
                                 }else if(corredor.tipo==TipoF.SALIDA){
                                     texto=texto+" while "+corredor.texto+(";\n");
                                 }
-                            }
-                            gc.setFill(Color.RED);
+                            }*/
+                            variables.clear();
                             Thread hilo = new Thread(new Runnable() {
                                 @Override
                                 
@@ -2473,7 +2582,7 @@ public class Sistema implements Initializable {
             }
         }
         // se deja esto asi por mientras
-        return expresion;
+        return "0";
     }
     
    /**

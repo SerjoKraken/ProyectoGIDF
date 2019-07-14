@@ -47,11 +47,11 @@ public class Flujo extends Figura{
             //System.out.println("No tiene Padre padre");
         }
             
-        if(figuras.get(indexHijo).getEstado()!=false){
+        /*if(figuras.get(indexHijo).getEstado()!=false){
             System.out.println("Existe el Hijo");
         }else{
             System.out.println("No tiene Hijo");
-        }
+        }*/
                 
         
         //System.out.println("***");
