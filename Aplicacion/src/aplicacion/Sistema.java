@@ -318,7 +318,7 @@ public class Sistema implements Initializable {
                         // Traditional way to get the response value.
                         Optional<String> result1 = dialog.showAndWait();
                         if (result1.isPresent() && result1.get()=="documento"){
-                            System.out.println("aaaaaaaaaaaaaa");                           
+                                                       
                             TextInputDialog dialogF = new TextInputDialog(buscarConexion(x1,y1).texto);
                             dialogF.setTitle("Crear documento");
                             dialogF.setContentText("Introduzca el texto:");
@@ -500,7 +500,7 @@ public class Sistema implements Initializable {
                         // Traditional way to get the response value.
                         Optional<String> result1 = dialog.showAndWait();
                         if (result1.isPresent() && result1.get()=="documento"){
-                            System.out.println("aaaaaaaaaaaaaa");
+                            
                             
                             TextInputDialog dialogF = new TextInputDialog(buscarConexion(x1,y1).texto);
                             dialogF.setTitle("Crear documento");
@@ -1143,7 +1143,7 @@ public class Sistema implements Initializable {
                             fin.setVerticeCentro(new Vertice((puntox1+puntox2)/2,(puntoy1+puntoy2)/2));
                             
 
-                            figuras.add(fin);
+                            
 
                             agregarFigurasParaDFin(fin);
                             
@@ -1337,14 +1337,13 @@ public class Sistema implements Initializable {
                                     }
                                 }*/
                                 if(fig.tipo != TipoF.FIN){
-                                   System.out.println(fig.texto);
                                    corredors.add(fig);
                                 }
                             }
                             if(fig == null){
-                                System.out.println("Mala construccion");
+                                //System.out.println("Mala construccion");
                             }else if(fig.getTipo() == TipoF.FIN){
-                                System.out.println(fig.texto);
+                                
                                 corredors.add(fig);
                             }
                             
@@ -1379,11 +1378,11 @@ public class Sistema implements Initializable {
                                 
                                 public void run() {
 
-
+                                        run=true;
                                         for (Figura corredor : corredors) {
                                             
-                                            run=true;
-                                            if (corredor.tipo!=TipoF.FIN && corredor.tipo!=TipoF.INICIO){
+                                            
+                                            if (corredor.tipo!=TipoF.FIN && corredor.tipo!=TipoF.INICIO && !(corredor instanceof Desicion || corredor instanceof Ciclo)){
                                                 agregarVariable(corredor);
                                                 
                                             } 
@@ -1404,7 +1403,6 @@ public class Sistema implements Initializable {
                                     }
                             });
                             hilo.start();
-                            run=false;
                             
                             //hilo.stop();
 
@@ -1430,7 +1428,7 @@ public class Sistema implements Initializable {
             }
         }
         b=false;
-        run=false;
+        
     }
     
     private boolean existeVariable(String nombre){
@@ -1814,7 +1812,7 @@ public class Sistema implements Initializable {
 
             Optional<String> result = dialog.showAndWait();
             if (result.isPresent() && !result.get().equals(" ") && !result.get().equalsIgnoreCase(" ")){
-               if(result.get().matches("[A-Za-z0-9]+[\\>|\\<|\\>=|\\<=|\\==|\\!=]{1}[A-Za-z0-9]+")){
+               if(result.get().matches("[A-Za-z0-9]+((\\>)|(\\<)|(\\>=)|(\\<=)|(\\==)|(\\!=)){1}[A-Za-z0-9]+")){
 
                 if(contar(result.get())>12){
                     powerUp = 80;
@@ -2088,7 +2086,7 @@ public class Sistema implements Initializable {
     }
     private void actualizar(){
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        System.out.println("Actualizando");
+        
 
         
         for (Figura figura : figuras) {
@@ -2441,34 +2439,47 @@ public class Sistema implements Initializable {
     
     }
     
+    public boolean PadreDeFlujo(){
+        
+        for (int i = 0; i < figuras.size(); i++) {
+            
+        }
+        return false;
+    }
+    
     public boolean flujoFinValido(FinDecision flujo){
         
-            if(flujo.padre.getVerticeCentro().distancia(flujo.hijo.getVerticeCentro())==0){
-                return false;
-            }
+        if(flujo.padre.equals(flujo.hijo) || flujo.hijo.equals(flujo.padre)) {
+            return false;
+        }
 
-            if(flujo.padre.getTipo() == TipoF.FIN || flujo.hijo.getTipo() == TipoF.INICIO){
+        if(flujo.padre.getVerticeCentro().distancia(flujo.hijo.getVerticeCentro())==0){
+            return false;
+        }
+
+        if(flujo.padre.getTipo() == TipoF.FIN || flujo.hijo.getTipo() == TipoF.INICIO || flujo.hijo.getTipo() == TipoF.FIN || flujo.padre.getTipo() == TipoF.INICIO){
+            
+            return false;
+        }
+        for (Figura figura : figuras) {
+            if(figura instanceof FinDecision){
+                if((flujo.vertices.get(0).distancia(figura.getVertices().get(0))==0 && flujo.vertices.get(1).distancia(figura.getVertices().get(1))==0) || 
+                    (flujo.vertices.get(0).distancia(figura.getVertices().get(1))==0 && flujo.vertices.get(1).distancia(figura.getVertices().get(0))==0)){
                 return false;
-            }
-            for (Figura figura : figuras) {
-                if(figura instanceof FinDecision){
-                    if((flujo.vertices.get(0).distancia(figura.getVertices().get(0))==0 && flujo.vertices.get(1).distancia(figura.getVertices().get(1))==0) || 
-                        (flujo.vertices.get(0).distancia(figura.getVertices().get(1))==0 && flujo.vertices.get(1).distancia(figura.getVertices().get(0))==0)){
+                }
+                if(flujo.padre.getVerticeCentro().distancia(((FinDecision) figura).padre.getVerticeCentro())==0
+                    || flujo.hijo.getVerticeCentro().distancia(((FinDecision) figura).hijo.getVerticeCentro())==0 ){
                     return false;
-                    }
-                    if(flujo.padre.getVerticeCentro().distancia(((FinDecision) figura).padre.getVerticeCentro())==0
-                        || flujo.hijo.getVerticeCentro().distancia(((FinDecision) figura).hijo.getVerticeCentro())==0 ){
-                        return false;
-                    }
-                
-                    if (flujo.padre.equals(((FinDecision ) figura).hijo) && flujo.hijo.equals(((FinDecision) figura).padre)) {
-                        return false;
-                    }
-                    if (flujo.padre.equals(((FinDecision ) figura).padre) && flujo.hijo.equals(((FinDecision) figura).hijo)) { 
-                        return false; 
-                    }
+                }
+
+                if (flujo.padre.equals(((FinDecision ) figura).hijo) && flujo.hijo.equals(((FinDecision) figura).padre)) {
+                    return false;
+                }
+                if (flujo.padre.equals(((FinDecision ) figura).padre) && flujo.hijo.equals(((FinDecision) figura).hijo)) { 
+                    return false; 
                 }
             }
+        }
             
         
         return true;
@@ -2603,17 +2614,9 @@ public class Sistema implements Initializable {
         String[] aux2 = expresion.split("[A-Za-z0-9]+");
         
         
-        
-        for (int i = 0; i < aux2.length; i++) {
-            System.out.println(aux2[i]);
-        }
-        
-        for (int i = 0; i < aux1.length; i++) {
-            System.out.println(aux1[i]);
-        }
         for (int i = 0; i < aux1.length; i++) {
             if(!aux1[i].matches("[0-9]+")){
-                System.out.println(""+aux1[i]);
+                
                 aux1[i] = valorAritmetico(aux1[i], variables);
             }
         }
@@ -2768,7 +2771,7 @@ public class Sistema implements Initializable {
      * @return 
      */
     public boolean decidirDesicion(String expresion, ArrayList<Variable> variables){
-        String[] aux1=expresion.split("[\\>|\\<|\\>=|\\<=|\\==|\\!=]+");
+        String[] aux1=expresion.split("((\\>)|(\\<)|(\\>=)|(\\<=)|(\\==)|(\\!=)){1}");
         String[] aux2=expresion.split("[A-Za-z0-9]+");
         
         for (int i = 0; i < aux1.length; i++) {
@@ -3073,7 +3076,7 @@ public class Sistema implements Initializable {
 
             Optional<String> result = dialog.showAndWait();
             if (result.isPresent() && !result.get().equals(" ") && !result.get().equalsIgnoreCase(" ")){
-               if(result.get().matches("[A-Za-z0-9]+[\\>|\\<|\\>=|\\<=|\\==|\\!=]{1}[A-Za-z0-9]+")){
+               if(result.get().matches("[A-Za-z0-9]+((\\>)|(\\<)|(\\>=)|(\\<=)|(\\==)|(\\!=)){1}[A-Za-z0-9]+")){
 
                 if(contar(result.get())>12){
                     powerUp = 80;
@@ -3144,7 +3147,7 @@ public class Sistema implements Initializable {
         Figura aux = figura; 
         boolean terminar = false; 
         while(!terminar){ 
-            System.out.println("hola"); 
+             
             for (int i = 0; i < figuras.size(); i++) { 
                 if (figuras.get(i) instanceof FinDecision) { 
                     if (((FinDecision)figuras.get(i)).padre.equals(aux) || ((FinDecision)figuras.get(i)).hijo.equals(aux)) { 

@@ -9,18 +9,23 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane id="AnchorPane" fx:id="ap" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="aplicacion.Sistema">
+<AnchorPane id="AnchorPane" fx:id="ap" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="720.0" minWidth="1280.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="aplicacion.Sistema">
     <children>
-      <ScrollPane layoutX="232.0" layoutY="64.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="712.0" prefWidth="1035.0">
-         <content>
-            <Canvas fx:id="canvas" height="709.0" onMouseDragged="#mover" width="1031.0" />
-         </content>
-      </ScrollPane>
-      <Pane layoutY="5.0" prefHeight="12.0" prefWidth="200.0">
+      <StackPane layoutX="232.0" layoutY="64.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="232.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="64.0">
          <children>
-            <Pane layoutY="42.0" prefHeight="734.0" prefWidth="232.0" style="-fx-background-color: #aab2bd;">
+            <ScrollPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="712.0" prefWidth="1035.0">
+               <content>
+                  <Canvas fx:id="canvas" height="709.0" onMouseDragged="#mover" width="1031.0" />
+               </content>
+            </ScrollPane>
+         </children>
+      </StackPane>
+      <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Pane prefHeight="776.0" prefWidth="232.0" style="-fx-background-color: #aab2bd;">
                <children>
                   <Button fx:id="b2" layoutX="6.0" layoutY="87.0" mnemonicParsing="false" onAction="#dibujarFlujo" prefHeight="79.0" prefWidth="102.0">
                      <graphic>
@@ -86,40 +91,44 @@
                </children>
             </Pane>
          </children>
-      </Pane>
-      <Pane prefHeight="68.0" prefWidth="1267.0" style="-fx-background-color: #aab2bd;">
+      </StackPane>
+      <StackPane AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Button fx:id="b4" layoutX="1187.0" layoutY="14.0" mnemonicParsing="false" onAction="#limpiar" prefHeight="40.0" prefWidth="45.0">
-               <graphic>
-                  <ImageView fitHeight="31.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../imagenes/basurero-cerrado.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </Button>
-            <Button fx:id="correr" layoutX="1117.0" layoutY="14.0" mnemonicParsing="false" onAction="#correr" prefHeight="40.0" prefWidth="45.0">
-               <graphic>
-                  <ImageView fitHeight="31.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../imagenes/running_sport_3645.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </Button>
-            <Button fx:id="b8" layoutX="976.0" layoutY="22.0" mnemonicParsing="false" onAction="#dibujarFinDecision" text="finalizar Decision" />
-            <Button fx:id="b9" layoutX="551.0" layoutY="22.0" mnemonicParsing="false" onAction="#correrP" text="Correr Pausado" />
-            <Button fx:id="png" layoutX="826.0" layoutY="22.0" mnemonicParsing="false" onAction="#exportImage" text="png" />
-            <Button fx:id="pdf" layoutX="900.0" layoutY="22.0" mnemonicParsing="false" onAction="#exportPDF" text="pdf" />
-            <Button fx:id="jpg" layoutX="759.0" layoutY="22.0" mnemonicParsing="false" onAction="#exportImageJpg" text="jpg" />
-            <Button fx:id="edit" layoutX="684.0" layoutY="22.0" mnemonicParsing="false" onAction="#editar" text="editar" />
-            <Button fx:id="b12" layoutX="378.0" layoutY="22.0" mnemonicParsing="false" onAction="#dibujarCiclo" text="Ciclo" />
-            <ColorPicker fx:id="cp" layoutX="232.0" layoutY="22.0" onAction="#cambiarColor" prefHeight="25.0" prefWidth="140.0" />
-            <Button fx:id="codigo" layoutX="431.0" layoutY="22.0" mnemonicParsing="false" onAction="#generarpseudocodigo" text="pseudocodigo" />
-            
-            
+            <Pane prefHeight="68.0" prefWidth="1267.0" style="-fx-background-color: #aab2bd;">
+               <children>
+                  <Button fx:id="b4" layoutX="1187.0" layoutY="14.0" mnemonicParsing="false" onAction="#limpiar" prefHeight="40.0" prefWidth="45.0">
+                     <graphic>
+                        <ImageView fitHeight="31.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../imagenes/basurero-cerrado.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button fx:id="correr" layoutX="1117.0" layoutY="14.0" mnemonicParsing="false" onAction="#correr" prefHeight="40.0" prefWidth="45.0">
+                     <graphic>
+                        <ImageView fitHeight="31.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../imagenes/running_sport_3645.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button fx:id="b8" layoutX="976.0" layoutY="22.0" mnemonicParsing="false" onAction="#dibujarFinDecision" text="finalizar Decision" />
+                  <Button fx:id="b9" layoutX="551.0" layoutY="22.0" mnemonicParsing="false" onAction="#correrP" text="Correr Pausado" />
+                  <Button fx:id="png" layoutX="826.0" layoutY="22.0" mnemonicParsing="false" onAction="#exportImage" text="png" />
+                  <Button fx:id="pdf" layoutX="900.0" layoutY="22.0" mnemonicParsing="false" onAction="#exportPDF" text="pdf" />
+                  <Button fx:id="jpg" layoutX="759.0" layoutY="22.0" mnemonicParsing="false" onAction="#exportImageJpg" text="jpg" />
+                  <Button fx:id="edit" layoutX="684.0" layoutY="22.0" mnemonicParsing="false" onAction="#editar" text="editar" />
+                  <Button fx:id="b12" layoutX="378.0" layoutY="22.0" mnemonicParsing="false" onAction="#dibujarCiclo" text="Ciclo" />
+                  <ColorPicker fx:id="cp" layoutX="232.0" layoutY="22.0" onAction="#cambiarColor" prefHeight="25.0" prefWidth="140.0" />
+                  <Button fx:id="codigo" layoutX="431.0" layoutY="22.0" mnemonicParsing="false" onAction="#generarpseudocodigo" text="pseudocodigo" />
+                  
+                        
+               </children>
+            </Pane>
          </children>
-      </Pane>
+      </StackPane>
       
     </children>
 </AnchorPane>
