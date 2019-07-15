@@ -1143,10 +1143,10 @@ public class Sistema implements Initializable {
                             fin.setVerticeCentro(new Vertice((puntox1+puntox2)/2,(puntoy1+puntoy2)/2));
                             
 
-                            
+                            //
 
                             agregarFigurasParaDFin(fin);
-                            
+                            //
                          
                             if(flujoFinValido(fin)){
                                 
@@ -2452,6 +2452,16 @@ public class Sistema implements Initializable {
         if(flujo.padre.equals(flujo.hijo) || flujo.hijo.equals(flujo.padre)) {
             return false;
         }
+        
+        if (flujo.padre.desicionPadre != null && flujo.hijo.desicionPadre != null) {
+           if (!flujo.padre.desicionPadre.equals(flujo.hijo.desicionPadre)) {
+            return false; 
+        } 
+        }else{
+            return false;
+        }
+        
+        
 
         if(flujo.padre.getVerticeCentro().distancia(flujo.hijo.getVerticeCentro())==0){
             return false;
@@ -2560,6 +2570,18 @@ public class Sistema implements Initializable {
             int index = expresion.indexOf("*");
             return true && evaluarAritmetica(expresion.substring(index+1),variables);
             
+        }else if(expresion.matches("\\(.+\\)\\/.+")){
+            int index = expresion.indexOf("/");
+            return true && evaluarAritmetica(expresion.substring(index+1),variables);
+            
+        }else if(expresion.matches("\\(.+\\)\\+.+")){
+            int index = expresion.indexOf("+");
+            return true && evaluarAritmetica(expresion.substring(index+1),variables);
+            
+        }else if(expresion.matches("\\(.+\\)\\-.+")){
+            int index = expresion.indexOf("-");
+            return true && evaluarAritmetica(expresion.substring(index+1),variables);
+            
         }else if(expresion.matches("\\(.+\\)\\/\\(.+\\)")){
             int index = expresion.indexOf("/");
             return evaluarAritmetica(expresion.substring(index-1),variables) && evaluarAritmetica(expresion.substring(index+1),variables);
@@ -2572,7 +2594,10 @@ public class Sistema implements Initializable {
         else if(expresion.matches("\\(.+\\)-\\(.+\\)")){
             int index = expresion.indexOf("-");
             return evaluarAritmetica(expresion.substring(index-1),variables) && evaluarAritmetica(expresion.substring(index+1),variables);
-            
+        
+        }else if(expresion.matches("\\(.+\\)*\\(.+\\)")){
+            int index = expresion.indexOf("*");
+            return evaluarAritmetica(expresion.substring(index-1),variables) && evaluarAritmetica(expresion.substring(index+1),variables);
         }else{
             return false;
         }
@@ -2593,7 +2618,7 @@ public class Sistema implements Initializable {
             }
         }
         // se deja esto asi por mientras
-        return "0";
+        return expresion;
     }
     
    /**
@@ -2609,9 +2634,10 @@ public class Sistema implements Initializable {
     * @return 
     */
     public String operarExpresion(String expresion, ArrayList<Variable> variables){
-        
+        expresion ="0+"+expresion;
         String[] aux1 = expresion.split("(\\+|\\-|\\*|\\/|\\(|\\))+");
         String[] aux2 = expresion.split("[A-Za-z0-9]+");
+        
         
         
         for (int i = 0; i < aux1.length; i++) {
@@ -2624,6 +2650,7 @@ public class Sistema implements Initializable {
         
         int i = 0;
         int j = 0;
+        
         expresion = "";
         while(i < aux1.length || j < aux2.length){
             if(i < aux1.length){
@@ -2645,6 +2672,10 @@ public class Sistema implements Initializable {
                 }
             }
         }
+        expresion = expresion.replaceFirst("0\\+", "");
+        System.out.println("EXPRESION");
+        System.out.println(expresion);
+        
         if(expresion.matches(".*[A-Za-z]+.*")){
             System.out.println("Tenemos un String en la cadena");
             if (expresion.matches(".*[\\/||\\-]+.*")) {
@@ -2744,8 +2775,12 @@ public class Sistema implements Initializable {
         
         else{
             System.out.println(expresion);
+            
+            
             ScriptEngineManager manager = new ScriptEngineManager();
             ScriptEngine engine = manager.getEngineByName("js");
+           
+            
             try {
                 System.out.println(""+expresion);
                 Object operation = engine.eval(expresion);
