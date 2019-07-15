@@ -1213,7 +1213,7 @@ public class Sistema implements Initializable {
         if(b && run==false && corriendo==false){
             if (!figuras.isEmpty() ){
                 if(buscarInicio() && buscarFin()){
-                    
+                    if(todoConectado()){
                         //buscar inicio
                         for (Figura figura : figuras) {
                             if(figura.getTipo() == TipoF.INICIO){
@@ -1403,11 +1403,18 @@ public class Sistema implements Initializable {
                                     }
                             });
                             hilo.start();
-                            
+                            run=false;
                             //hilo.stop();
 
                         }
-
+                    }else{
+                        Alert alert = new Alert(AlertType.INFORMATION);
+                        alert.setTitle("Error");
+                        alert.setHeaderText("Problema al correr el diagrama");
+                        alert.setContentText("Existe un error en la creacion de su diagrama");
+                        alert.showAndWait();
+                        corriendo=false;
+                    }
                 }else{
                     Alert alert = new Alert(AlertType.WARNING);
                     alert.setTitle("Error");
@@ -2852,8 +2859,9 @@ public class Sistema implements Initializable {
         b=true;
         corriendo=true;
         ArrayList<Figura>corredores = crearCorredores();
-        if(b && corriendo==true && run==false){
-            
+        if(b && corriendo==true && run==false ){
+            if(todoConectado() && corredores!=null){
+               
                 /*Crear lista en otro metodo para no interferir cada vez en este otro metodo*/
                 /*Tenemos la lista de los "Corredores creada"*/
                 /*Entero cuentaPasos que va a servir de indice*/
@@ -2882,7 +2890,17 @@ public class Sistema implements Initializable {
                     variables.clear();
                     
                 }
+            }else{
+                Alert alert = new Alert(AlertType.INFORMATION);
+                    alert.setTitle("Error");
+                    alert.setHeaderText("Problema al correr el diagrama");
+                    alert.setContentText("Existe un error en la creacion de su diagrama");
+                    alert.showAndWait();
+                    corriendo=false;
             }
+            
+            }
+        corriendo=false;
         }
     
     public ArrayList crearCorredores(){
@@ -2914,8 +2932,12 @@ public class Sistema implements Initializable {
 
                             //actualizar();
                             boolean terminar = true;
-                            while(flujo != null && terminar && fig != null && fig.getTipo() != TipoF.FIN ){
+                            while(terminar && fig != null && fig.getTipo() != TipoF.FIN ){
                                 fig = figuras.get(flujo.indexHijo);
+                                agregarVariablePreEjecucion(fig);
+                                
+                                
+                                
                                 /*
                                 for (Figura figura : figuras) {
                                     if(figura instanceof Flujo){
@@ -2924,32 +2946,138 @@ public class Sistema implements Initializable {
                                         }
                                     }
                                 }*/
-                                for (int i = 0; i < figuras.size(); i++) {
+                                
+                                
+                                if (fig instanceof Desicion) {
+                                    
+                                    System.out.println(decidirDesicion(((Desicion) fig).texto, variables));
+                                    System.out.println(decidirDesicion(((Desicion) fig).texto, variables));
+                                    System.out.println(decidirDesicion(((Desicion) fig).texto, variables));
+                                    
+                                    for (int i = 0; i < figuras.size(); i++) {
+                                        if (figuras.get(i) instanceof Flujo) {
+                                            if (decidirDesicion(((Desicion) fig).texto, variables)) {
+                                                
+                                                if (((Flujo)figuras.get(i)).padre.esVerdadero && ((Flujo)figuras.get(i)).padre.equals(fig) && ((Flujo)figuras.get(i)).texto.equals("true")) {
+                                                    flujo = (Flujo)figuras.get(i);
+                                                    break;
+                                                }
+                                            }else{
+                                                
+                                                if (((Flujo)figuras.get(i)).padre.equals(fig) && !((Flujo)figuras.get(i)).padre.esVerdadero && ((Flujo)figuras.get(i)).texto.equals("false") ) {
+                                                    flujo = (Flujo)figuras.get(i);
+                                                    break;
+                                                }
+                                            }
+                                            
+                                            if (i>=figuras.size()-1) {
+                                                if (buscarFlujoFin(fig)!=null) { 
+                                                    flujo = (Flujo) buscarFlujoFin(fig); 
+                                                    break; 
+                                                }else{ 
+                                                    terminar = false; 
+                                                    System.out.println(""); 
+                                            } 
+                                        }
+                                        }
+                                    }
+                                }else{
+                                    for (int i = 0; i < figuras.size(); i++) {
+                                        if (figuras.get(i) instanceof Flujo) {
+                                            if (((Flujo)figuras.get(i)).padre.equals(fig)) {
+                                                flujo = (Flujo)figuras.get(i);
+                                                break;
+                                            }
+                                            if (i>=figuras.size()-1) {
+                                                if (buscarFlujoFin(fig)!=null) { 
+                                                    flujo = (Flujo) buscarFlujoFin(fig); 
+                                                    break; 
+                                            }else{ 
+                                                terminar = false; 
+                                                System.out.println(""); 
+                                            } 
+                                        }
+                                        }
+                                    }
+                                
+                                }
+                                
+                                
+                                /*for (int i = 0; i < figuras.size(); i++) {
                                     if (figuras.get(i) instanceof Flujo) {
-                                        if (((Flujo)figuras.get(i)).padre.equals(fig)) {
+                                        
+                                        if (fig instanceof Desicion) {
+                                            if (decidirDesicion(((Desicion) fig).texto, variables) && ((Flujo)figuras.get(i)).padre.equals(fig)) {
+                                                if (((Flujo)figuras.get(i)).padre.esVerdadero) {
+                                                    flujo = (Flujo)figuras.get(i);
+                                                    break;
+                                                }
+                                            }else if (!((Flujo)figuras.get(i)).padre.esVerdadero) {
+                                                flujo = (Flujo)figuras.get(i);
+                                                    break;
+                                            }
+                                            
+                                        }
+                                        else if (((Flujo)figuras.get(i)).padre.equals(fig)) {
                                             flujo = (Flujo)figuras.get(i);
                                             break;
                                         }
                                         if (i>=figuras.size()-1) {
-                                        terminar = false;
+                                             if (buscarFlujoFin(fig)!=null) { 
+                                                flujo = (Flujo) buscarFlujoFin(fig); 
+                                                break; 
+                                            }else{ 
+                                                terminar = false; 
+                                                System.out.println(""); 
+                                            } 
                                         }
                                     }
-                                }
+                                }*/
                                 if(fig.tipo != TipoF.FIN){
-                                   System.out.println(fig.texto);
                                    corredors.add(fig);
                                 }
                             }
                             if(fig == null){
-                                System.out.println("Mala construccion");
+                                //System.out.println("Mala construccion");
                             }else if(fig.getTipo() == TipoF.FIN){
-                                System.out.println(fig.texto);
+                                
                                 corredors.add(fig);
                             }
-                        }
+                            
+                            /*for(Figura corredor:corredors){
+                                int condicion=0;
+                                int ciclo=0;
+                                if (corredor.tipo!=TipoF.FIN && corredor.tipo!=TipoF.INICIO){
+                                    agregarVariable(corredor);
+                                                
+                                } 
+                                if(corredor.tipo==TipoF.INICIO){
+                                    texto=("Inicio codigo\n");
+                                }else if(corredor.tipo==TipoF.FIN){
+                                    texto=texto+("Fin codigo");                                  
+                                }else if(corredor.tipo==TipoF.DOCUMENTACION){
+                                    texto=texto+" print"+corredor.texto+(";\n");
+                                }else if(corredor.tipo==TipoF.ENTRADA){
+                                    texto=texto+" "+corredor.texto+(";\n");
+                                }else if(corredor.tipo==TipoF.PROCESO){
+                                    texto=texto+" "+corredor.texto+(";\n");
+                                }else if(corredor.tipo==TipoF.SALIDA){
+                                    texto=texto+" "+corredor.texto+(";\n");
+                                }else if(corredor.tipo==TipoF.CONDICION){
+                                    texto=texto+" if "+corredor.texto+(";\n");
+                                }else if(corredor.tipo==TipoF.SALIDA){
+                                    texto=texto+" while "+corredor.texto+(";\n");
+                                }
+                            }*/
+                            variables.clear();
+                        return corredors;
+                }else{
+                    return corredors=null;
                 }
         }
-        return corredors;
+        return null;
+        }
+        return null;
     }
     
     @FXML
@@ -3220,11 +3348,42 @@ public class Sistema implements Initializable {
         }
         actualizar();
     }
-        
-        
-        
-        
-
+ public boolean todoConectado(){ 
+        int desiciones=0,finD=0,numFig=0,numFlu=0; 
+        for (int i = 0; i < figuras.size(); i++) { 
+            System.out.println(""+figuras.get(i).getTipo()); 
+            if(figuras.get(i).getTipo()==TipoF.DESICION){ 
+                desiciones+=1; 
+            }else{ 
+                if(figuras.get(i).getTipo()==TipoF.FINDESICION){ 
+                    finD+=1; 
+                }else{ 
+                    if(figuras.get(i).getTipo()==TipoF.FLUJO){ 
+                        numFlu+=1; 
+                    }else{ 
+                        numFig+=1; 
+                    } 
+                } 
+            }    
+        } 
+        System.out.println("Num de flujos: "+numFlu); 
+        System.out.println("Num de Fin Desicion: "+finD); 
+        System.out.println("Num de figuras: "+numFig); 
+        System.out.println("Num de desiciones: "+desiciones); 
+        if(desiciones>0){ 
+            if(desiciones==finD && numFig+desiciones==numFlu+1){ 
+                return true; 
+            }else{ 
+                return false; 
+            } 
+        }else{ 
+            if(numFig==numFlu+1){ 
+                return true; 
+            }else{ 
+                return false; 
+            } 
+        } 
+    }           
     }
     
 
