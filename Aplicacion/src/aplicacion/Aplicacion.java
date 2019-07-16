@@ -17,7 +17,10 @@ public class Aplicacion extends Application {
         Scene scene = new Scene(root);
         
         
+        
         stage.setScene(scene);
+        stage.setMinWidth(1400);
+        stage.setMinHeight(850);
         stage.setResizable(true);
         
         stage.show();

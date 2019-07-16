@@ -1239,7 +1239,7 @@ public class Sistema implements Initializable {
                                 fig = figuras.get(flujo.indexHijo);
                                 agregarVariablePreEjecucion(fig);
                                 
-                                
+                                System.out.println(fig.texto);
                                 
                                 /*
                                 for (Figura figura : figuras) {
@@ -1284,6 +1284,39 @@ public class Sistema implements Initializable {
                                         }
                                         }
                                     }
+                                }else if (fig instanceof Ciclo) {
+                                    for (int i = 0; i < figuras.size(); i++) {
+                                        if (figuras.get(i) instanceof Flujo) {
+                                            if (decidirDesicion(((Ciclo) fig).texto, variables)) {
+                                                
+                                                if (((Flujo)figuras.get(i)).esVerdadero && ((Flujo)figuras.get(i)).padre.equals(fig) && ((Flujo)figuras.get(i)).texto.equals("true")) {
+                                                    flujo = (Flujo)figuras.get(i);
+                                                    break;
+                                                }
+                                            }else{
+                                                
+                                                if (((Flujo)figuras.get(i)).padre.equals(fig) && !((Flujo)figuras.get(i)).esVerdadero && ((Flujo)figuras.get(i)).texto.equals("false") ) {
+                                                    flujo = (Flujo)figuras.get(i);
+                                                    break;
+                                                }
+                                            }
+                                            
+                                            if (i>=figuras.size()-1) {
+                                                if (buscarFlujoFin(fig)!=null) { 
+                                                    flujo = (Flujo) buscarFlujoFin(fig); 
+                                                    break; 
+                                                }else{ 
+                                                    terminar = false; 
+                                                    System.out.println(""); 
+                                            } 
+                                        }
+                                        }
+                                    }
+                                }
+                                
+                                else if(fig instanceof Flujo){
+                                    flujo = (Flujo) fig;
+                                
                                 }else{
                                     for (int i = 0; i < figuras.size(); i++) {
                                         if (figuras.get(i) instanceof Flujo) {
@@ -1531,6 +1564,15 @@ public class Sistema implements Initializable {
                                     flujo.texto = "false";
                                 }
                                 
+                            }else if (buscarConexion(x1,y1) instanceof Ciclo) {
+                                flujo.cicloPadre = (Ciclo) buscarConexion(x1,y1);
+                                if (existeTrue(flujo.cicloPadre) == false) {
+                                    flujo.esVerdadero = true;
+                                    flujo.texto = "true";
+                                }else if(existeFalse(flujo.cicloPadre) == false){
+                                    flujo.esVerdadero = false;
+                                    flujo.texto = "false";
+                                }
                             }
                                 
                             
@@ -1545,7 +1587,16 @@ public class Sistema implements Initializable {
                                         flujo.desicionPadre = flujo.padre.desicionPadre;
                                         flujo.hijo.desicionPadre = flujo.desicionPadre;
                                     }
-                            }
+                                }
+                                
+                                if (flujo.padre instanceof Ciclo) {
+                                    flujo.hijo.cicloPadre = flujo.cicloPadre;
+                                }else if(!(flujo.padre instanceof Ciclo)){
+                                    if (flujo.padre.cicloPadre!=null) {
+                                        flujo.cicloPadre = flujo.padre.cicloPadre;
+                                        flujo.hijo.cicloPadre = flujo.cicloPadre;
+                                    }
+                                }
                                 
                             } catch (NullPointerException e) {
                                 System.out.println(e.getMessage());
@@ -1560,9 +1611,10 @@ public class Sistema implements Initializable {
                             
 
                             if(flujoValido(flujo)){
-                                
+                                flujo.calcularVertices(figuras);
                                 figuras.add(flujo);
                                 flujo.dibujar(gc);
+                               
                             }
                             
                             actualizar();
@@ -1584,23 +1636,46 @@ public class Sistema implements Initializable {
            
     }
     
-    public boolean existeTrue(Desicion desicion){
-        for (Figura figura : figuras) {
-            if (figura instanceof Flujo) {
-                if (desicion.equals(((Flujo) figura).desicionPadre) && ((Flujo) figura).esVerdadero && ((Flujo) figura).padre instanceof Desicion) {
-                    return true;
+    public boolean existeTrue(Figura f){
+        if (f instanceof Desicion) {
+            for (Figura figura1 : figuras) {
+                if (figura1 instanceof Flujo) {
+                    if (f.equals(((Flujo) figura1).desicionPadre) && ((Flujo) figura1).esVerdadero && ((Flujo) figura1).padre instanceof Desicion) {
+                        return true;
+                    }
                 }
             }
+        }else if (f instanceof Ciclo) {
+            for (Figura figura1 : figuras) {
+                if (figura1 instanceof Flujo) {
+                    if (f.equals(((Flujo) figura1).cicloPadre) && ((Flujo) figura1).esVerdadero && ((Flujo) figura1).padre instanceof Ciclo) {
+                        return true;
+                    }
+                }
+            }
+
         }
+        
         return false;
     }
-    public boolean existeFalse(Desicion desicion){
-        for (Figura figura : figuras) {
-            if (figura instanceof Flujo) {
-                if (desicion.equals(((Flujo) figura).desicionPadre) && !((Flujo) figura).esVerdadero && ((Flujo) figura).padre instanceof Desicion) {
-                    return true;
+    public boolean existeFalse(Figura f){
+        if (f instanceof Desicion) {
+            for (Figura figura1 : figuras) {
+                if (figura1 instanceof Flujo) {
+                    if (f.equals(((Flujo) figura1).desicionPadre) && !((Flujo) figura1).esVerdadero && ((Flujo) figura1).padre instanceof Desicion) {
+                        return true;
+                    }
                 }
             }
+        }else if (f instanceof Ciclo) {
+            for (Figura figura1 : figuras) {
+                if (figura1 instanceof Flujo) {
+                    if (f.equals(((Flujo) figura1).cicloPadre) && !((Flujo) figura1).esVerdadero && ((Flujo) figura1).padre instanceof Ciclo) {
+                        return true;
+                    }
+                }
+            }
+
         }
         return false;
     }
@@ -1617,13 +1692,13 @@ public class Sistema implements Initializable {
             }
         }
         for (int i = 0; i < figuras.size(); i++) {
-            if(!(figuras.get(i) instanceof Flujo)){
+            
                 if(flujo.getVertices().get(1).distancia(figuras.get(i).getVerticeCentro())==0){
                     flujo.hijo = figuras.get(i);
                     flujo.indexHijo = i;
                     break;
                 }
-            }
+            
         }
    
     }
@@ -1704,7 +1779,7 @@ public class Sistema implements Initializable {
                             }
                         }
                     }
-                }else if(figura instanceof Flujo){
+                }else if(figura.getVertices().size()>2 && figura instanceof Flujo){
                     if(x<=figura.getVertices().get(3).getX()){
                         if(x>=figura.getVertices().get(2).getX()){
                            if(y<=figura.getVertices().get(3).getY()){
@@ -2353,8 +2428,9 @@ public class Sistema implements Initializable {
     
     public boolean flujoValido(Flujo flujo){
         
-        if(!(flujo.padre.tipo==TipoF.DESICION)){
-            if(flujo.padre.getVerticeCentro().distancia(flujo.hijo.getVerticeCentro())==0){
+        if(!(flujo.padre.tipo==TipoF.DESICION) && !(flujo.padre.tipo==TipoF.CICLO)){
+            
+            if(flujo.padre.equals(flujo.hijo)){
                 return false;
             }
 
@@ -2377,6 +2453,65 @@ public class Sistema implements Initializable {
                     }
                 
                 }
+            }
+            
+        }else if(flujo.padre instanceof Ciclo){
+            if(flujo.padre.getVerticeCentro().distancia(flujo.hijo.getVerticeCentro())==0){
+                return false;
+            }
+
+            if(flujo.padre.getTipo() == TipoF.FIN || flujo.hijo.getTipo() == TipoF.INICIO){
+                return false;
+            }
+            
+            int count = 0;
+            for (Figura figura : figuras) {
+                if (figura instanceof Flujo) {
+                    if(flujo.padre.equals(((Flujo) figura).padre)){
+                        count++;
+                    }
+                    if (count>=2) {
+                        return false;
+                    }
+                }
+            }
+            
+            for (Figura figura : figuras) {
+                if (figura instanceof Flujo) {
+                    if (flujo.padre.equals(((Flujo) figura).padre) && flujo.hijo.equals(((Flujo) figura).cicloPadre)) {
+                        return false;
+                    }
+                }
+            }
+            
+            for (Figura figura : figuras) {
+                if(figura instanceof Flujo){
+                    if (flujo.padre.equals(((Flujo) figura).hijo) && flujo.hijo.equals(((Flujo) figura).padre)) { 
+                        return false; 
+                    } 
+                    if (flujo.padre.equals(((Flujo) figura).padre) && flujo.hijo.equals(((Flujo) figura).hijo)) { 
+                        return false; 
+                    } 
+                    /*
+                    if((flujo.vertices.get(0).distancia(figura.getVertices().get(0))==0 && flujo.vertices.get(1).distancia(figura.getVertices().get(1))==0) || 
+                        (flujo.vertices.get(0).distancia(figura.getVertices().get(1))==0 && flujo.vertices.get(1).distancia(figura.getVertices().get(0))==0)){
+                        return false;
+                    }
+                    
+                    if(flujo.padre.getVerticeCentro().distancia(((Flujo) figura).padre.getVerticeCentro())==0
+                        || flujo.hijo.getVerticeCentro().distancia(((Flujo) figura).hijo.getVerticeCentro())==0 ){
+                        return false;
+                    }
+                    */
+                }
+            }
+            if(flujo.padre.tipo==TipoF.CICLO ){          
+                if (existeTrue(flujo.padre) == false) {
+                    return true;
+                }else if (existeFalse(flujo.padre)==false) {
+                    return true;
+                }
+                      
             }
             
         }else{

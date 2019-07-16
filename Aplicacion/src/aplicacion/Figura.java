@@ -17,6 +17,7 @@ public abstract class Figura {
     protected int verfal=0;
     
     Desicion desicionPadre = null;
+    Ciclo cicloPadre = null;
 
     public Figura(TipoF tipo) {
         this.vertices = new ArrayList<>();
