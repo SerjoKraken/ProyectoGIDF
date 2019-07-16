@@ -71,7 +71,10 @@ public class Sistema implements Initializable {
     
     @FXML
     private ColorPicker cp = new ColorPicker();
-    
+    @FXML
+    private Button zoomOut;
+    @FXML
+    private Button zoomIn;
     @FXML
     private Label label;
     
@@ -2401,6 +2404,7 @@ public class Sistema implements Initializable {
     boolean moviendo = false;
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        zoom = 0;
         mover();
         
         gc = canvas.getGraphicsContext2D();
@@ -3553,7 +3557,92 @@ public class Sistema implements Initializable {
                 return false; 
             } 
         } 
-    }           
+    }    
+    int zoom=0;
+    @FXML
+    private void zoomOut(ActionEvent event) {
+        
+        if (zoom == 2){
+            canvas.setWidth(canvas.getWidth()/1.5);
+            canvas.setHeight(canvas.getHeight()/1.5);
+            canvas.setTranslateX(canvas.getWidth()/9);
+            canvas.setTranslateY(canvas.getHeight()/9);
+            canvas.setScaleX(canvas.getScaleX()/1.5);
+            canvas.setScaleY(canvas.getScaleY()/1.5);
+        }
+        if (zoom == 1){
+            canvas.setWidth(canvas.getWidth()/1.2);
+            canvas.setHeight(canvas.getHeight()/1.2);
+            canvas.setTranslateX(0);
+            canvas.setTranslateY(0);
+            canvas.setScaleX(canvas.getScaleX()/1.2);
+            canvas.setScaleY(canvas.getScaleY()/1.2);
+        }
+        if (zoom == 0){
+            canvas.setTranslateX(0);
+            canvas.setTranslateY(0);
+            canvas.setScaleX(canvas.getScaleX()/1.2);
+            canvas.setScaleY(canvas.getScaleY()/1.2);
+        }
+        if (zoom==-1){
+            canvas.setTranslateX(0);
+            canvas.setTranslateY(0);
+            canvas.setScaleX(canvas.getScaleX()/1.5);
+            canvas.setScaleY(canvas.getScaleY()/1.5);
+        }
+        
+        zoom -= 1;
+        if (zoom <= -2){
+            zoomOut.setDisable(true);
+           
+            
+        } else{
+            zoomOut.setDisable(false);   
+            zoomIn.setDisable(false);
+            
+        }
     }
+    @FXML
+    private void zoomIn(ActionEvent event) {
+        if (zoom == 1){
+            canvas.setWidth(canvas.getWidth()*1.5);
+            canvas.setHeight(canvas.getHeight()*1.5);
+            canvas.setScaleX(canvas.getScaleX()*1.5);
+            canvas.setScaleY(canvas.getScaleY()*1.5);
+            canvas.setTranslateX(canvas.getWidth()*0.4);
+            canvas.setTranslateY(canvas.getHeight()*0.4);
+        }
+        if (zoom == 0){
+            canvas.setWidth(canvas.getWidth()*1.2);
+            canvas.setHeight(canvas.getHeight()*1.2);
+            canvas.setScaleX(canvas.getScaleX()*1.2);
+            canvas.setScaleY(canvas.getScaleY()*1.2);
+            canvas.setTranslateX(canvas.getWidth()*0.1);
+            canvas.setTranslateY(canvas.getHeight()*0.1);
+        }
+        if (zoom==-1){
+            canvas.setTranslateX(0);
+            canvas.setTranslateY(0);
+            canvas.setScaleX(canvas.getScaleX()*1.2);
+            canvas.setScaleY(canvas.getScaleY()*1.2);
+        }
+        if (zoom==-2){
+            canvas.setTranslateX(0);
+            canvas.setTranslateY(0);
+            canvas.setScaleX(canvas.getScaleX()*1.5);
+            canvas.setScaleY(canvas.getScaleY()*1.5);
+        }
+        zoom += 1;
+        if (zoom >= 2){
+            zoomIn.setDisable(true);
+            
+
+        } else{
+            zoomIn.setDisable(false);   
+            zoomOut.setDisable(false);
+
+        }
+    }
+}
     
 
