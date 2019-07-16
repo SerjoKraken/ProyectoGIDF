@@ -136,7 +136,7 @@
                      <graphic>
                         <ImageView fitHeight="38.0" fitWidth="43.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../imagenes/logo-caminar.jpg" />
+                              <Image url="@../imagenes/logo-caminar.png" />
                            </image>
                         </ImageView>
                      </graphic></Button>
