@@ -247,14 +247,16 @@ public class Sistema implements Initializable {
                                             actualizar();
                                         }
                                     }
-                                }
-                            }else{
-                                Alert alert1 = new Alert(AlertType.WARNING);
+                                }else{
+                                   Alert alert1 = new Alert(AlertType.WARNING);
                                 alert1.setTitle("Error");
                                 alert1.setHeaderText("cuidado");
-                                alert1.setContentText("El formato del texto ingresado es incorrecto");
+                                alert1.setContentText("El formato del texto ingresado es incorrecto ( solopermite letras)");
 
-                                alert.showAndWait();
+                                alert.showAndWait(); 
+                                }
+                            }else{
+                                
                             }
                         }else if(buscarConexion(x1,y1).tipo==TipoF.ENTRADA || buscarConexion(x1,y1).tipo==TipoF.SALIDA){
                             if(buscarConexion(x1,y1).tipo==TipoF.ENTRADA){
@@ -1209,6 +1211,7 @@ public class Sistema implements Initializable {
     @FXML
     private void correr(ActionEvent event) throws InterruptedException {
         texto="";
+        area.clear();
         Flujo flujo = null;
         Figura fig = null;
         ArrayList<Figura> corredors = new ArrayList<>(); 
@@ -1216,7 +1219,7 @@ public class Sistema implements Initializable {
         if(b && run==false && corriendo==false){
             if (!figuras.isEmpty() ){
                 if(buscarInicio() && buscarFin()){
-                    
+                    if(todoConectado()){
                         //buscar inicio
                         for (Figura figura : figuras) {
                             if(figura.getTipo() == TipoF.INICIO){
@@ -1400,23 +1403,7 @@ public class Sistema implements Initializable {
 
                                         run=true;
                                         for (Figura corredor : corredors) {
-                                            if(corredor.tipo==TipoF.INICIO){
-                                    texto=("Inicio codigo\n");
-                                }else if(corredor.tipo==TipoF.FIN){
-                                    texto=texto+("Fin codigo");                                  
-                                }else if(corredor.tipo==TipoF.DOCUMENTACION){
-                                    texto=texto+" print"+corredor.texto+(";\n");
-                                }else if(corredor.tipo==TipoF.ENTRADA){
-                                    texto=texto+" "+corredor.texto+(";\n");
-                                }else if(corredor.tipo==TipoF.PROCESO){
-                                    texto=texto+" "+corredor.texto+(";\n");
-                                }else if(corredor.tipo==TipoF.SALIDA){
-                                    texto=texto+" "+corredor.texto+(";\n");
-                                }else if(corredor.tipo==TipoF.CONDICION){
-                                    texto=texto+" if "+corredor.texto+(";\n");
-                                }else if(corredor.tipo==TipoF.SALIDA){
-                                    texto=texto+" while "+corredor.texto+(";\n");
-                                }
+                                        
                                             
                                             if (corredor.tipo!=TipoF.FIN && corredor.tipo!=TipoF.INICIO && !(corredor instanceof Desicion || corredor instanceof Ciclo)){
                                                 agregarVariable(corredor);
@@ -1425,7 +1412,7 @@ public class Sistema implements Initializable {
                                             gc.fillOval(corredor.verticeCentro.getX()-80, corredor.verticeCentro.getY(), 20, 20);
                                             
                                             try {
-                                                Thread.sleep(3000);
+                                                Thread.sleep(50);
                                                 actualizar();
                                             } catch (InterruptedException ex) {
                                                 Logger.getLogger(Sistema.class.getName()).log(Level.SEVERE, null, ex);
@@ -1434,7 +1421,7 @@ public class Sistema implements Initializable {
                                         b=false;
                                         corredors.clear();
                                         variables.clear();
-                                        area.clear();
+                                        
                                         run=false;
                                     }
                             });
@@ -1443,7 +1430,7 @@ public class Sistema implements Initializable {
                             //hilo.stop();
 
                         }
-                    else{
+                    }else{
                         Alert alert = new Alert(AlertType.INFORMATION);
                         alert.setTitle("Error");
                         alert.setHeaderText("Problema al correr el diagrama");
@@ -1525,6 +1512,14 @@ public class Sistema implements Initializable {
                     variables.get(i).setValor(String.valueOf(operarExpresion(figura.texto.split("=")[1], variables)));
                 }
             }
+        }else if(figura.tipo==TipoF.DOCUMENTACION){
+            if(figura.texto.matches("[A-Za-z0-9]+")){
+                //validar en el caso de que la variable no exista
+                area.appendText(figura.texto);
+            }
+
+            
+            
         }
     }
     
@@ -3552,18 +3547,19 @@ public class Sistema implements Initializable {
         } 
         System.out.println("Num de flujos: "+numFlu); 
         System.out.println("Num de Fin Desicion: "+finD); 
-        System.out.println("Num de figuras: "+numFig); 
+        System.out.println("Num de figuras: "+(numFig+desiciones+ciclos)); 
         System.out.println("Num de desiciones: "+desiciones); 
         System.out.println("Num de ciclos: "+ciclos);
         if(ciclos>0){
             if(desiciones>0){
-                if(desiciones==finD && numFig+desiciones+ciclos==numFlu){
+                if(desiciones==finD && (numFig+desiciones+ciclos)==(numFlu-(ciclos-1))){
+                    System.out.println("Corriendo");
                     return true;
                 }else{
                     return false;
                 }
             }else{
-                if(numFig+ciclos==numFlu){
+                if(numFig+ciclos==numFlu-(ciclos-1)){
                     return true;
                 }else{
                     return false;
