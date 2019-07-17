@@ -1216,7 +1216,7 @@ public class Sistema implements Initializable {
         if(b && run==false && corriendo==false){
             if (!figuras.isEmpty() ){
                 if(buscarInicio() && buscarFin()){
-                    if(todoConectado()){
+                    
                         //buscar inicio
                         for (Figura figura : figuras) {
                             if(figura.getTipo() == TipoF.INICIO){
@@ -1390,7 +1390,17 @@ public class Sistema implements Initializable {
                                     agregarVariable(corredor);
                                                 
                                 } 
-                                if(corredor.tipo==TipoF.INICIO){
+                                
+                            }*/
+                            variables.clear();
+                            Thread hilo = new Thread(new Runnable() {
+                                @Override
+                                
+                                public void run() {
+
+                                        run=true;
+                                        for (Figura corredor : corredors) {
+                                            if(corredor.tipo==TipoF.INICIO){
                                     texto=("Inicio codigo\n");
                                 }else if(corredor.tipo==TipoF.FIN){
                                     texto=texto+("Fin codigo");                                  
@@ -1407,16 +1417,6 @@ public class Sistema implements Initializable {
                                 }else if(corredor.tipo==TipoF.SALIDA){
                                     texto=texto+" while "+corredor.texto+(";\n");
                                 }
-                            }*/
-                            variables.clear();
-                            Thread hilo = new Thread(new Runnable() {
-                                @Override
-                                
-                                public void run() {
-
-                                        run=true;
-                                        for (Figura corredor : corredors) {
-                                            
                                             
                                             if (corredor.tipo!=TipoF.FIN && corredor.tipo!=TipoF.INICIO && !(corredor instanceof Desicion || corredor instanceof Ciclo)){
                                                 agregarVariable(corredor);
@@ -1443,7 +1443,7 @@ public class Sistema implements Initializable {
                             //hilo.stop();
 
                         }
-                    }else{
+                    else{
                         Alert alert = new Alert(AlertType.INFORMATION);
                         alert.setTitle("Error");
                         alert.setHeaderText("Problema al correr el diagrama");
