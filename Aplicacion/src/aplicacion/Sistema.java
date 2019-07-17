@@ -193,7 +193,7 @@ public class Sistema implements Initializable {
 
                 if(buscarConexion(x1,y1).tipo!=TipoF.INICIO && 
                         buscarConexion(x1,y1).tipo!=TipoF.FIN && buscarConexion(x1,y1).tipo!=TipoF.DESICION 
-                        && buscarConexion(x1,y1).tipo!=TipoF.ITERACION && buscarConexion(x1,y1).tipo!=TipoF.FLUJO 
+                        && buscarConexion(x1,y1).tipo!=TipoF.CICLO && buscarConexion(x1,y1).tipo!=TipoF.FLUJO 
                         && buscarConexion(x1,y1).tipo!=TipoF.FINDESICION){
                     Alert alert = new Alert(AlertType.CONFIRMATION);
                     alert.setTitle("Ventana de seleccion");
@@ -900,7 +900,7 @@ public class Sistema implements Initializable {
 
 
 
-                }else if(buscarConexion(x1,y1).tipo==TipoF.ITERACION || buscarConexion(x1,y1).tipo==TipoF.DESICION){
+                }else if(buscarConexion(x1,y1).tipo==TipoF.CICLO || buscarConexion(x1,y1).tipo==TipoF.DESICION){
                     Alert alert = new Alert(AlertType.CONFIRMATION);
                     alert.setTitle("Ventana de seleccion");           
                     alert.setContentText("Escoge una opcion.");
